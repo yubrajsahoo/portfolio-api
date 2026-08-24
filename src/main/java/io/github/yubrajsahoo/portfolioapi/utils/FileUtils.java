@@ -1,9 +1,13 @@
 package io.github.yubrajsahoo.portfolioapi.utils;
 
 import io.github.yubrajsahoo.portfolioapi.contants.CloudinaryConstants;
+import io.github.yubrajsahoo.portfolioapi.enums.AccessType;
+import io.github.yubrajsahoo.portfolioapi.enums.ResourceType;
 import lombok.experimental.UtilityClass;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+
+import static io.github.yubrajsahoo.portfolioapi.contants.CloudinaryConstants.PORTFOLIO_FOLDER;
 
 /**
  * Utility class for generic file and JSON operations.
@@ -13,6 +17,24 @@ import org.springframework.util.StringUtils;
  */
 @UtilityClass
 public class FileUtils {
+
+    /**
+     * Builds a public ID for a file to be uploaded to Cloudinary.
+     * The public ID is a unique identifier for the file in Cloudinary.
+     *
+     * @param accessType   The access type for the file.
+     * @param resourceType The type of the resource (e.g., image, video).
+     * @param fileName     The name of the file.
+     * @return The public ID for the file.
+     */
+    public static String buildPublicId(AccessType accessType, ResourceType resourceType, String fileName) {
+        return String.format("%s/%s/%s/%s",
+                PORTFOLIO_FOLDER,
+                accessType.getCloudinary(),
+                resourceType.getCloudinary(),
+                removeFileExtension(fileName)
+        );
+    }
 
     /**
      * Extracts the file extension without the leading dot.

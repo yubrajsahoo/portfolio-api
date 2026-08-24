@@ -11,42 +11,29 @@ import java.io.InputStream;
 public interface CloudClient {
 
     /**
-     * Uploads a public file.
+     * Uploads a file.
      *
+     * @param accessType access type (PUBLIC or PRIVATE)
+     * @param fileName file name with extension
      * @param inputStream file content
-     * @param fileName    file name
-     * @return publicly accessible file URL
+     * @return file URL
      */
-    String uploadPublic(InputStream inputStream, String fileName);
+    String upload(io.github.yubrajsahoo.portfolioapi.enums.AccessType accessType, String fileName, InputStream inputStream);
 
     /**
-     * Uploads a private file.
+     * Retrieves the URL for a given file.
      *
-     * @param inputStream file content
-     * @param fileName    file name
-     * @return private file URL
+     * @param accessType access type (PUBLIC or PRIVATE)
+     * @param fileName file name with extension
+     * @return file URL
      */
-    String uploadPrivate(InputStream inputStream, String fileName);
+    String getUrl(io.github.yubrajsahoo.portfolioapi.enums.AccessType accessType, String fileName);
 
     /**
-     * Generates a private URL for a given file ID.
+     * Deletes a file.
      *
-     * @param fileId file ID
-     * @return private file URL
+     * @param accessType access type (PUBLIC or PRIVATE)
+     * @param fileName file name with extension
      */
-    String generatePrivateUrl(String fileId);
-
-    /**
-     * Deletes a public file.
-     *
-     * @param fileId Cloudinary public ID or file name
-     */
-    void deletePublic(String fileId);
-
-    /**
-     * Deletes a private file.
-     *
-     * @param fileId file ID or file name
-     */
-    void deletePrivate(String fileId);
+    void delete(io.github.yubrajsahoo.portfolioapi.enums.AccessType accessType, String fileName);
 }

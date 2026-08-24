@@ -41,8 +41,8 @@ class CloudinaryClientUnitTest {
     private CloudinaryClient cloudinaryClient;
 
     @Test
-    @DisplayName("uploadPublic - valid parameters - successfully uploads and returns secure URL")
-    void uploadPublic_validParams_returnsSecureUrl() throws Exception {
+    @DisplayName("upload - valid parameters - successfully uploads and returns secure URL")
+    void upload_validParams_returnsSecureUrl() throws Exception {
         // Arrange
         InputStream inputStream = new ByteArrayInputStream("test content".getBytes());
         String fileName = "test-file.png";
@@ -56,7 +56,9 @@ class CloudinaryClientUnitTest {
         when(mockUploader.upload(any(byte[].class), any(Map.class))).thenReturn(uploadResult);
 
         // Act
-        String resultUrl = cloudinaryClient.uploadPublic(inputStream, fileName);
+        String resultUrl = cloudinaryClient.upload(
+                io.github.yubrajsahoo.portfolioapi.enums.AccessType.PUBLIC, fileName, inputStream
+        );
 
         // Assert
         assertNotNull(resultUrl, "The returned secure URL should not be null");
@@ -66,47 +68,56 @@ class CloudinaryClientUnitTest {
     }
 
     @Test
-    @DisplayName("uploadPublic - null input stream - throws IllegalArgumentException")
-    void uploadPublic_nullInputStream_throwsIllegalArgumentException() {
+    @DisplayName("upload - null input stream - throws IllegalArgumentException")
+    void upload_nullInputStream_throwsIllegalArgumentException() {
         // Arrange
         String fileName = "test-file.png";
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                cloudinaryClient.uploadPublic(null, fileName)
+                cloudinaryClient.upload(
+                        io.github.yubrajsahoo.portfolioapi.enums.AccessType.PUBLIC, fileName, null
+                )
         );
         assertEquals("Unable to read file", exception.getMessage());
     }
 
     @Test
-    @DisplayName("uploadPublic - null file name - throws IllegalArgumentException")
-    void uploadPublic_nullFileName_throwsIllegalArgumentException() {
+    @DisplayName("upload - null file name - throws IllegalArgumentException")
+    void upload_nullFileName_throwsIllegalArgumentException() {
         // Arrange
         InputStream inputStream = new ByteArrayInputStream("test content".getBytes());
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                cloudinaryClient.uploadPublic(inputStream, null)
+                cloudinaryClient.upload(
+                        io.github.yubrajsahoo.portfolioapi.enums.AccessType.PUBLIC, null, inputStream
+                )
         );
         assertEquals("File name must not be null or blank", exception.getMessage());
     }
 
     @Test
-    @DisplayName("uploadPublic - empty file name - throws IllegalArgumentException")
-    void uploadPublic_emptyFileName_throwsIllegalArgumentException() {
+    @DisplayName("upload - empty file name - throws IllegalArgumentException")
+    void upload_emptyFileName_throwsIllegalArgumentException() {
         // Arrange
         InputStream inputStream = new ByteArrayInputStream("test content".getBytes());
 
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            cloudinaryClient.uploadPublic(inputStream, " ");
-        });
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class, () ->
+                        cloudinaryClient.upload(
+                                io.github.yubrajsahoo.portfolioapi.enums.AccessType.PUBLIC,
+                                " ",
+                                inputStream
+                        )
+        );
         assertEquals("File name must not be null or blank", exception.getMessage());
     }
 
     @Test
-    @DisplayName("uploadPublic - CloudinaryException from uploader - propagates the CloudinaryException")
-    void uploadPublic_cloudinaryException_propagatesException() throws Exception {
+    @DisplayName("upload - CloudinaryException from uploader - propagates the CloudinaryException")
+    void upload_cloudinaryException_propagatesException() throws Exception {
         // Arrange
         InputStream inputStream = new ByteArrayInputStream("test content".getBytes());
         String fileName = "test-file.png";
@@ -118,15 +129,20 @@ class CloudinaryClientUnitTest {
         when(mockUploader.upload(any(byte[].class), any(Map.class))).thenThrow(cloudinaryException);
 
         // Act & Assert
-        CloudinaryException exception = assertThrows(CloudinaryException.class, () -> {
-            cloudinaryClient.uploadPublic(inputStream, fileName);
-        });
-        assertEquals("Cloudinary upload failed", exception.getMessage());
+        CloudinaryException exception = assertThrows(
+                CloudinaryException.class, () ->
+                        cloudinaryClient.upload(
+                                io.github.yubrajsahoo.portfolioapi.enums.AccessType.PUBLIC,
+                                fileName,
+                                inputStream
+                        )
+        );
+        assertEquals("Exception occurred while uploading file to Cloudinary", exception.getMessage());
     }
 
     @Test
-    @DisplayName("uploadPublic - generic Exception from uploader - wraps and throws CloudinaryException")
-    void uploadPublic_genericException_throwsCloudinaryException() throws Exception {
+    @DisplayName("upload - generic Exception from uploader - wraps and throws CloudinaryException")
+    void upload_genericException_throwsCloudinaryException() throws Exception {
         // Arrange
         InputStream inputStream = new ByteArrayInputStream("test content".getBytes());
         String fileName = "test-file.png";
@@ -138,16 +154,21 @@ class CloudinaryClientUnitTest {
         when(mockUploader.upload(any(byte[].class), any(Map.class))).thenThrow(genericException);
 
         // Act & Assert
-        CloudinaryException exception = assertThrows(CloudinaryException.class, () -> {
-            cloudinaryClient.uploadPublic(inputStream, fileName);
-        });
+        CloudinaryException exception = assertThrows(
+                CloudinaryException.class, () ->
+                        cloudinaryClient.upload(
+                                io.github.yubrajsahoo.portfolioapi.enums.AccessType.PUBLIC,
+                                fileName,
+                                inputStream
+                        )
+        );
         assertEquals("Exception occurred while uploading file to Cloudinary", exception.getMessage());
         assertEquals(genericException, exception.getCause());
     }
 
     @Test
-    @DisplayName("generatePrivateUrl - valid parameters - successfully generates signed private URL")
-    void generatePrivateUrl_validParams_returnsSignedUrl() throws Exception {
+    @DisplayName("getUrl - valid parameters - successfully generates signed private URL")
+    void getUrl_validParams_returnsSignedUrl() throws Exception {
         // Arrange
         String fileId = "test-file.png";
         String expectedUrl = "https://res.cloudinary.com/test-cloud/image/authenticated/v1/portfolio/authenticated/image/test-file.png?s=signature";
@@ -155,17 +176,55 @@ class CloudinaryClientUnitTest {
         when(cloudinary.privateDownload(anyString(), anyString(), any(Map.class))).thenReturn(expectedUrl);
 
         // Act
-        String resultUrl = cloudinaryClient.generatePrivateUrl(fileId);
+        String resultUrl = cloudinaryClient.getUrl(
+                io.github.yubrajsahoo.portfolioapi.enums.AccessType.PRIVATE, fileId
+        );
 
         // Assert
         assertNotNull(resultUrl);
         assertEquals(expectedUrl, resultUrl);
-        verify(cloudinary, times(1)).privateDownload(eq("portfolio/authenticated/image/test-file.png"), eq("png"), any(Map.class));
+        verify(cloudinary, times(1)).privateDownload(eq("portfolio/authenticated/image/test-file"), eq("png"), any(Map.class));
     }
 
     @Test
-    @DisplayName("deletePublic - valid fileId - successfully invokes destroy")
-    void deletePublic_validFileId_invokesUploaderDestroy() throws Exception {
+    @DisplayName("getUrl - public parameters - successfully generates public secure URL")
+    void getUrl_publicParams_returnsSecureUrl() {
+        // Arrange
+        String fileId = "test-file.png";
+
+        // Cloudinary url() uses a builder pattern, we need to mock it carefully if it's deeply chained, 
+        // OR rely on the real Cloudinary object since it's just generating a string offline.
+        // But since 'cloudinary' is a @MockitoBean, we MUST mock the builder chain:
+        com.cloudinary.Url mockUrl = mock(com.cloudinary.Url.class);
+        when(cloudinary.url()).thenReturn(mockUrl);
+        when(mockUrl.secure(true)).thenReturn(mockUrl);
+        when(mockUrl.resourceType(anyString())).thenReturn(mockUrl);
+        when(mockUrl.type(anyString())).thenReturn(mockUrl);
+        when(mockUrl.format(anyString())).thenReturn(mockUrl);
+        when(mockUrl.generate(anyString())).thenReturn(
+                "https://res.cloudinary.com/test-cloud/image/upload/portfolio/upload/image/test-file.png"
+        );
+
+        // Act
+        String resultUrl = cloudinaryClient.getUrl(
+                io.github.yubrajsahoo.portfolioapi.enums.AccessType.PUBLIC,
+                fileId
+        );
+
+        // Assert
+        assertNotNull(resultUrl);
+        assertEquals(
+                "https://res.cloudinary.com/test-cloud/image/upload/portfolio/upload/image/test-file.png",
+                resultUrl
+        );
+        verify(mockUrl).secure(true);
+        verify(mockUrl).format("png");
+        verify(mockUrl).generate("portfolio/upload/image/test-file");
+    }
+
+    @Test
+    @DisplayName("delete - valid fileId - successfully invokes destroy")
+    void delete_validFileId_invokesUploaderDestroy() throws Exception {
         // Arrange
         String fileId = "test-file.png";
         Uploader mockUploader = mock(Uploader.class);
@@ -173,26 +232,31 @@ class CloudinaryClientUnitTest {
         when(mockUploader.destroy(anyString(), any(Map.class))).thenReturn(Map.of("result", "ok"));
 
         // Act
-        cloudinaryClient.deletePublic(fileId);
+        cloudinaryClient.delete(io.github.yubrajsahoo.portfolioapi.enums.AccessType.PUBLIC, fileId);
 
         // Assert
         verify(cloudinary, times(1)).uploader();
-        verify(mockUploader, times(1)).destroy(eq("portfolio/upload/image/test-file.png"), any(Map.class));
+        verify(mockUploader, times(1))
+                .destroy(eq("portfolio/upload/image/test-file"), any(Map.class));
     }
 
     @Test
-    @DisplayName("deletePublic - null fileId - throws IllegalArgumentException")
-    void deletePublic_nullFileId_throwsIllegalArgumentException() {
+    @DisplayName("delete - null fileId - throws IllegalArgumentException")
+    void delete_nullFileId_throwsIllegalArgumentException() {
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            cloudinaryClient.deletePublic(null);
-        });
-        assertEquals("File ID must not be null or blank", exception.getMessage());
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class, () ->
+                        cloudinaryClient.delete(
+                                io.github.yubrajsahoo.portfolioapi.enums.AccessType.PUBLIC,
+                                null
+                        )
+        );
+        assertEquals("File name must not be null or blank", exception.getMessage());
     }
 
     @Test
-    @DisplayName("deletePublic - CloudinaryException from uploader - propagates Exception")
-    void deletePublic_cloudinaryException_propagatesException() throws Exception {
+    @DisplayName("delete - CloudinaryException from uploader - propagates Exception")
+    void delete_cloudinaryException_propagatesException() throws Exception {
         // Arrange
         String fileId = "test-file.png";
         Uploader mockUploader = mock(Uploader.class);
@@ -201,15 +265,19 @@ class CloudinaryClientUnitTest {
         when(mockUploader.destroy(anyString(), any(Map.class))).thenThrow(cloudinaryException);
 
         // Act & Assert
-        CloudinaryException exception = assertThrows(CloudinaryException.class, () -> {
-            cloudinaryClient.deletePublic(fileId);
-        });
-        assertEquals("Delete failed", exception.getMessage());
+        CloudinaryException exception = assertThrows(
+                CloudinaryException.class, () ->
+                        cloudinaryClient.delete(
+                                io.github.yubrajsahoo.portfolioapi.enums.AccessType.PUBLIC,
+                                fileId
+                        )
+        );
+        assertEquals("Exception occurred while deleting file from Cloudinary: " + fileId, exception.getMessage());
     }
 
     @Test
-    @DisplayName("deletePublic - generic Exception from uploader - wraps and throws CloudinaryException")
-    void deletePublic_genericException_throwsCloudinaryException() throws Exception {
+    @DisplayName("delete - generic Exception from uploader - wraps and throws CloudinaryException")
+    void delete_genericException_throwsCloudinaryException() throws Exception {
         // Arrange
         String fileId = "test-file.png";
         Uploader mockUploader = mock(Uploader.class);
@@ -218,15 +286,19 @@ class CloudinaryClientUnitTest {
         when(mockUploader.destroy(anyString(), any(Map.class))).thenThrow(genericException);
 
         // Act & Assert
-        CloudinaryException exception = assertThrows(CloudinaryException.class, () -> {
-            cloudinaryClient.deletePublic(fileId);
-        });
+        CloudinaryException exception = assertThrows(
+                CloudinaryException.class, () ->
+                        cloudinaryClient.delete(
+                                io.github.yubrajsahoo.portfolioapi.enums.AccessType.PUBLIC,
+                                fileId
+                        )
+        );
         assertEquals("Exception occurred while deleting file from Cloudinary: " + fileId, exception.getMessage());
         assertEquals(genericException, exception.getCause());
     }
 
     @Test
-    @DisplayName("deletePrivate - valid fileId - successfully invokes destroy")
+    @DisplayName("delete private - valid fileId - successfully invokes destroy")
     void deletePrivate_validFileId_invokesUploaderDestroy() throws Exception {
         // Arrange
         String fileId = "test-document.pdf";
@@ -235,12 +307,38 @@ class CloudinaryClientUnitTest {
         when(mockUploader.destroy(anyString(), any(Map.class))).thenReturn(Map.of("result", "ok"));
 
         // Act
-        cloudinaryClient.deletePrivate(fileId);
+        cloudinaryClient.delete(io.github.yubrajsahoo.portfolioapi.enums.AccessType.PRIVATE, fileId);
 
         // Assert
         verify(cloudinary, times(1)).uploader();
-        // Since pdf is raw/document, resource type might be raw/document, assuming buildPublicId produces "portfolio/private/raw/test-document.pdf"
-        // Let's use anyString() for exact public ID to avoid brittle tests on exact formatting, or verify correctly.
         verify(mockUploader, times(1)).destroy(anyString(), any(Map.class));
+    }
+
+    @Test
+    @DisplayName("upload - null accessType - throws IllegalArgumentException")
+    void upload_nullAccessType_throwsIllegalArgumentException() {
+        InputStream inputStream = new ByteArrayInputStream("test content".getBytes());
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                cloudinaryClient.upload(null, "test-file.png", inputStream)
+        );
+        assertEquals("AccessType must not be null", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("getUrl - null accessType - throws IllegalArgumentException")
+    void getUrl_nullAccessType_throwsIllegalArgumentException() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                cloudinaryClient.getUrl(null, "test-file.png")
+        );
+        assertEquals("AccessType must not be null", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("delete - null accessType - throws IllegalArgumentException")
+    void delete_nullAccessType_throwsIllegalArgumentException() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                cloudinaryClient.delete(null, "test-file.png")
+        );
+        assertEquals("AccessType must not be null", exception.getMessage());
     }
 }

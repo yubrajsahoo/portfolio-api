@@ -2,6 +2,8 @@ package io.github.yubrajsahoo.portfolioapi.integration.client.impl;
 
 import io.github.yubrajsahoo.portfolioapi.DataBuilderUtils;
 import io.github.yubrajsahoo.portfolioapi.client.impl.CloudinaryClient;
+import io.github.yubrajsahoo.portfolioapi.enums.AccessType;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,7 @@ import java.io.InputStream;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@Slf4j
 @SpringBootTest
 public class CloudinaryClientIntegrationTest {
 
@@ -25,8 +28,8 @@ public class CloudinaryClientIntegrationTest {
         InputStream inputStream = DataBuilderUtils.readFile("src/test/resources/images/logo.png");
         String fileName = "logo.png";
 
-        String publicId = cloudinaryClient.uploadPublic(inputStream, fileName);
-        System.out.println("Public ID:" + publicId);
+        String publicId = cloudinaryClient.upload(AccessType.PUBLIC, fileName, inputStream);
+        log.info("Public File ID:{}", publicId);
         assertNotNull(publicId);
     }
 
@@ -37,9 +40,19 @@ public class CloudinaryClientIntegrationTest {
         InputStream inputStream = DataBuilderUtils.readFile("src/test/resources/pdf/Yubraj-Resume.pdf");
         String fileName = "Yubraj-Resume.pdf";
 
-        String publicId = cloudinaryClient.uploadPrivate(inputStream, fileName);
-        System.out.println("Public ID:" + publicId);
+        String publicId = cloudinaryClient.upload(AccessType.PRIVATE, fileName, inputStream);
+        log.info("Private File ID:{}", publicId);
         assertNotNull(publicId);
+    }
+
+    @Test
+    @DisplayName("Test to generate download url for public")
+    void testGeneratePublicUrl() {
+        String fileName = "logo.png";
+
+        String publicUrl = cloudinaryClient.getUrl(AccessType.PUBLIC, fileName);
+        log.info("The Public Url is : {}", publicUrl);
+        assertNotNull(publicUrl);
     }
 
     @Test
@@ -48,8 +61,8 @@ public class CloudinaryClientIntegrationTest {
     void testGeneratePrivateUrl() {
         String fileName = "Yubraj-Resume.pdf";
 
-        String privateUrl = cloudinaryClient.generatePrivateUrl(fileName);
-        System.out.println("The Private Url is : " + privateUrl);
+        String privateUrl = cloudinaryClient.getUrl(AccessType.PRIVATE, fileName);
+        log.info("The Private Url is : {}", privateUrl);
         assertNotNull(privateUrl);
     }
 
@@ -59,7 +72,7 @@ public class CloudinaryClientIntegrationTest {
     void testDeletePublic() {
         String fileName = "logo.png";
 
-        cloudinaryClient.deletePublic(fileName);
+        cloudinaryClient.delete(AccessType.PUBLIC, fileName);
     }
 
     @Test
@@ -68,6 +81,6 @@ public class CloudinaryClientIntegrationTest {
     void testDeletePrivate() {
         String fileName = "Yubraj-Resume.pdf";
 
-        cloudinaryClient.deletePrivate(fileName);
+        cloudinaryClient.delete(AccessType.PRIVATE, fileName);
     }
 }

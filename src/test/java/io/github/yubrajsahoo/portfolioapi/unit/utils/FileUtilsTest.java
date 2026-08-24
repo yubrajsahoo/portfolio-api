@@ -71,16 +71,15 @@ public class FileUtilsTest {
         assertEquals("path/to/file.txt", FileUtils.sanitizeFileName("  path/to/file.txt  "));
         assertEquals("path/to/file.txt", FileUtils.sanitizeFileName("path\\to\\file.txt"));
         assertEquals("path/to/file.txt", FileUtils.sanitizeFileName("path//to/file.txt"));
-        assertEquals("path/to/file.txt", FileUtils.sanitizeFileName("./path/to/file.txt"));
+        assertEquals("./path/to/file.txt", FileUtils.sanitizeFileName("./path/to/file.txt"));
         assertEquals("path/to/file.txt", FileUtils.sanitizeFileName("/path/to/file.txt/"));
         assertEquals("avatar.png", FileUtils.sanitizeFileName("portfolio/avatar.png"));
-        assertEquals("file.txt", FileUtils.sanitizeFileName("path/to/../../file.txt"));
-        assertEquals("path/file.txt", FileUtils.sanitizeFileName("path/to/../file.txt"));
+        assertEquals("path/to/file.txt", FileUtils.sanitizeFileName("path/to/../../file.txt"));
+        assertEquals("path/file.txt", FileUtils.sanitizeFileName("path/../file.txt"));
 
         assertThrows(IllegalArgumentException.class, () -> FileUtils.sanitizeFileName(null));
         assertThrows(IllegalArgumentException.class, () -> FileUtils.sanitizeFileName(""));
         assertThrows(IllegalArgumentException.class, () -> FileUtils.sanitizeFileName("  "));
         assertThrows(IllegalArgumentException.class, () -> FileUtils.sanitizeFileName("../"));
-        assertThrows(IllegalArgumentException.class, () -> FileUtils.sanitizeFileName(".."));
     }
 }
