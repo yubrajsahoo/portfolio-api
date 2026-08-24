@@ -1,0 +1,6 @@
+{
+  "resource_type" : "image",
+  "type" : "upload",
+  "overwrite" : true,
+  "public_id" : "portfolio/upload/image/test-file.png"
+}
