@@ -1,18 +1,22 @@
+/*
+ *
+ *  * Copyright (c) 2026 Yubraj Sahoo. All rights reserved.
+ *
+ */
+
 package io.github.yubrajsahoo.portfolioapi.client.impl;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import io.github.yubrajsahoo.portfolioapi.client.CloudClient;
 import io.github.yubrajsahoo.portfolioapi.config.CloudinaryProperties;
-import io.github.yubrajsahoo.portfolioapi.enums.AccessType;
-import io.github.yubrajsahoo.portfolioapi.enums.ResourceType;
+import io.github.yubrajsahoo.portfolioapi.domain.FileMetaData;
 import io.github.yubrajsahoo.portfolioapi.exception.CloudinaryException;
+import io.github.yubrajsahoo.portfolioapi.exception.FileUploadException;
 import io.github.yubrajsahoo.portfolioapi.metrics.MetricsType;
-import io.github.yubrajsahoo.portfolioapi.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 
 import java.io.InputStream;
 import java.util.Map;
@@ -37,26 +41,20 @@ public class CloudinaryClient implements CloudClient {
 
 
     /**
-     * {@inheritDoc}
+     * Uploads a file.
      *
-     * <p>This implementation uploads the file to Cloudinary with the specified {@link AccessType}.
-     * It sanitizes the file name, determines the correct resource type based on the file extension,
-     * and sets the appropriate options for public or private access.
+     * @param inputStream file content
+     * @param metaData    the file metadata
+     * @return file URL
      */
     @Override
-    public String upload(AccessType accessType, String fileName, InputStream inputStream) {
-        Assert.notNull(accessType, "AccessType must not be null");
-        validateArg(accessType, fileName);
-        Assert.notNull(inputStream, "Unable to read file");
-
-        fileName = FileUtils.sanitizeFileName(fileName);
-        ResourceType resourceType = ResourceType.fromExtension(FileUtils.getFileExtension(fileName));
-        String publicId = FileUtils.buildPublicId(accessType, resourceType, fileName);
+    public String upload(InputStream inputStream, FileMetaData metaData) {
+        String publicId = buildPublicId(metaData);
 
         Map<?, ?> option = ObjectUtils.asMap(
                 PUBLIC_ID, publicId,
-                RESOURCE_TYPE, resourceType.getCloudinary(),
-                TYPE, accessType.getCloudinary(),
+                RESOURCE_TYPE, metaData.getResourceType().getCloudinary(),
+                TYPE, metaData.getAccessType().getCloudinary(),
                 OVERWRITE, true
         );
 
@@ -71,81 +69,83 @@ public class CloudinaryClient implements CloudClient {
         }
 
         if (uploadResult == null || uploadResult.get(SECURE_URL) == null) {
-            throw new CloudinaryException("Error while uploading file with name : " + fileName);
+            throw new CloudinaryException("Error while uploading file with name : " + publicId,
+                    MetricsType.EXTERNAL_ERROR);
         }
+
         return uploadResult.get(SECURE_URL).toString();
     }
 
     /**
-     * {@inheritDoc}
+     * Retrieves the URL for a given file.
      *
-     * <p>For public files, generates a standard Cloudinary URL.
-     * For private files, generates a secure signed download URL valid for the TTL
-     * defined in the properties.
+     * @param metaData the file metadata
+     * @return file URL
      */
     @Override
-    public String getUrl(AccessType accessType, String fileName) {
-        validateArg(accessType, fileName);
-
-        String extension = FileUtils.getFileExtension(fileName);
-        ResourceType resourceType = ResourceType.fromExtension(extension);
-        String publicId = FileUtils.buildPublicId(accessType, resourceType, fileName);
+    public String getUrl(FileMetaData metaData) {
+        String publicId = buildPublicId(metaData);
         long expiresAt = (System.currentTimeMillis() + properties.privateUrlTtl().toMillis()) / 1000L;
 
         try {
-            switch (accessType) {
+            switch (metaData.getAccessType()) {
                 case PUBLIC -> {
                     return cloudinary.url()
                             .secure(true)
-                            .resourceType(resourceType.getCloudinary())
-                            .type(accessType.getCloudinary())
-                            .format(extension)
+                            .resourceType(metaData.getResourceType().getCloudinary())
+                            .type(metaData.getAccessType().getCloudinary())
+                            .format(metaData.getExtension())
                             .generate(publicId);
                 }
                 case PRIVATE -> {
                     Map<String, Object> option = Map.of(
-                            RESOURCE_TYPE, resourceType.getCloudinary(),
-                            TYPE, accessType.getCloudinary(),
+                            RESOURCE_TYPE, metaData.getResourceType().getCloudinary(),
+                            TYPE, metaData.getAccessType().getCloudinary(),
                             EXPIRES_AT, expiresAt);
-                    return cloudinary.privateDownload(publicId, extension, option);
+                    return cloudinary.privateDownload(publicId, metaData.getExtension(), option);
                 }
-                default -> throw new CloudinaryException("Unsupported access type");
+                default -> throw new FileUploadException("Unsupported access type", MetricsType.ERROR);
             }
+        } catch (FileUploadException exception) {
+            throw exception;
         } catch (Exception exception) {
-            throw new CloudinaryException("Failed to generate URL for file: " + fileName,
+            throw new CloudinaryException("Failed to generate URL for file: " + metaData.getFileName(),
                     MetricsType.EXTERNAL_ERROR, exception);
         }
     }
 
     /**
-     * {@inheritDoc}
+     * Deletes a file.
      *
-     * <p>Removes the file from Cloudinary storage using its generated public ID,
-     * maintaining consistency with the assigned {@link AccessType} and {@link ResourceType}.
+     * @param metaData the file metadata
      */
     @Override
-    public void delete(AccessType accessType, String fileName) {
-        validateArg(accessType, fileName);
-
-        String extension = FileUtils.getFileExtension(fileName);
-        ResourceType resourceType = ResourceType.fromExtension(extension);
-        String publicId = FileUtils.buildPublicId(accessType, resourceType, fileName);
+    public void delete(FileMetaData metaData) {
+        String publicId = buildPublicId(metaData);
         Map<String, String> option = Map.of(
-                RESOURCE_TYPE, resourceType.getCloudinary(),
-                TYPE, accessType.getCloudinary()
+                RESOURCE_TYPE, metaData.getResourceType().getCloudinary(),
+                TYPE, metaData.getAccessType().getCloudinary()
         );
 
         try {
             cloudinary.uploader()
                     .destroy(publicId, option);
         } catch (Exception exception) {
-            throw new CloudinaryException("Exception occurred while deleting file from Cloudinary: " + fileName,
+            throw new CloudinaryException("Exception occurred while deleting file from Cloudinary: " + metaData.getFileName(),
                     MetricsType.EXTERNAL_ERROR, exception);
         }
     }
 
-    private void validateArg(AccessType accessType, String fileName) {
-        Assert.notNull(accessType, "AccessType must not be null");
-        Assert.hasText(fileName, "File name must not be null or blank");
+    /**
+     * Method to build public id for cloudinary.
+     *
+     * @param metaData the file metadata.
+     * @return the public id
+     */
+    private String buildPublicId(FileMetaData metaData) {
+        return String.format(
+                "%s/%s",
+                metaData.getFolder(), metaData.getFileName()
+        );
     }
 }

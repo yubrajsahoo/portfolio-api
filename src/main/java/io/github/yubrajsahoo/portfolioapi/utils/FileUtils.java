@@ -1,3 +1,9 @@
+/*
+ *
+ *  * Copyright (c) 2026 Yubraj Sahoo. All rights reserved.
+ *
+ */
+
 package io.github.yubrajsahoo.portfolioapi.utils;
 
 import io.github.yubrajsahoo.portfolioapi.contants.CloudinaryConstants;
@@ -19,20 +25,17 @@ import static io.github.yubrajsahoo.portfolioapi.contants.CloudinaryConstants.PO
 public class FileUtils {
 
     /**
-     * Builds a public ID for a file to be uploaded to Cloudinary.
-     * The public ID is a unique identifier for the file in Cloudinary.
+     * Method to build upload folder for portfolio website
      *
      * @param accessType   The access type for the file.
      * @param resourceType The type of the resource (e.g., image, video).
-     * @param fileName     The name of the file.
      * @return The public ID for the file.
      */
-    public static String buildPublicId(AccessType accessType, ResourceType resourceType, String fileName) {
-        return String.format("%s/%s/%s/%s",
+    public static String buildUploadFolder(AccessType accessType, ResourceType resourceType) {
+        return String.format("%s/%s/%s",
                 PORTFOLIO_FOLDER,
                 accessType.getCloudinary(),
-                resourceType.getCloudinary(),
-                removeFileExtension(fileName)
+                resourceType.getCloudinary()
         );
     }
 

@@ -1,3 +1,9 @@
+/*
+ *
+ *  * Copyright (c) 2026 Yubraj Sahoo. All rights reserved.
+ *
+ */
+
 package io.github.yubrajsahoo.portfolioapi.contants;
 
 import lombok.experimental.UtilityClass;

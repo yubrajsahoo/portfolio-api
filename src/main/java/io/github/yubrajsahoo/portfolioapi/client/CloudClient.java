@@ -1,4 +1,12 @@
+/*
+ *
+ *  * Copyright (c) 2026 Yubraj Sahoo. All rights reserved.
+ *
+ */
+
 package io.github.yubrajsahoo.portfolioapi.client;
+
+import io.github.yubrajsahoo.portfolioapi.domain.FileMetaData;
 
 import java.io.InputStream;
 
@@ -13,27 +21,24 @@ public interface CloudClient {
     /**
      * Uploads a file.
      *
-     * @param accessType access type (PUBLIC or PRIVATE)
-     * @param fileName file name with extension
      * @param inputStream file content
+     * @param metaData    the file metadata
      * @return file URL
      */
-    String upload(io.github.yubrajsahoo.portfolioapi.enums.AccessType accessType, String fileName, InputStream inputStream);
+    String upload(InputStream inputStream, FileMetaData metaData);
 
     /**
      * Retrieves the URL for a given file.
      *
-     * @param accessType access type (PUBLIC or PRIVATE)
-     * @param fileName file name with extension
+     * @param metaData the file metadata
      * @return file URL
      */
-    String getUrl(io.github.yubrajsahoo.portfolioapi.enums.AccessType accessType, String fileName);
+    String getUrl(FileMetaData metaData);
 
     /**
      * Deletes a file.
      *
-     * @param accessType access type (PUBLIC or PRIVATE)
-     * @param fileName file name with extension
+     * @param metaData the file metadata
      */
-    void delete(io.github.yubrajsahoo.portfolioapi.enums.AccessType accessType, String fileName);
+    void delete(FileMetaData metaData);
 }

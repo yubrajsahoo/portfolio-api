@@ -1,3 +1,9 @@
+/*
+ *
+ *  * Copyright (c) 2026 Yubraj Sahoo. All rights reserved.
+ *
+ */
+
 package io.github.yubrajsahoo.portfolioapi.exception.base;
 
 import io.github.yubrajsahoo.portfolioapi.metrics.MetricsType;

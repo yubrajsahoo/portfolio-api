@@ -2,7 +2,9 @@ package io.github.yubrajsahoo.portfolioapi.integration.client.impl;
 
 import io.github.yubrajsahoo.portfolioapi.DataBuilderUtils;
 import io.github.yubrajsahoo.portfolioapi.client.impl.CloudinaryClient;
+import io.github.yubrajsahoo.portfolioapi.domain.FileMetaData;
 import io.github.yubrajsahoo.portfolioapi.enums.AccessType;
+import io.github.yubrajsahoo.portfolioapi.enums.ResourceType;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -26,9 +28,15 @@ public class CloudinaryClientIntegrationTest {
     @Disabled("Due to storing data in Cloudinary")
     void testUploadPublic() {
         InputStream inputStream = DataBuilderUtils.readFile("src/test/resources/images/logo.png");
-        String fileName = "logo.png";
+        FileMetaData metaData = FileMetaData.builder()
+                .fileName("logo")
+                .extension("png")
+                .folder("portfolio/public/image")
+                .accessType(AccessType.PUBLIC)
+                .resourceType(ResourceType.IMAGE)
+                .build();
 
-        String publicId = cloudinaryClient.upload(AccessType.PUBLIC, fileName, inputStream);
+        String publicId = cloudinaryClient.upload(inputStream, metaData);
         log.info("Public File ID:{}", publicId);
         assertNotNull(publicId);
     }
@@ -38,9 +46,15 @@ public class CloudinaryClientIntegrationTest {
     @Disabled("Due to storing data in Cloudinary")
     void testUploadPrivate() {
         InputStream inputStream = DataBuilderUtils.readFile("src/test/resources/pdf/Yubraj-Resume.pdf");
-        String fileName = "Yubraj-Resume.pdf";
+        FileMetaData metaData = FileMetaData.builder()
+                .fileName("Yubraj-Resume")
+                .extension("pdf")
+                .folder("portfolio/private/raw")
+                .accessType(AccessType.PRIVATE)
+                .resourceType(ResourceType.RAW)
+                .build();
 
-        String publicId = cloudinaryClient.upload(AccessType.PRIVATE, fileName, inputStream);
+        String publicId = cloudinaryClient.upload(inputStream, metaData);
         log.info("Private File ID:{}", publicId);
         assertNotNull(publicId);
     }
@@ -48,9 +62,15 @@ public class CloudinaryClientIntegrationTest {
     @Test
     @DisplayName("Test to generate download url for public")
     void testGeneratePublicUrl() {
-        String fileName = "logo.png";
+        FileMetaData metaData = FileMetaData.builder()
+                .fileName("logo")
+                .extension("png")
+                .folder("portfolio/public/image")
+                .accessType(AccessType.PUBLIC)
+                .resourceType(ResourceType.IMAGE)
+                .build();
 
-        String publicUrl = cloudinaryClient.getUrl(AccessType.PUBLIC, fileName);
+        String publicUrl = cloudinaryClient.getUrl(metaData);
         log.info("The Public Url is : {}", publicUrl);
         assertNotNull(publicUrl);
     }
@@ -59,9 +79,15 @@ public class CloudinaryClientIntegrationTest {
     @DisplayName("Test to generate download url for private")
     @Disabled("Due to hitting Cloudinary")
     void testGeneratePrivateUrl() {
-        String fileName = "Yubraj-Resume.pdf";
+        FileMetaData metaData = FileMetaData.builder()
+                .fileName("Yubraj-Resume")
+                .extension("pdf")
+                .folder("portfolio/private/raw")
+                .accessType(AccessType.PRIVATE)
+                .resourceType(ResourceType.RAW)
+                .build();
 
-        String privateUrl = cloudinaryClient.getUrl(AccessType.PRIVATE, fileName);
+        String privateUrl = cloudinaryClient.getUrl(metaData);
         log.info("The Private Url is : {}", privateUrl);
         assertNotNull(privateUrl);
     }
@@ -70,17 +96,29 @@ public class CloudinaryClientIntegrationTest {
     @DisplayName("Test to delete public file")
     @Disabled("Due to hitting Cloudinary")
     void testDeletePublic() {
-        String fileName = "logo.png";
+        FileMetaData metaData = FileMetaData.builder()
+                .fileName("logo")
+                .extension("png")
+                .folder("portfolio/public/image")
+                .accessType(AccessType.PUBLIC)
+                .resourceType(ResourceType.IMAGE)
+                .build();
 
-        cloudinaryClient.delete(AccessType.PUBLIC, fileName);
+        cloudinaryClient.delete(metaData);
     }
 
     @Test
     @DisplayName("Test to delete private file")
     @Disabled("Due to hitting Cloudinary")
     void testDeletePrivate() {
-        String fileName = "Yubraj-Resume.pdf";
+        FileMetaData metaData = FileMetaData.builder()
+                .fileName("Yubraj-Resume")
+                .extension("pdf")
+                .folder("portfolio/private/raw")
+                .accessType(AccessType.PRIVATE)
+                .resourceType(ResourceType.RAW)
+                .build();
 
-        cloudinaryClient.delete(AccessType.PRIVATE, fileName);
+        cloudinaryClient.delete(metaData);
     }
 }
