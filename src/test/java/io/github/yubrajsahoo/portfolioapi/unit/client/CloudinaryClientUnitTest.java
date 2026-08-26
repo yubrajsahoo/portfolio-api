@@ -1,4 +1,11 @@
-package io.github.yubrajsahoo.portfolioapi.unit.client.impl;
+/*
+ *
+ *  * Copyright (c) 2026 Yubraj Sahoo. All rights reserved.
+ *
+ */
+
+package io.github.yubrajsahoo.portfolioapi.unit.client;
+
 import io.github.yubrajsahoo.portfolioapi.domain.FileMetaData;
 
 import com.cloudinary.Cloudinary;
@@ -25,7 +32,6 @@ import static org.mockito.Mockito.*;
  * Unit tests for {@link CloudinaryClient} using Spring Boot context and mock beans.
  */
 @SpringBootTest(
-        classes = {CloudinaryClient.class, io.github.yubrajsahoo.portfolioapi.config.CloudinaryConfig.class},
         properties = {
                 "cloudinary.cloud-name=test-cloud",
                 "cloudinary.api-key=test-key",
@@ -46,68 +52,71 @@ class CloudinaryClientUnitTest {
     void upload_validParams_returnsSecureUrl() throws Exception {
         // Arrange
         InputStream inputStream = new ByteArrayInputStream("test content".getBytes());
-        String fileName = "test-file.png";
 
         Uploader mockUploader = mock(Uploader.class);
         when(cloudinary.uploader()).thenReturn(mockUploader);
 
         Map<String, String> uploadResult = new HashMap<>();
-        uploadResult.put("secure_url", "https://res.cloudinary.com/test-cloud/image/upload/v1/portfolio/upload/image/test-file.png");
+        uploadResult.put("secure_url", "https://res.cloudinary.com/test-cloud/image/upload/v1/portfolio/public/image/logo.png");
 
         when(mockUploader.upload(any(byte[].class), any(Map.class))).thenReturn(uploadResult);
 
+        FileMetaData metaData = io.github.yubrajsahoo.portfolioapi.helper.DataBuilderUtils.readFromJson(
+                "src/test/resources/json/file-meta-data-public-png-logo.json",
+                FileMetaData.class
+        );
+
         // Act
-        String resultUrl = cloudinaryClient.upload(inputStream
-        , FileMetaData.builder().fileName(fileName).accessType(io.github.yubrajsahoo.portfolioapi.enums.AccessType.PUBLIC).resourceType(io.github.yubrajsahoo.portfolioapi.enums.ResourceType.IMAGE).folder("portfolio/upload/image").extension("png").build());
+        String resultUrl = cloudinaryClient.upload(inputStream, metaData);
 
         // Assert
         assertNotNull(resultUrl, "The returned secure URL should not be null");
-        assertEquals("https://res.cloudinary.com/test-cloud/image/upload/v1/portfolio/upload/image/test-file.png", resultUrl);
+        assertEquals("https://res.cloudinary.com/test-cloud/image/upload/v1/portfolio/public/image/logo.png", resultUrl);
         verify(cloudinary, times(1)).uploader();
         verify(mockUploader, times(1)).upload(any(byte[].class), any(Map.class));
     }
 
     @Test
-    @DisplayName("upload - null input stream - throws IllegalArgumentException")
-    void upload_nullInputStream_throwsIllegalArgumentException() {
+    @DisplayName("upload - null input stream - throws CloudinaryException")
+    void upload_nullInputStream_throwsCloudinaryException() {
         // Arrange
         String fileName = "test-file.png";
 
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+        CloudinaryException exception = assertThrows(CloudinaryException.class, () ->
                 cloudinaryClient.upload(null
-                , FileMetaData.builder().fileName(fileName).accessType(io.github.yubrajsahoo.portfolioapi.enums.AccessType.PUBLIC).resourceType(io.github.yubrajsahoo.portfolioapi.enums.ResourceType.IMAGE).folder("portfolio/upload/image").extension("png").build())
+                        , FileMetaData.builder().fileName(fileName).accessType(io.github.yubrajsahoo.portfolioapi.enums.AccessType.PUBLIC).resourceType(io.github.yubrajsahoo.portfolioapi.enums.ResourceType.IMAGE).folder("portfolio/upload/image").extension("png").build())
         );
-        assertEquals("Unable to read file", exception.getMessage());
+        assertEquals("Exception occurred while uploading file to Cloudinary", exception.getMessage());
     }
 
     @Test
-    @DisplayName("upload - null file name - throws IllegalArgumentException")
-    void upload_nullFileName_throwsIllegalArgumentException() {
+    @DisplayName("upload - null file name - throws CloudinaryException")
+    void upload_nullFileName_throwsCloudinaryException() {
         // Arrange
         InputStream inputStream = new ByteArrayInputStream("test content".getBytes());
 
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+        CloudinaryException exception = assertThrows(CloudinaryException.class, () ->
                 cloudinaryClient.upload(inputStream
-                , FileMetaData.builder().fileName(null).accessType(io.github.yubrajsahoo.portfolioapi.enums.AccessType.PUBLIC).resourceType(io.github.yubrajsahoo.portfolioapi.enums.ResourceType.IMAGE).folder("portfolio/upload/image").extension("png").build())
+                        , FileMetaData.builder().fileName(null).accessType(io.github.yubrajsahoo.portfolioapi.enums.AccessType.PUBLIC).resourceType(io.github.yubrajsahoo.portfolioapi.enums.ResourceType.IMAGE).folder("portfolio/upload/image").extension("png").build())
         );
-        assertEquals("File name must not be null or blank", exception.getMessage());
+        assertEquals("Exception occurred while uploading file to Cloudinary", exception.getMessage());
     }
 
     @Test
-    @DisplayName("upload - empty file name - throws IllegalArgumentException")
-    void upload_emptyFileName_throwsIllegalArgumentException() {
+    @DisplayName("upload - empty file name - throws CloudinaryException")
+    void upload_emptyFileName_throwsCloudinaryException() {
         // Arrange
         InputStream inputStream = new ByteArrayInputStream("test content".getBytes());
 
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class, () ->
+        CloudinaryException exception = assertThrows(
+                CloudinaryException.class, () ->
                         cloudinaryClient.upload(inputStream
-                        , FileMetaData.builder().fileName(" ").accessType(io.github.yubrajsahoo.portfolioapi.enums.AccessType.PUBLIC).resourceType(io.github.yubrajsahoo.portfolioapi.enums.ResourceType.IMAGE).folder("portfolio/upload/image").extension("png").build())
+                                , FileMetaData.builder().fileName(" ").accessType(io.github.yubrajsahoo.portfolioapi.enums.AccessType.PUBLIC).resourceType(io.github.yubrajsahoo.portfolioapi.enums.ResourceType.IMAGE).folder("portfolio/upload/image").extension("png").build())
         );
-        assertEquals("File name must not be null or blank", exception.getMessage());
+        assertEquals("Exception occurred while uploading file to Cloudinary", exception.getMessage());
     }
 
     @Test
@@ -127,7 +136,7 @@ class CloudinaryClientUnitTest {
         CloudinaryException exception = assertThrows(
                 CloudinaryException.class, () ->
                         cloudinaryClient.upload(inputStream
-                        , FileMetaData.builder().fileName(fileName).accessType(io.github.yubrajsahoo.portfolioapi.enums.AccessType.PUBLIC).resourceType(io.github.yubrajsahoo.portfolioapi.enums.ResourceType.IMAGE).folder("portfolio/upload/image").extension("png").build())
+                                , FileMetaData.builder().fileName(fileName).accessType(io.github.yubrajsahoo.portfolioapi.enums.AccessType.PUBLIC).resourceType(io.github.yubrajsahoo.portfolioapi.enums.ResourceType.IMAGE).folder("portfolio/upload/image").extension("png").build())
         );
         assertEquals("Exception occurred while uploading file to Cloudinary", exception.getMessage());
     }
@@ -149,7 +158,7 @@ class CloudinaryClientUnitTest {
         CloudinaryException exception = assertThrows(
                 CloudinaryException.class, () ->
                         cloudinaryClient.upload(inputStream
-                        , FileMetaData.builder().fileName(fileName).accessType(io.github.yubrajsahoo.portfolioapi.enums.AccessType.PUBLIC).resourceType(io.github.yubrajsahoo.portfolioapi.enums.ResourceType.IMAGE).folder("portfolio/upload/image").extension("png").build())
+                                , FileMetaData.builder().fileName(fileName).accessType(io.github.yubrajsahoo.portfolioapi.enums.AccessType.PUBLIC).resourceType(io.github.yubrajsahoo.portfolioapi.enums.ResourceType.IMAGE).folder("portfolio/upload/image").extension("png").build())
         );
         assertEquals("Exception occurred while uploading file to Cloudinary", exception.getMessage());
         assertEquals(genericException, exception.getCause());
@@ -159,7 +168,7 @@ class CloudinaryClientUnitTest {
     @DisplayName("getUrl - valid parameters - successfully generates signed private URL")
     void getUrl_validParams_returnsSignedUrl() throws Exception {
         // Arrange
-        String fileId = "test-file.png";
+        String fileId = "test-file";
         String expectedUrl = "https://res.cloudinary.com/test-cloud/image/authenticated/v1/portfolio/authenticated/image/test-file.png?s=signature";
 
         when(cloudinary.privateDownload(anyString(), anyString(), any(Map.class))).thenReturn(expectedUrl);
@@ -178,7 +187,7 @@ class CloudinaryClientUnitTest {
     @DisplayName("getUrl - public parameters - successfully generates public secure URL")
     void getUrl_publicParams_returnsSecureUrl() {
         // Arrange
-        String fileId = "test-file.png";
+        String fileId = "test-file";
 
         // Cloudinary url() uses a builder pattern, we need to mock it carefully if it's deeply chained, 
         // OR rely on the real Cloudinary object since it's just generating a string offline.
@@ -227,15 +236,15 @@ class CloudinaryClientUnitTest {
     }
 
     @Test
-    @DisplayName("delete - null fileId - throws IllegalArgumentException")
-    void delete_nullFileId_throwsIllegalArgumentException() {
+    @DisplayName("delete - null fileId - throws CloudinaryException")
+    void delete_nullFileId_throwsCloudinaryException() {
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class, () ->
+        CloudinaryException exception = assertThrows(
+                CloudinaryException.class, () ->
                         cloudinaryClient.delete(FileMetaData.builder().fileName(null
                         ).accessType(io.github.yubrajsahoo.portfolioapi.enums.AccessType.PUBLIC).resourceType(io.github.yubrajsahoo.portfolioapi.enums.ResourceType.IMAGE).folder("portfolio/upload/image").extension("png").build())
         );
-        assertEquals("File name must not be null or blank", exception.getMessage());
+        assertEquals("Exception occurred while deleting file from Cloudinary: null", exception.getMessage());
     }
 
     @Test

@@ -1,4 +1,10 @@
-package io.github.yubrajsahoo.portfolioapi;
+/*
+ *
+ *  * Copyright (c) 2026 Yubraj Sahoo. All rights reserved.
+ *
+ */
+
+package io.github.yubrajsahoo.portfolioapi.helper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
@@ -38,6 +44,7 @@ public class DataBuilderUtils {
      * @param filepath file path
      * @return input stream containing the file content
      * @throws IllegalArgumentException if the file does not exist
+     * @throws RuntimeException if an error occurs while reading the file
      */
     public InputStream readFile(String filepath) {
         Path path = Paths.get(filepath);
@@ -70,6 +77,7 @@ public class DataBuilderUtils {
      * @param clazz    target Java class
      * @param <T>      target object type
      * @return mapped Java object
+     * @throws RuntimeException if an error occurs while reading or mapping the JSON file
      */
     public <T> T readFromJson(String filepath, Class<T> clazz) {
         try (InputStream inputStream = readFile(filepath)) {
@@ -95,6 +103,7 @@ public class DataBuilderUtils {
      *
      * @param targetFilepath target file path
      * @param data           Java object to serialize
+     * @throws RuntimeException if an error occurs while writing the JSON file
      */
     public void writeToJson(String targetFilepath, Object data) {
         Path path = Paths.get(targetFilepath);

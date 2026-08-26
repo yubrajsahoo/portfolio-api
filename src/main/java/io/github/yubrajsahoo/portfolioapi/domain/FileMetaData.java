@@ -14,7 +14,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Domain class for file metadata
+ * Represents the metadata associated with a file, such as its name, extension,
+ * folder location, access type, and resource type.
+ * This domain class is used to encapsulate information needed for file storage and retrieval.
  */
 @Data
 @Builder
@@ -23,27 +25,27 @@ import lombok.NoArgsConstructor;
 public class FileMetaData {
 
     /**
-     * represents file name
+     * The name of the file without its extension.
      */
     private String fileName;
 
     /**
-     * represents file extension like png,pdf...
+     * The extension of the file (e.g., png, pdf, mp4).
      */
     private String extension;
 
     /**
-     * represent in which folder file should store
+     * The folder path where the file is stored or should be stored.
      */
     private String folder;
 
     /**
-     * the access type of file
+     * The access type of the file (e.g., PUBLIC, PRIVATE), indicating its visibility.
      */
-    private AccessType accessType;
+    private AccessType accessType = AccessType.PUBLIC;
 
     /**
-     * represents file resource type
+     * The resource type of the file (e.g., IMAGE, VIDEO, RAW).
      */
     private ResourceType resourceType;
 }

@@ -84,14 +84,17 @@ public class FileUtils {
      *   <li>Removes redundant root folder prefix (e.g., {@code portfolio/}) to prevent duplicate nesting.</li>
      * </ul>
      *
-     * @param filePath raw file path or name
+     * @param fielName raw file path or name
      * @return sanitized, relative path
      * @throws IllegalArgumentException if the file path is null, blank, or invalid
      */
-    public static String sanitizeFileName(String filePath) {
-        Assert.hasText(filePath, "File path must not be null or blank");
+    public static String sanitizeFileName(String fielName) {
+        Assert.hasText(
+                fielName,
+                "File path must not be null or blank"
+        );
 
-        String sanitized = filePath.trim()
+        String sanitized = fielName.trim()
                 .replace('\\', '/')
                 .replaceAll("/+", "/")
                 .replaceAll("\\.{2,}/", "")
@@ -104,10 +107,29 @@ public class FileUtils {
             sanitized = sanitized.substring(rootPrefix.length());
         }
 
-        if (sanitized.isBlank()) {
-            throw new IllegalArgumentException("Sanitized file path cannot be empty for input: " + filePath);
-        }
+        Assert.hasText(
+                sanitized,
+                "File path must not be null or blank" + fielName
+        );
 
         return sanitized;
+    }
+
+    /**
+     * Asserts that a given file name has a valid extension and name.
+     *
+     * @param fileName the name of the file to validate
+     * @throws IllegalArgumentException if the file extension or file name is missing
+     */
+    public static void assertFileName(String fileName) {
+        Assert.hasText(
+                FileUtils.getFileExtension(fileName),
+                "File extension must not be null or blank: " + fileName
+        );
+
+        Assert.hasText(
+                FileUtils.removeFileExtension(fileName),
+                "File name should not be empty: " + fileName
+        );
     }
 }

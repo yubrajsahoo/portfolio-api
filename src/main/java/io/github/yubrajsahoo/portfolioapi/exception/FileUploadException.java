@@ -17,7 +17,7 @@ import io.github.yubrajsahoo.portfolioapi.metrics.MetricsType;
  */
 public class FileUploadException extends PortfolioApiException {
     /**
-     * Constructs a new {@code PortfolioApiException} with the specified detail message
+     * Constructs a new {@code FileUploadException} with the specified detail message
      * and the default metric type ({@code MetricsType.ERROR}).
      *
      * @param message the detail message explaining the error
@@ -27,7 +27,7 @@ public class FileUploadException extends PortfolioApiException {
     }
 
     /**
-     * Constructs a new {@code PortfolioApiException} with the specified metric and detail message.
+     * Constructs a new {@code FileUploadException} with the specified metric and detail message.
      *
      * @param message     the detail message explaining the error
      * @param metricsType the standardized metric identifier for this error
@@ -37,7 +37,7 @@ public class FileUploadException extends PortfolioApiException {
     }
 
     /**
-     * Constructs a new {@code PortfolioApiException} with the specified detail message and
+     * Constructs a new {@code FileUploadException} with the specified detail message and
      * underlying cause, using the default metric type ({@code MetricsType.ERROR}).
      *
      * @param message the detail message explaining the error
@@ -48,7 +48,7 @@ public class FileUploadException extends PortfolioApiException {
     }
 
     /**
-     * Constructs a new {@code PortfolioApiException} with the specified metric, detail message,
+     * Constructs a new {@code FileUploadException} with the specified metric, detail message,
      * and underlying cause.
      * <p>
      * This is useful for wrapping lower-level system exceptions (e.g., IOExceptions,

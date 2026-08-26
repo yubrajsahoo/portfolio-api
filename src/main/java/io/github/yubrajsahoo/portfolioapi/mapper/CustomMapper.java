@@ -7,7 +7,7 @@
 package io.github.yubrajsahoo.portfolioapi.mapper;
 
 import io.github.yubrajsahoo.portfolioapi.domain.FileMetaData;
-import io.github.yubrajsahoo.portfolioapi.dto.FileMetaDto;
+import io.github.yubrajsahoo.portfolioapi.enums.AccessType;
 
 /**
  * Interface defining custom mapping operations between Data Transfer Objects (DTOs)
@@ -17,12 +17,12 @@ import io.github.yubrajsahoo.portfolioapi.dto.FileMetaDto;
  * @since 0.0.1-SNAPSHOT
  */
 public interface CustomMapper {
-
     /**
-     * Converts a {@link FileMetaDto} to a {@link FileMetaData} domain object.
+     * Converts a file name and access type to a {@link FileMetaData} domain object.
      *
-     * @param fileMetaDto the data transfer object containing file metadata information
+     * @param fileName   the name of the file
+     * @param accessType the access type of the file
      * @return the corresponding {@link FileMetaData} domain model
      */
-    FileMetaData toFileMetaData(FileMetaDto fileMetaDto);
+    FileMetaData toFileMetaData(String fileName, AccessType accessType);
 }

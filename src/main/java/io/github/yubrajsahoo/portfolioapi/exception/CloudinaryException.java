@@ -28,7 +28,7 @@ public class CloudinaryException extends PortfolioApiException {
     }
 
     /**
-     * Constructs a new {@code PortfolioApiException} with the specified metric and detail message.
+     * Constructs a new {@code CloudinaryException} with the specified metric and detail message.
      *
      * @param message     the detail message explaining the error
      * @param metricsType the standardized metric identifier for this error

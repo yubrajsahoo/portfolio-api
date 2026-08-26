@@ -30,9 +30,13 @@ public enum MetricsType {
      */
     EXTERNAL_ERROR,
 
-    BAD_REQUEST,
     /**
-     * Failure While Performing task
+     * Indicates an invalid request from the client.
+     */
+    BAD_REQUEST,
+
+    /**
+     * Indicates a failure while performing a task.
      */
     FAILURE
 }

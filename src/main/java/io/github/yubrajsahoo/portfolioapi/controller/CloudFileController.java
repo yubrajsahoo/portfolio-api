@@ -6,14 +6,17 @@
 
 package io.github.yubrajsahoo.portfolioapi.controller;
 
-import io.github.yubrajsahoo.portfolioapi.dto.FileMetaDto;
+import io.github.yubrajsahoo.portfolioapi.enums.AccessType;
 import io.github.yubrajsahoo.portfolioapi.service.CloudFileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +25,7 @@ import java.net.URI;
 /**
  * REST controller for managing cloud files.
  * <p>
- * This controller provides endpoints for uploading files to cloud storage, 
+ * This controller provides endpoints for uploading files to cloud storage,
  * retrieving file URLs, and deleting files from the cloud.
  * </p>
  *
@@ -32,6 +35,7 @@ import java.net.URI;
 @RestController
 @RequestMapping("/api/v1/files")
 @RequiredArgsConstructor
+@Validated
 @Tag(
         name = "Cloud Files",
         description = "APIs for uploading, accessing and deleting cloud files"
@@ -42,8 +46,8 @@ public class CloudFileController {
     /**
      * Uploads a file to the configured cloud storage provider.
      *
-     * @param file    the file to upload
-     * @param metaDto the metadata associated with the file
+     * @param file   the file to upload
+     * @param access the access type of the file
      * @return a {@link ResponseEntity} containing the URL of the uploaded file
      */
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -52,10 +56,10 @@ public class CloudFileController {
             description = "Uploads a file to the configured cloud storage provider"
     )
     public ResponseEntity<String> upload(
-            @RequestParam("file") MultipartFile file,
-            @RequestBody FileMetaDto metaDto) {
-
-        String uploadUrl = cloudFileService.upload(file, metaDto);
+            @NotNull(message = "File cannot be null") @RequestParam MultipartFile file,
+            @RequestParam(required = false, defaultValue = "PUBLIC") AccessType access
+    ) {
+        String uploadUrl = cloudFileService.upload(file, access);
 
         return ResponseEntity
                 .created(URI.create(uploadUrl))
@@ -65,18 +69,22 @@ public class CloudFileController {
     /**
      * Retrieves the URL of a stored file.
      *
-     * @param metaDto the metadata used to locate the file
+     * @param fileName the name of the file
+     * @param access   the access type of the file
      * @return a {@link ResponseEntity} containing the URI of the requested file
      */
     @Operation(
             summary = "Get file URL",
             description = "Returns the URL of a stored file"
     )
-    @GetMapping
-    public ResponseEntity<URI> download(@RequestBody FileMetaDto metaDto) {
+    @GetMapping("/{fileName}")
+    public ResponseEntity<URI> download(
+            @NotBlank(message = "File name cannot be blank") @PathVariable String fileName,
+            @RequestParam(required = false, defaultValue = "PUBLIC") AccessType access
+    ) {
         return ResponseEntity.ok(
                 URI.create(
-                        cloudFileService.getUrl(metaDto)
+                        cloudFileService.getUrl(fileName, access)
                 )
         );
     }
@@ -84,16 +92,19 @@ public class CloudFileController {
     /**
      * Deletes a file from the configured cloud storage provider.
      *
-     * @param metaDto the metadata used to locate and delete the file
+     * @param fileName the name of the file
+     * @param access   the access type of the file
      */
     @Operation(
             summary = "Delete a file",
             description = "Deletes a file from the configured cloud storage provider"
     )
-    @DeleteMapping
+    @DeleteMapping("/{fileName}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void delete(FileMetaDto metaDto) {
-
-        cloudFileService.delete(metaDto);
+    public void delete(
+            @NotBlank(message = "File name cannot be blank") @PathVariable String fileName,
+            @RequestParam(required = false, defaultValue = "PUBLIC") AccessType access
+    ) {
+        cloudFileService.delete(fileName, access);
     }
 }

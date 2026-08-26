@@ -10,12 +10,15 @@ spring:
     cache-names:
       - cloud-file-urls
     caffeine:
-      spec: maximumSize=1000,expireAfterWrite=10m
+      spec: maximumSize=1000,expireAfterWrite=8m
+    max: 1000
+    ttl: 8 #8min
 
 cloudinary:
   cloud-name: ${CLOUDINARY_CLOUD_NAME}
   api-key: ${CLOUDINARY_API_KEY}
   api-secret: ${CLOUDINARY_API_SECRET}
+  privateUrlTtl: 10m # 10min
 
 springdotenv:
   filename: .evn

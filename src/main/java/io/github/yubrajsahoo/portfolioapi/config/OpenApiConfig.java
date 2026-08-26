@@ -22,9 +22,9 @@ import org.springframework.context.annotation.Configuration;
 public class OpenApiConfig {
 
     /**
-     * Create Bean for OpenApi
+     * Creates the OpenAPI documentation bean for the Portfolio API.
      *
-     * @return the open api bean
+     * @return the OpenAPI configuration bean
      */
     @Bean
     public OpenAPI portfolioApiOpenAPI() {

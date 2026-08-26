@@ -6,7 +6,7 @@
 
 package io.github.yubrajsahoo.portfolioapi.service;
 
-import io.github.yubrajsahoo.portfolioapi.dto.FileMetaDto;
+import io.github.yubrajsahoo.portfolioapi.enums.AccessType;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -20,24 +20,27 @@ public interface CloudFileService {
     /**
      * Uploads a file to the cloud storage.
      *
-     * @param file    the file to be uploaded
-     * @param metaDto the metaDto for the file to be uploaded
+     * @param file       the file to be uploaded
+     * @param accessType the access type for the file to be uploaded
      * @return the URL or identifier of the uploaded file
+     * @throws io.github.yubrajsahoo.portfolioapi.exception.FileUploadException if an error occurs during file upload
      */
-    String upload(MultipartFile file, FileMetaDto metaDto);
+    String upload(MultipartFile file, AccessType accessType);
 
     /**
      * Retrieves the URL for a stored file.
      *
-     * @param metaDto the metaDto of the file
+     * @param fileName   the name of the file
+     * @param accessType the access type of the file
      * @return the URL to access the file
      */
-    String getUrl(FileMetaDto metaDto);
+    String getUrl(String fileName, AccessType accessType);
 
     /**
      * Deletes a file from the cloud storage.
      *
-     * @param metaDto the metaDto of the file to delete
+     * @param fileName   the name of the file
+     * @param accessType the access type of the file to delete
      */
-    void delete(FileMetaDto metaDto);
+    void delete(String fileName, AccessType accessType);
 }

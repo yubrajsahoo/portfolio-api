@@ -27,28 +27,36 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "cloudinary")
 public record CloudinaryProperties(
         /*
-          cloud name of cloudinary
+         * cloud name of cloudinary
          */
         @NotBlank(message = "Cloudinary cloud name is required")
         String cloudName,
 
         /*
-          api key for cloudinary
+         * api key for cloudinary
          */
         @NotBlank(message = "Cloudinary api key is required")
         String apiKey,
 
         /*
-          api secret for cloudinary
+         * api secret for cloudinary
          */
         @NotBlank(message = "Cloudinary api secret is required")
         String apiSecret,
 
         /*
-          validity duration for private download URLs
+         * validity duration for private download URLs
          */
         Duration privateUrlTtl
 ) {
+    /**
+     * Compact constructor to set default values for properties.
+     *
+     * @param cloudName     cloud name
+     * @param apiKey        api key
+     * @param apiSecret     api secret
+     * @param privateUrlTtl time-to-live duration for private signed URLs
+     */
     public CloudinaryProperties {
         if (privateUrlTtl == null) {
             privateUrlTtl = Duration.ofMinutes(5);

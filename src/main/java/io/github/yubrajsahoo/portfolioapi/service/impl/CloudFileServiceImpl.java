@@ -10,7 +10,7 @@ import io.github.yubrajsahoo.portfolioapi.cache.constants.CacheExpressions;
 import io.github.yubrajsahoo.portfolioapi.cache.constants.CacheNames;
 import io.github.yubrajsahoo.portfolioapi.client.CloudClient;
 import io.github.yubrajsahoo.portfolioapi.domain.FileMetaData;
-import io.github.yubrajsahoo.portfolioapi.dto.FileMetaDto;
+import io.github.yubrajsahoo.portfolioapi.enums.AccessType;
 import io.github.yubrajsahoo.portfolioapi.exception.FileUploadException;
 import io.github.yubrajsahoo.portfolioapi.mapper.CustomMapper;
 import io.github.yubrajsahoo.portfolioapi.metrics.MetricsType;
@@ -39,13 +39,14 @@ public class CloudFileServiceImpl implements CloudFileService {
     /**
      * Uploads a file to the cloud storage.
      *
-     * @param file    the file to be uploaded
-     * @param metaDto the metadata for the file to be uploaded
+     * @param file       the file to be uploaded
+     * @param accessType the access type for the file to be uploaded
      * @return the URL or identifier of the uploaded file
+     * @throws FileUploadException if an error occurs during file upload
      */
     @Override
-    public String upload(MultipartFile file, FileMetaDto metaDto) {
-        FileMetaData metaData = customMapper.toFileMetaData(metaDto);
+    public String upload(MultipartFile file, AccessType accessType) {
+        FileMetaData metaData = customMapper.toFileMetaData(file.getOriginalFilename(), accessType);
         try {
             return cloudClient.upload(file.getInputStream(), metaData);
         } catch (IOException e) {
@@ -57,7 +58,8 @@ public class CloudFileServiceImpl implements CloudFileService {
     /**
      * Retrieves the URL for a stored file.
      *
-     * @param metaDto the metaDto of the file
+     * @param fileName   the name of the file
+     * @param accessType the access type of the file
      * @return the URL to access the file
      */
     @Override
@@ -65,19 +67,20 @@ public class CloudFileServiceImpl implements CloudFileService {
             cacheNames = CacheNames.CLOUD_FILE_URL,
             key = CacheExpressions.CLOUD_GET_URL
     )
-    public String getUrl(FileMetaDto metaDto) {
-        FileMetaData fileMetaData = customMapper.toFileMetaData(metaDto);
+    public String getUrl(String fileName, AccessType accessType) {
+        FileMetaData fileMetaData = customMapper.toFileMetaData(fileName, accessType);
         return cloudClient.getUrl(fileMetaData);
     }
 
     /**
      * Deletes a file from the cloud storage.
      *
-     * @param metaDto the metaDto of the file to delete
+     * @param fileName   the name of the file
+     * @param accessType the access type of the file to delete
      */
     @Override
-    public void delete(FileMetaDto metaDto) {
-        FileMetaData fileMetaData = customMapper.toFileMetaData(metaDto);
+    public void delete(String fileName, AccessType accessType) {
+        FileMetaData fileMetaData = customMapper.toFileMetaData(fileName, accessType);
         cloudClient.delete(fileMetaData);
     }
 }

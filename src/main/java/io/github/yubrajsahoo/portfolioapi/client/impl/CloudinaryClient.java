@@ -41,11 +41,12 @@ public class CloudinaryClient implements CloudClient {
 
 
     /**
-     * Uploads a file.
+     * Uploads a file to Cloudinary.
      *
-     * @param inputStream file content
-     * @param metaData    the file metadata
-     * @return file URL
+     * @param inputStream the input stream containing the file content to be uploaded
+     * @param metaData    the metadata associated with the file
+     * @return the secure URL of the uploaded file in Cloudinary
+     * @throws CloudinaryException if an error occurs during the upload process
      */
     @Override
     public String upload(InputStream inputStream, FileMetaData metaData) {
@@ -77,10 +78,13 @@ public class CloudinaryClient implements CloudClient {
     }
 
     /**
-     * Retrieves the URL for a given file.
+     * Retrieves the URL for a given file stored in Cloudinary.
+     * Generates a signed URL for private access or a standard secure URL for public access.
      *
-     * @param metaData the file metadata
-     * @return file URL
+     * @param metaData the metadata associated with the file
+     * @return the generated file URL
+     * @throws FileUploadException if the access type is unsupported
+     * @throws CloudinaryException if an error occurs while generating the URL
      */
     @Override
     public String getUrl(FileMetaData metaData) {
@@ -115,9 +119,10 @@ public class CloudinaryClient implements CloudClient {
     }
 
     /**
-     * Deletes a file.
+     * Deletes a file from Cloudinary.
      *
-     * @param metaData the file metadata
+     * @param metaData the metadata associated with the file to be deleted
+     * @throws CloudinaryException if an error occurs during the deletion process
      */
     @Override
     public void delete(FileMetaData metaData) {
@@ -137,10 +142,10 @@ public class CloudinaryClient implements CloudClient {
     }
 
     /**
-     * Method to build public id for cloudinary.
+     * Helper method to build the Cloudinary public ID for a given file.
      *
-     * @param metaData the file metadata.
-     * @return the public id
+     * @param metaData the metadata associated with the file
+     * @return the constructed public ID
      */
     private String buildPublicId(FileMetaData metaData) {
         return String.format(

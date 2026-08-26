@@ -22,9 +22,9 @@ import org.springframework.context.annotation.Configuration;
 public class CloudinaryConfig {
 
     /**
-     * Creates the cloudinary bean
+     * Creates the Cloudinary client bean.
      *
-     * @param properties the cloudinary properites
+     * @param properties the Cloudinary properties
      * @return the Cloudinary client
      */
     @Bean
