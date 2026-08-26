@@ -10,8 +10,10 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -39,7 +41,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(io.github.yubrajsahoo.portfolioapi.exception.CloudinaryException.class)
     public ProblemDetail handleCloudinaryException(io.github.yubrajsahoo.portfolioapi.exception.CloudinaryException ex) {
-        log.error("Cloudinary exception occurred: {}", ex.getMessage());
+        log.warn("Cloudinary exception occurred: {}", ex.getMessage(), ex);
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.SERVICE_UNAVAILABLE,
@@ -59,7 +61,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(io.github.yubrajsahoo.portfolioapi.exception.FileUploadException.class)
     public ProblemDetail handleFileUploadException(io.github.yubrajsahoo.portfolioapi.exception.FileUploadException ex) {
-        log.error("File upload exception occurred: {}", ex.getMessage());
+        log.warn("File upload exception occurred: {}", ex.getMessage(), ex);
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.UNPROCESSABLE_CONTENT,
@@ -79,7 +81,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(ConstraintViolationException.class)
     public ProblemDetail handleConstraintViolationException(ConstraintViolationException ex) {
-        log.error("Constraint violation exception occurred: {}", ex.getMessage());
+        log.info("Constraint violation exception occurred: {}", ex.getMessage(), ex);
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.BAD_REQUEST,
@@ -109,7 +111,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(IllegalArgumentException.class)
     public ProblemDetail handleIllegalArgumentException(IllegalArgumentException ex) {
-        log.error("Illegal argument exception occurred: {}", ex.getMessage());
+        log.info("Illegal argument exception occurred: {}", ex.getMessage(), ex);
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.BAD_REQUEST,
@@ -117,6 +119,26 @@ public class GlobalExceptionHandler {
         );
 
         problemDetail.setTitle("Bad Request");
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
+    }
+
+    /**
+     * Handles {@link HttpRequestMethodNotSupportedException}.
+     *
+     * @param e the HttpRequestMethodNotSupportedException that was thrown
+     * @return a {@link ProblemDetail} with HTTP status 400 (Bad Request)
+     */
+    @ExceptionHandler({HttpRequestMethodNotSupportedException.class, NoResourceFoundException.class})
+    public ProblemDetail handleHttpRequestMethodNotSupportedException(Exception e) {
+        log.debug("HttpRequestMethodNotSupportedException occurred: {}", e.getMessage(), e);
+
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST,
+                e.getMessage()
+        );
+
+        problemDetail.setTitle("Invalid Endpoint");
         problemDetail.setProperty("timestamp", Instant.now());
         return problemDetail;
     }

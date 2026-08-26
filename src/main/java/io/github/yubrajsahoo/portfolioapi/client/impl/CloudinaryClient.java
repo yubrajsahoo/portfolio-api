@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
@@ -64,12 +65,18 @@ public class CloudinaryClient implements CloudClient {
             uploadResult = cloudinary.uploader()
                     .upload(inputStream.readAllBytes(), option);
 
+        } catch (IOException ioException) {
+            log.info("Unable to Read file: {}", ioException.getMessage(), ioException);
+            throw new FileUploadException("Unable to Read File",
+                    MetricsType.BAD_REQUEST, ioException);
         } catch (Exception exception) {
+            log.warn("Unable to upload file in Cloudinary: {}", exception.getMessage(), exception);
             throw new CloudinaryException("Exception occurred while uploading file to Cloudinary",
                     MetricsType.EXTERNAL_ERROR, exception);
         }
 
         if (uploadResult == null || uploadResult.get(SECURE_URL) == null) {
+            log.warn("Getting Invalid Response from Cloudinary: {}", uploadResult);
             throw new CloudinaryException("Error while uploading file with name : " + publicId,
                     MetricsType.EXTERNAL_ERROR);
         }
@@ -111,8 +118,10 @@ public class CloudinaryClient implements CloudClient {
                 default -> throw new FileUploadException("Unsupported access type", MetricsType.ERROR);
             }
         } catch (FileUploadException exception) {
+            log.error("Getting Invalid AccessType : {}", exception.getMessage(), exception);
             throw exception;
         } catch (Exception exception) {
+            log.warn("Getting Error while getting url: {}", exception.getMessage(), exception);
             throw new CloudinaryException("Failed to generate URL for file: " + metaData.getFileName(),
                     MetricsType.EXTERNAL_ERROR, exception);
         }
@@ -136,6 +145,7 @@ public class CloudinaryClient implements CloudClient {
             cloudinary.uploader()
                     .destroy(publicId, option);
         } catch (Exception exception) {
+            log.warn("Unable to delete file: {}", exception.getMessage(), exception);
             throw new CloudinaryException("Exception occurred while deleting file from Cloudinary: " + metaData.getFileName(),
                     MetricsType.EXTERNAL_ERROR, exception);
         }

@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,7 @@ import java.net.URI;
  * @author Yubraj Sahoo
  * @since 0.0.1-SNAPSHOT
  */
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/files")
 @RequiredArgsConstructor
@@ -78,10 +80,11 @@ public class CloudFileController {
             description = "Returns the URL of a stored file"
     )
     @GetMapping("/{fileName}")
-    public ResponseEntity<URI> download(
-            @NotBlank(message = "File name cannot be blank") @PathVariable String fileName,
+    public ResponseEntity<URI> get(
+            @NotBlank(message = "File name cannot be blank") @PathVariable("fileName") String fileName,
             @RequestParam(required = false, defaultValue = "PUBLIC") AccessType access
     ) {
+        log.info("Hitting the get file controller");
         return ResponseEntity.ok(
                 URI.create(
                         cloudFileService.getUrl(fileName, access)

@@ -50,6 +50,7 @@ public class CloudFileServiceImpl implements CloudFileService {
         try {
             return cloudClient.upload(file.getInputStream(), metaData);
         } catch (IOException e) {
+            log.info("Unable to read file: {}", e.getMessage(), e);
             throw new FileUploadException("Unable To Read File", MetricsType.BAD_REQUEST, e);
         }
     }
