@@ -30,5 +30,8 @@ public class CacheExpressions {
      */
     public static final String CLOUD_GET_URL = "(#accessType ?: T(io.github.yubrajsahoo.portfolioapi.enums.AccessType).PUBLIC) + '-' + #fileName";
 
+    /**
+     * SpEL expression for generating a cache key for retrieving all cloud files.
+     */
     public static final String ALL_CLOUD_FILES = "#accessType ?: T(io.github.yubrajsahoo.portfolioapi.enums.AccessType).PUBLIC";
 }

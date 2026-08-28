@@ -11,14 +11,14 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Unit tests for {@link FileUtils}.
  */
-@DisplayName("FileUtils Unit Test")
+@DisplayName("Unit: File Utilities")
 public class FileUtilsTest {
 
     /**
      * Tests extracting the JSON file extension.
      */
     @Test
-    @DisplayName("Test case for json file extension")
+    @DisplayName("Should Extract JSON Extension from Filename")
     void testGetFileExtension_Json() {
         String fileName = "a.json";
         assertEquals("json", getFileExtension(fileName));
@@ -28,7 +28,7 @@ public class FileUtilsTest {
      * Tests extracting the file extension when there is no extension.
      */
     @Test
-    @DisplayName("Test case for without file extension")
+    @DisplayName("Should Return Empty String When Filename Has No Extension")
     void testGetFileExtension_WithoutExtension() {
         String fileName = "logo";
         assertEquals("", getFileExtension(fileName));
@@ -38,7 +38,7 @@ public class FileUtilsTest {
      * Tests extracting the file extension with an empty string.
      */
     @Test
-    @DisplayName("Test case for empty file name")
+    @DisplayName("Should Return Empty String When Filename is Empty")
     void testGetFileExtension_Empty() {
         String fileName = "";
         assertEquals("", getFileExtension(fileName));
@@ -48,7 +48,7 @@ public class FileUtilsTest {
      * Tests extracting the file extension with a null value.
      */
     @Test
-    @DisplayName("Test case for null file name")
+    @DisplayName("Should Return Empty String When Filename is Null")
     void testGetFileExtension_Null() {
         assertEquals("", getFileExtension(null));
     }
@@ -57,7 +57,7 @@ public class FileUtilsTest {
      * Tests removing a valid file extension.
      */
     @Test
-    @DisplayName("Test case to remove extension from file name")
+    @DisplayName("Should Remove Extension from Valid Filename")
     void testRemoveFileExtension_Valid() {
         String fileName = "logo.png";
         assertEquals("logo", removeFileExtension(fileName));
@@ -67,7 +67,7 @@ public class FileUtilsTest {
      * Tests removing the file extension from an empty string.
      */
     @Test
-    @DisplayName("Test case to remove extension from file name with empty file name")
+    @DisplayName("Should Handle Empty Filename Gracefully")
     void testRemoveFileExtension_Empty() {
         String empty = "";
         assertEquals("", removeFileExtension(empty));
@@ -77,7 +77,7 @@ public class FileUtilsTest {
      * Tests removing the file extension from a null value.
      */
     @Test
-    @DisplayName("Test case to remove extension from file name with null file name")
+    @DisplayName("Should Return Null When Input is Null")
     void testRemoveExtension_Null() {
         assertNull(removeFileExtension(null));
     }
@@ -86,7 +86,7 @@ public class FileUtilsTest {
      * Tests removing the file extension when there is no extension.
      */
     @Test
-    @DisplayName("Test case for remove file extension without extension")
+    @DisplayName("Should Return Original Filename if No Extension Present")
     void testRemoveExtension_WithoutExtension() {
         String logo = "logo";
         assertEquals("logo", removeFileExtension(logo));
@@ -96,7 +96,7 @@ public class FileUtilsTest {
      * Tests sanitizing various file names.
      */
     @Test
-    @DisplayName("Test case for sanitize file name")
+    @DisplayName("Should Sanitize File Names by Removing Unsafe Patterns")
     void testSanitizeFileName() {
         assertEquals("path/to/file.txt", FileUtils.sanitizeFileName("  path/to/file.txt  "));
         assertEquals("path/to/file.txt", FileUtils.sanitizeFileName("path\\to\\file.txt"));

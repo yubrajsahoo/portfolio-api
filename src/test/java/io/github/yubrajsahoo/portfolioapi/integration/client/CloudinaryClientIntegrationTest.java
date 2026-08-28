@@ -30,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  */
 @Slf4j
 @SpringBootTest
+@DisplayName("Integration: Cloudinary Client Operations")
 public class CloudinaryClientIntegrationTest {
 
     @Autowired
@@ -39,7 +40,7 @@ public class CloudinaryClientIntegrationTest {
      * Tests uploading a public file to Cloudinary.
      */
     @Test
-    @DisplayName("Test upload file in public")
+    @DisplayName("Should Successfully Upload Public File to Cloudinary")
     @Disabled("Due to storing data in Cloudinary")
     void testUpload_Public() {
         InputStream inputStream = DataBuilderUtils.readFile("src/test/resources/images/logo.png");
@@ -57,7 +58,7 @@ public class CloudinaryClientIntegrationTest {
      * Tests uploading an empty file to Cloudinary and expects a CloudinaryException.
      */
     @Test
-    @DisplayName("Test upload empty-file in public")
+    @DisplayName("Should Reject Empty Public File Upload")
     @Disabled("Due to storing data in Cloudinary")
     void testUpload_Public_Empty() {
         InputStream inputStream = DataBuilderUtils.readFile("src/test/resources/images/empty-file.png");
@@ -73,7 +74,7 @@ public class CloudinaryClientIntegrationTest {
      * Tests uploading a private file to Cloudinary.
      */
     @Test
-    @DisplayName("Test upload file in private")
+    @DisplayName("Should Successfully Upload Private File to Cloudinary")
     @Disabled("Due to storing data in Cloudinary")
     void testUpload_Private() {
         InputStream inputStream = DataBuilderUtils.readFile("src/test/resources/pdf/Yubraj-Resume.pdf");
@@ -91,7 +92,7 @@ public class CloudinaryClientIntegrationTest {
      * Tests generating a download URL for a public file in Cloudinary.
      */
     @Test
-    @DisplayName("Test to generate download url for public")
+    @DisplayName("Should Generate Valid Download URL for Public File")
     void testGetUrl_Public() {
         FileMetaData metaData = DataBuilderUtils.readFromJson(
                 "src/test/resources/json/file-meta-data-public-png-logo.json",
@@ -107,7 +108,7 @@ public class CloudinaryClientIntegrationTest {
      * Tests generating a download URL for a private file in Cloudinary.
      */
     @Test
-    @DisplayName("Test to generate download url for private")
+    @DisplayName("Should Generate Valid Download URL for Private File")
     @Disabled("Due to hitting Cloudinary")
     void testGetUrl_Private() {
         FileMetaData metaData = DataBuilderUtils.readFromJson(
@@ -124,7 +125,7 @@ public class CloudinaryClientIntegrationTest {
      * Tests deleting a public file from Cloudinary.
      */
     @Test
-    @DisplayName("Test to delete public file")
+    @DisplayName("Should Delete Public File Successfully")
     @Disabled("Due to hitting Cloudinary")
     void testDelete_Public() {
         FileMetaData metaData = DataBuilderUtils.readFromJson(
@@ -139,7 +140,7 @@ public class CloudinaryClientIntegrationTest {
      * Tests deleting a private file from Cloudinary.
      */
     @Test
-    @DisplayName("Test to delete private file")
+    @DisplayName("Should Delete Private File Successfully")
     @Disabled("Due to hitting Cloudinary")
     void testDelete_Private() {
         FileMetaData metaData = DataBuilderUtils.readFromJson(
@@ -154,7 +155,7 @@ public class CloudinaryClientIntegrationTest {
      * Tests fetching all file names from Cloudinary.
      */
     @Test
-    @DisplayName("Test to get all file names")
+    @DisplayName("Should Retrieve All Public File Names from Cloudinary")
     void testGetAllFileNames() {
         java.util.List<String> fileNames = cloudinaryClient.getAllUrls(AccessType.PUBLIC);
         log.info("Total file names fetched: {}", fileNames.size());
@@ -166,7 +167,7 @@ public class CloudinaryClientIntegrationTest {
      * Tests fetching all file names from Private.
      */
     @Test
-    @DisplayName("Test to get all private file names")
+    @DisplayName("Should Retrieve All Private File Names from Cloudinary")
     void testGetAllFileNames_Private() {
         java.util.List<String> fileNames = cloudinaryClient.getAllUrls(AccessType.PRIVATE);
         log.info("Total private file names fetched: {}", fileNames.size());

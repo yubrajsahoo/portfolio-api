@@ -6,11 +6,10 @@
 
 package io.github.yubrajsahoo.portfolioapi.unit.client;
 
-import io.github.yubrajsahoo.portfolioapi.domain.FileMetaData;
-
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Uploader;
 import io.github.yubrajsahoo.portfolioapi.client.impl.CloudinaryClient;
+import io.github.yubrajsahoo.portfolioapi.domain.FileMetaData;
 import io.github.yubrajsahoo.portfolioapi.exception.CloudinaryException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,7 +37,7 @@ import static org.mockito.Mockito.*;
                 "cloudinary.api-secret=test-secret"
         }
 )
-@DisplayName("CloudinaryClient Unit Test Suite")
+@DisplayName("Unit: Cloudinary Client Operations")
 class CloudinaryClientUnitTest {
 
     @MockitoBean
@@ -142,7 +141,7 @@ class CloudinaryClientUnitTest {
     }
 
     @Test
-    @DisplayName("upload - generic Exception from uploader - wraps and throws CloudinaryException")
+    @DisplayName("Should Wrap Generic Error into CloudinaryException During Upload")
     void upload_genericException_throwsCloudinaryException() throws Exception {
         // Arrange
         InputStream inputStream = new ByteArrayInputStream("test content".getBytes());
@@ -165,7 +164,7 @@ class CloudinaryClientUnitTest {
     }
 
     @Test
-    @DisplayName("getUrl - valid parameters - successfully generates signed private URL")
+    @DisplayName("Should Generate Signed URL For Private Files")
     void getUrl_validParams_returnsSignedUrl() throws Exception {
         // Arrange
         String fileId = "test-file";
@@ -184,7 +183,7 @@ class CloudinaryClientUnitTest {
     }
 
     @Test
-    @DisplayName("getUrl - public parameters - successfully generates public secure URL")
+    @DisplayName("Should Generate Secure URL For Public Files")
     void getUrl_publicParams_returnsSecureUrl() {
         // Arrange
         String fileId = "test-file";
@@ -218,10 +217,9 @@ class CloudinaryClientUnitTest {
     }
 
     @Test
-    @DisplayName("delete - valid fileId - successfully invokes destroy")
+    @DisplayName("Should Successfully Delete Public File from Cloudinary")
     void delete_validFileId_invokesUploaderDestroy() throws Exception {
         // Arrange
-        String fileId = "test-file.png";
         Uploader mockUploader = mock(Uploader.class);
         when(cloudinary.uploader()).thenReturn(mockUploader);
         when(mockUploader.destroy(anyString(), any(Map.class))).thenReturn(Map.of("result", "ok"));
@@ -236,7 +234,7 @@ class CloudinaryClientUnitTest {
     }
 
     @Test
-    @DisplayName("delete - null fileId - throws CloudinaryException")
+    @DisplayName("Should Throw Exception When Deleting File with Null ID")
     void delete_nullFileId_throwsCloudinaryException() {
         // Act & Assert
         CloudinaryException exception = assertThrows(
@@ -248,7 +246,7 @@ class CloudinaryClientUnitTest {
     }
 
     @Test
-    @DisplayName("delete - CloudinaryException from uploader - propagates Exception")
+    @DisplayName("Should Propagate Cloudinary Error During File Deletion")
     void delete_cloudinaryException_propagatesException() throws Exception {
         // Arrange
         String fileId = "test-file.png";
@@ -267,7 +265,7 @@ class CloudinaryClientUnitTest {
     }
 
     @Test
-    @DisplayName("delete - generic Exception from uploader - wraps and throws CloudinaryException")
+    @DisplayName("Should Wrap Generic Error into CloudinaryException During Deletion")
     void delete_genericException_throwsCloudinaryException() throws Exception {
         // Arrange
         String fileId = "test-file.png";
@@ -287,10 +285,9 @@ class CloudinaryClientUnitTest {
     }
 
     @Test
-    @DisplayName("delete private - valid fileId - successfully invokes destroy")
+    @DisplayName("Should Successfully Delete Private File from Cloudinary")
     void deletePrivate_validFileId_invokesUploaderDestroy() throws Exception {
         // Arrange
-        String fileId = "test-document.pdf";
         Uploader mockUploader = mock(Uploader.class);
         when(cloudinary.uploader()).thenReturn(mockUploader);
         when(mockUploader.destroy(anyString(), any(Map.class))).thenReturn(Map.of("result", "ok"));
