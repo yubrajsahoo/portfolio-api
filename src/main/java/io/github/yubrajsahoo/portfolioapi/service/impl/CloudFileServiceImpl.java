@@ -10,6 +10,7 @@ import io.github.yubrajsahoo.portfolioapi.cache.constants.CacheExpressions;
 import io.github.yubrajsahoo.portfolioapi.cache.constants.CacheNames;
 import io.github.yubrajsahoo.portfolioapi.client.CloudClient;
 import io.github.yubrajsahoo.portfolioapi.domain.FileMetaData;
+import io.github.yubrajsahoo.portfolioapi.dto.CloudFileDto;
 import io.github.yubrajsahoo.portfolioapi.enums.AccessType;
 import io.github.yubrajsahoo.portfolioapi.exception.FileUploadException;
 import io.github.yubrajsahoo.portfolioapi.mapper.CustomMapper;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Service for managing files in a cloud storage system.
@@ -69,6 +71,7 @@ public class CloudFileServiceImpl implements CloudFileService {
             key = CacheExpressions.CLOUD_GET_URL
     )
     public String getUrl(String fileName, AccessType accessType) {
+        log.info("Fetching file url from service: {}", fileName);
         FileMetaData fileMetaData = customMapper.toFileMetaData(fileName, accessType);
         return cloudClient.getUrl(fileMetaData);
     }
@@ -83,5 +86,24 @@ public class CloudFileServiceImpl implements CloudFileService {
     public void delete(String fileName, AccessType accessType) {
         FileMetaData fileMetaData = customMapper.toFileMetaData(fileName, accessType);
         cloudClient.delete(fileMetaData);
+    }
+
+    /**
+     * Retrieves all file names for files uploaded for a specific access type.
+     *
+     * @param accessType the access type of the files
+     * @return a list of file data
+     */
+    @Override
+    @Cacheable(
+            cacheNames = CacheNames.ALL_CLOUD_FILES,
+            key = CacheExpressions.ALL_CLOUD_FILES
+    )
+    public java.util.List<CloudFileDto> getAllFileNames(AccessType accessType) {
+        log.info("Fetching all file names from service: {}", accessType);
+        return cloudClient.getAllUrls(accessType).stream()
+                .map(customMapper::toCloudFileDto)
+                .filter(cloudFileDto -> !Objects.isNull(cloudFileDto))
+                .toList();
     }
 }

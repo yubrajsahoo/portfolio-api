@@ -29,4 +29,6 @@ public class CacheExpressions {
      * </p>
      */
     public static final String CLOUD_GET_URL = "(#accessType ?: T(io.github.yubrajsahoo.portfolioapi.enums.AccessType).PUBLIC) + '-' + #fileName";
+
+    public static final String ALL_CLOUD_FILES = "#accessType ?: T(io.github.yubrajsahoo.portfolioapi.enums.AccessType).PUBLIC";
 }

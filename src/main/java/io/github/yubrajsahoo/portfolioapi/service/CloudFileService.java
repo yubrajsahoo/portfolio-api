@@ -6,8 +6,11 @@
 
 package io.github.yubrajsahoo.portfolioapi.service;
 
+import io.github.yubrajsahoo.portfolioapi.dto.CloudFileDto;
 import io.github.yubrajsahoo.portfolioapi.enums.AccessType;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * Service interface for managing files in a cloud storage system.
@@ -43,4 +46,12 @@ public interface CloudFileService {
      * @param accessType the access type of the file to delete
      */
     void delete(String fileName, AccessType accessType);
+
+    /**
+     * Retrieves all file names for files uploaded for a specific access type.
+     *
+     * @param accessType the access type of the files
+     * @return a list of file data
+     */
+    List<CloudFileDto> getAllFileNames(AccessType accessType);
 }

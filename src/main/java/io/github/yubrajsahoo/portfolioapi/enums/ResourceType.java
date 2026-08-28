@@ -65,4 +65,17 @@ public enum ResourceType {
                 .findFirst()
                 .orElse(ResourceType.RAW);
     }
+
+    /**
+     * Determines the {@link ResourceType} based on its Cloudinary name representation.
+     *
+     * @param cloudinaryName the resource type string returned by Cloudinary (e.g., "image", "video")
+     * @return the corresponding {@link ResourceType}, or {@link ResourceType#RAW} if no match is found
+     */
+    public static ResourceType fromCloudinary(String cloudinaryName) {
+        return Arrays.stream(ResourceType.values())
+                .filter(resourceType -> resourceType.cloudinary.equalsIgnoreCase(cloudinaryName))
+                .findFirst()
+                .orElse(ResourceType.RAW);
+    }
 }

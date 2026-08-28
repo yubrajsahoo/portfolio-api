@@ -9,6 +9,7 @@ package io.github.yubrajsahoo.portfolioapi.client;
 import io.github.yubrajsahoo.portfolioapi.domain.FileMetaData;
 
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * Client abstraction for file storage operations.
@@ -44,4 +45,13 @@ public interface CloudClient {
      * @throws RuntimeException if an error occurs during deletion
      */
     void delete(FileMetaData metaData);
+
+    /**
+     * Retrieves all file names for files uploaded for a specific access type.
+     *
+     * @param accessType the access type of the files
+     * @return a list of file names
+     * @throws RuntimeException if an error occurs while fetching file names
+     */
+    List<String> getAllUrls(io.github.yubrajsahoo.portfolioapi.enums.AccessType accessType);
 }

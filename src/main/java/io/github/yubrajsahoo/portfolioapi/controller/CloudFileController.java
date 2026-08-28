@@ -6,6 +6,7 @@
 
 package io.github.yubrajsahoo.portfolioapi.controller;
 
+import io.github.yubrajsahoo.portfolioapi.dto.CloudFileDto;
 import io.github.yubrajsahoo.portfolioapi.enums.AccessType;
 import io.github.yubrajsahoo.portfolioapi.service.CloudFileService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
+import java.util.List;
 
 /**
  * REST controller for managing cloud files.
@@ -84,7 +86,6 @@ public class CloudFileController {
             @NotBlank(message = "File name cannot be blank") @PathVariable("fileName") String fileName,
             @RequestParam(required = false, defaultValue = "PUBLIC") AccessType access
     ) {
-        log.info("Hitting the get file controller");
         return ResponseEntity.ok(
                 URI.create(
                         cloudFileService.getUrl(fileName, access)
@@ -109,5 +110,21 @@ public class CloudFileController {
             @RequestParam(required = false, defaultValue = "PUBLIC") AccessType access
     ) {
         cloudFileService.delete(fileName, access);
+    }
+
+    /**
+     * Retrieves all file names for files uploaded.
+     *
+     * @return a {@link ResponseEntity} containing a list of file details
+     */
+    @Operation(
+            summary = "Get all file names",
+            description = "Returns a list of all file names for files uploaded in the portfolio folder"
+    )
+    @GetMapping
+    public ResponseEntity<List<CloudFileDto>> getAllFileNames(
+            @RequestParam(required = false, defaultValue = "PUBLIC") AccessType access
+    ) {
+        return ResponseEntity.ok(cloudFileService.getAllFileNames(access));
     }
 }

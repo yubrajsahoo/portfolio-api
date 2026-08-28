@@ -32,6 +32,11 @@ public class CloudinaryConstants {
     public static final String RESOURCE_TYPE = "resource_type";
 
     /**
+     * Cloudinary resources response field.
+     */
+    public static final String RESOURCES = "resources";
+
+    /**
      * Cloudinary delivery type parameter.
      */
     public static final String TYPE = "type";
@@ -50,4 +55,24 @@ public class CloudinaryConstants {
      * Cloudinary expires_at parameter.
      */
     public static final String EXPIRES_AT = "expires_at";
+
+    /**
+     * Format string for generating a public ID using folder and file name.
+     */
+    public static final String PUBLIC_ID_FORMAT = "%s/%s";
+
+    /**
+     * Cloudinary prefix parameter used for filtering resources.
+     */
+    public static final String PREFIX = "prefix";
+
+    /**
+     * Cloudinary max_results parameter.
+     */
+    public static final String MAX_RESULT = "max_results";
+
+    /**
+     * Regular expression used to parse and extract components from a Cloudinary URL.
+     */
+    public static final String REGEX_CLOUDINARY_ULR = "([^/]+)/([^/]+)/([^/]+)/([^/]+)$";
 }

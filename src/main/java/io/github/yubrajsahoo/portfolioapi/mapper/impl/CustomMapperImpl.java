@@ -6,12 +6,18 @@
 
 package io.github.yubrajsahoo.portfolioapi.mapper.impl;
 
+import io.github.yubrajsahoo.portfolioapi.contants.CloudinaryConstants;
 import io.github.yubrajsahoo.portfolioapi.domain.FileMetaData;
+import io.github.yubrajsahoo.portfolioapi.dto.CloudFileDto;
 import io.github.yubrajsahoo.portfolioapi.enums.AccessType;
 import io.github.yubrajsahoo.portfolioapi.enums.ResourceType;
 import io.github.yubrajsahoo.portfolioapi.mapper.CustomMapper;
 import io.github.yubrajsahoo.portfolioapi.utils.FileUtils;
 import org.springframework.stereotype.Service;
+
+import java.net.URI;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Implementation of the {@link CustomMapper} interface.
@@ -54,5 +60,28 @@ public class CustomMapperImpl implements CustomMapper {
                 .accessType(accessType)
                 .resourceType(resourceType)
                 .build();
+    }
+
+    /**
+     * Converts a URL string to a {@link CloudFileDto} object.
+     *
+     * @param url the URL string of the cloud file
+     * @return the corresponding {@link CloudFileDto} object containing the file URL
+     */
+    @Override
+    public CloudFileDto toCloudFileDto(String url) {
+        Pattern pattern = Pattern.compile(CloudinaryConstants.REGEX_CLOUDINARY_ULR);
+        Matcher matcher = pattern.matcher(url);
+
+        if (matcher.find()) {
+            return CloudFileDto.builder()
+                    .fileName(matcher.group(4))
+                    .type(ResourceType.fromCloudinary(matcher.group(3)))
+                    .access(AccessType.fromCloudinary(matcher.group((2))))
+                    .project(matcher.group(1))
+                    .url(URI.create(url))
+                    .build();
+        }
+        return null;
     }
 }

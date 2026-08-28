@@ -9,6 +9,8 @@ package io.github.yubrajsahoo.portfolioapi.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Arrays;
+
 /**
  * Represents Cloudinary delivery types.
  *
@@ -32,4 +34,17 @@ public enum AccessType {
      * Cloudinary access type value
      */
     private final String cloudinary;
+
+    /**
+     * Determines the {@link AccessType} based on its Cloudinary name representation.
+     *
+     * @param cloudinaryName the access type string returned by Cloudinary (e.g., "upload", "authenticated")
+     * @return the corresponding {@link AccessType}, or {@link AccessType#PUBLIC} if no match is found
+     */
+    public static AccessType fromCloudinary(String cloudinaryName) {
+        return Arrays.stream(AccessType.values())
+                .filter(accessType -> accessType.cloudinary.equalsIgnoreCase(cloudinaryName))
+                .findFirst()
+                .orElse(PUBLIC);
+    }
 }

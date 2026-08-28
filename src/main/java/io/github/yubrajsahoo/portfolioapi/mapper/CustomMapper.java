@@ -7,6 +7,7 @@
 package io.github.yubrajsahoo.portfolioapi.mapper;
 
 import io.github.yubrajsahoo.portfolioapi.domain.FileMetaData;
+import io.github.yubrajsahoo.portfolioapi.dto.CloudFileDto;
 import io.github.yubrajsahoo.portfolioapi.enums.AccessType;
 
 /**
@@ -25,4 +26,12 @@ public interface CustomMapper {
      * @return the corresponding {@link FileMetaData} domain model
      */
     FileMetaData toFileMetaData(String fileName, AccessType accessType);
+
+    /**
+     * Converts a URL string to a {@link CloudFileDto} object.
+     *
+     * @param url the URL string of the cloud file
+     * @return the corresponding {@link CloudFileDto} object containing the file URL
+     */
+    CloudFileDto toCloudFileDto(String url);
 }

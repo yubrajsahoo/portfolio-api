@@ -8,6 +8,7 @@ package io.github.yubrajsahoo.portfolioapi.integration.client;
 
 import io.github.yubrajsahoo.portfolioapi.client.impl.CloudinaryClient;
 import io.github.yubrajsahoo.portfolioapi.domain.FileMetaData;
+import io.github.yubrajsahoo.portfolioapi.enums.AccessType;
 import io.github.yubrajsahoo.portfolioapi.exception.CloudinaryException;
 import io.github.yubrajsahoo.portfolioapi.helper.DataBuilderUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -147,5 +148,29 @@ public class CloudinaryClientIntegrationTest {
         );
 
         cloudinaryClient.delete(metaData);
+    }
+
+    /**
+     * Tests fetching all file names from Cloudinary.
+     */
+    @Test
+    @DisplayName("Test to get all file names")
+    void testGetAllFileNames() {
+        java.util.List<String> fileNames = cloudinaryClient.getAllUrls(AccessType.PUBLIC);
+        log.info("Total file names fetched: {}", fileNames.size());
+        fileNames.forEach(name -> log.info("File name: {}", name));
+        assertNotNull(fileNames);
+    }
+
+    /**
+     * Tests fetching all file names from Private.
+     */
+    @Test
+    @DisplayName("Test to get all private file names")
+    void testGetAllFileNames_Private() {
+        java.util.List<String> fileNames = cloudinaryClient.getAllUrls(AccessType.PRIVATE);
+        log.info("Total private file names fetched: {}", fileNames.size());
+        fileNames.forEach(name -> log.info("Private File name: {}", name));
+        assertNotNull(fileNames);
     }
 }

@@ -10,7 +10,9 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import io.github.yubrajsahoo.portfolioapi.client.CloudClient;
 import io.github.yubrajsahoo.portfolioapi.config.CloudinaryProperties;
+import io.github.yubrajsahoo.portfolioapi.contants.CloudinaryConstants;
 import io.github.yubrajsahoo.portfolioapi.domain.FileMetaData;
+import io.github.yubrajsahoo.portfolioapi.enums.AccessType;
 import io.github.yubrajsahoo.portfolioapi.exception.CloudinaryException;
 import io.github.yubrajsahoo.portfolioapi.exception.FileUploadException;
 import io.github.yubrajsahoo.portfolioapi.metrics.MetricsType;
@@ -20,7 +22,10 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static io.github.yubrajsahoo.portfolioapi.contants.CloudinaryConstants.*;
 
@@ -151,6 +156,51 @@ public class CloudinaryClient implements CloudClient {
         }
     }
 
+
+    /**
+     * Retrieves all file URLs stored in the portfolio folder for a given access type.
+     *
+     * @param accessType the access type of the files to retrieve (e.g., PUBLIC, PRIVATE)
+     * @return a list of file URLs
+     * @throws CloudinaryException if an error occurs while fetching files from Cloudinary
+     */
+    public List<String> getAllUrls(AccessType accessType) {
+        List<String> fileUrls = new ArrayList<>();
+
+        Map<?, ?> result;
+        try {
+            result = cloudinary.api()
+                    .resources(ObjectUtils.asMap(
+                            TYPE, accessType.getCloudinary(),
+                            PREFIX, PORTFOLIO_FOLDER + "/",
+                            MAX_RESULT, 500
+                    ));
+        } catch (Exception exception) {
+            throw new CloudinaryException("Unable to fetch all files from Cloudinary",
+                    MetricsType.EXTERNAL_ERROR, exception);
+        }
+        if (Objects.isNull(result) || !result.containsKey(RESOURCES)) {
+            throw new CloudinaryException("Not getting files from Cloudinary",
+                    MetricsType.EXTERNAL_ERROR);
+        }
+
+        @SuppressWarnings("unchecked") List<Map<?, ?>> resources = (List<Map<?, ?>>) result.get(RESOURCES);
+
+        for (Map<?, ?> res : resources) {
+            String url = null;
+            if (res.get(SECURE_URL) != null) {
+                url = res.get(SECURE_URL).toString();
+            } else if (res.get("url") != null) {
+                url = res.get("url").toString();
+            }
+
+            if (url != null) {
+                fileUrls.add(url);
+            }
+        }
+        return fileUrls;
+    }
+
     /**
      * Helper method to build the Cloudinary public ID for a given file.
      *
@@ -159,7 +209,7 @@ public class CloudinaryClient implements CloudClient {
      */
     private String buildPublicId(FileMetaData metaData) {
         return String.format(
-                "%s/%s",
+                CloudinaryConstants.PUBLIC_ID_FORMAT,
                 metaData.getFolder(), metaData.getFileName()
         );
     }

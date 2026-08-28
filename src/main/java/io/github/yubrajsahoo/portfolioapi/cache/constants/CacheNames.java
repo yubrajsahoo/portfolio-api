@@ -27,4 +27,9 @@ public class CacheNames {
      */
     public static final String CLOUD_FILE_URL = "cloud-file-urls";
 
+    /**
+     * Cache name for storing and retrieving the complete list of all cloud files.
+     */
+    public static final String ALL_CLOUD_FILES = "all-cloud-files";
+
 }
