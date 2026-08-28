@@ -48,7 +48,7 @@ public class FileUtils {
     public static String getFileExtension(String fileName) {
         if (StringUtils.hasText(fileName)) {
             int dotIdx = fileName.lastIndexOf('.');
-            if (dotIdx != -1 && dotIdx < fileName.length() - 1) {
+            if (dotIdx != -1) {
                 return fileName.substring(dotIdx + 1).toLowerCase();
             }
         }
@@ -94,12 +94,15 @@ public class FileUtils {
                 "File path must not be null or blank"
         );
 
-        String sanitized = fielName.trim()
-                .replace('\\', '/')
-                .replaceAll("/+", "/")
-                .replaceAll("\\.{2,}/", "")
-                .replaceAll("^/+", "")
-                .replaceAll("/+$", "");
+        String sanitized = fielName.trim().replace('\\', '/');
+        sanitized = sanitized.replaceAll("/+", "/");
+        sanitized = sanitized.replace("../", "");
+        if (sanitized.startsWith("/")) {
+            sanitized = sanitized.substring(1);
+        }
+        if (sanitized.endsWith("/")) {
+            sanitized = sanitized.substring(0, sanitized.length() - 1);
+        }
 
         // Avoid duplicate root folder prefix (e.g., "portfolio/avatar.png" -> "avatar.png")
         String rootPrefix = CloudinaryConstants.PORTFOLIO_FOLDER + "/";

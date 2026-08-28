@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 @SpringBootTest
 @DisplayName("Integration: Cloud File Controller Endpoints")
-public class CloudFileControllerIntegrationTest {
+class CloudFileControllerIntegrationTest {
 
     @Autowired
     private WebApplicationContext context;

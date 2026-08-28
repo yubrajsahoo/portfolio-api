@@ -31,11 +31,23 @@
         <com.cloudinary.http5.version>2.0.0</com.cloudinary.http5.version>
         <com.fasterxml.jackson.core.version>2.17.2</com.fasterxml.jackson.core.version>
         <me.paulschwarz.dotenv.version>5.1.0</me.paulschwarz.dotenv.version>
+
+        <!--    Quality  check properties    -->
         <sonar.maven.plugin.version>4.0.0.4121</sonar.maven.plugin.version>
-        <jacoco.maven.plugin.version>0.8.12</jacoco.maven.plugin.version>
-        <pitest.maven.version>1.17.0</pitest.maven.version>
-        <pitest.junit5.plugin.version>1.2.1</pitest.junit5.plugin.version>
+        <jacoco.maven.plugin.version>0.8.13</jacoco.maven.plugin.version>
+        <pitest.maven.version>1.25.9</pitest.maven.version>
+        <pitest.junit5.plugin.version>1.2.3</pitest.junit5.plugin.version>
         <sonar.qualitygate.wait>true</sonar.qualitygate.wait>
+
+        <!-- SonarCloud Properties -->
+        <!-- SonarCloud Properties mapped from .env -->
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.organization>${SONAR_ORG}</sonar.organization>
+        <sonar.projectKey>${SONAR_PROJECT_KEY}</sonar.projectKey>
+        <sonar.token>${SONAR_TOKEN}</sonar.token>
+
+        <!-- Disable testCompileSourceRoots warning -->
+        <maven.project.sourceRoots.warningsDisabled>true</maven.project.sourceRoots.warningsDisabled>
     </properties>
     <dependencies>
         <dependency>
@@ -126,6 +138,24 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <files>
+                                <file>${basedir}/.env</file>
+                            </files>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
@@ -178,6 +208,14 @@
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>${sonar.maven.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sonar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -223,6 +261,15 @@
                 <groupId>org.pitest</groupId>
                 <artifactId>pitest-maven</artifactId>
                 <version>${pitest.maven.version}</version>
+                <executions>
+                    <execution>
+                        <id>pitest</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>mutationCoverage</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <dependencies>
                     <dependency>
                         <groupId>org.pitest</groupId>

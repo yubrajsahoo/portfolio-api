@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Slf4j
 @SpringBootTest
 @DisplayName("Integration: Cloudinary Client Operations")
-public class CloudinaryClientIntegrationTest {
+class CloudinaryClientIntegrationTest {
 
     @Autowired
     private CloudinaryClient cloudinaryClient;
@@ -133,7 +133,7 @@ public class CloudinaryClientIntegrationTest {
                 FileMetaData.class
         );
 
-        cloudinaryClient.delete(metaData);
+        org.junit.jupiter.api.Assertions.assertDoesNotThrow(() -> cloudinaryClient.delete(metaData));
     }
 
     /**
@@ -148,7 +148,7 @@ public class CloudinaryClientIntegrationTest {
                 FileMetaData.class
         );
 
-        cloudinaryClient.delete(metaData);
+        org.junit.jupiter.api.Assertions.assertDoesNotThrow(() -> cloudinaryClient.delete(metaData));
     }
 
     /**

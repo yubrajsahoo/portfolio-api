@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @DisplayName("Unit: Custom Mapper Transformations")
@@ -57,6 +58,12 @@ class CustomMapperImplTest {
     }
 
     @Test
+    @DisplayName("Should Throw Exception for Invalid File Name")
+    void toFileMetaData_InvalidFileName() {
+        assertThrows(IllegalArgumentException.class, () -> customMapper.toFileMetaData("test", AccessType.PUBLIC));
+    }
+
+    @Test
     @DisplayName("Should Map Cloudinary URL to CloudFileDto Successfully")
     void toCloudFileDto_Public() {
         String mockUrl = "https://res.cloudinary.com/demo/image/upload/v1/portfolio/public/image/logo.png";
@@ -66,5 +73,13 @@ class CustomMapperImplTest {
         assertEquals("logo.png", result.getFileName());
         assertEquals(AccessType.PUBLIC, result.getAccess());
         assertEquals("portfolio", result.getProject());
+    }
+    
+    @Test
+    @DisplayName("Should Return Null for Invalid Cloudinary URL")
+    void toCloudFileDto_InvalidUrl() {
+        String mockUrl = "invalid_url_with_no_slashes";
+        CloudFileDto result = customMapper.toCloudFileDto(mockUrl);
+        org.junit.jupiter.api.Assertions.assertNull(result);
     }
 }

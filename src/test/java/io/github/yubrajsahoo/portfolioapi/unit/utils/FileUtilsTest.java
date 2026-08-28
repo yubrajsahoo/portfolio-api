@@ -6,17 +6,15 @@ import org.junit.jupiter.api.Test;
 
 import static io.github.yubrajsahoo.portfolioapi.utils.FileUtils.getFileExtension;
 import static io.github.yubrajsahoo.portfolioapi.utils.FileUtils.removeFileExtension;
+import static io.github.yubrajsahoo.portfolioapi.utils.FileUtils.assertFileName;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit tests for {@link FileUtils}.
  */
 @DisplayName("Unit: File Utilities")
-public class FileUtilsTest {
+class FileUtilsTest {
 
-    /**
-     * Tests extracting the JSON file extension.
-     */
     @Test
     @DisplayName("Should Extract JSON Extension from Filename")
     void testGetFileExtension_Json() {
@@ -24,9 +22,12 @@ public class FileUtilsTest {
         assertEquals("json", getFileExtension(fileName));
     }
 
-    /**
-     * Tests extracting the file extension when there is no extension.
-     */
+    @Test
+    @DisplayName("Should Handle Dot At End")
+    void testGetFileExtension_DotAtEnd() {
+        assertEquals("", getFileExtension("a."));
+    }
+
     @Test
     @DisplayName("Should Return Empty String When Filename Has No Extension")
     void testGetFileExtension_WithoutExtension() {
@@ -34,9 +35,6 @@ public class FileUtilsTest {
         assertEquals("", getFileExtension(fileName));
     }
 
-    /**
-     * Tests extracting the file extension with an empty string.
-     */
     @Test
     @DisplayName("Should Return Empty String When Filename is Empty")
     void testGetFileExtension_Empty() {
@@ -44,18 +42,12 @@ public class FileUtilsTest {
         assertEquals("", getFileExtension(fileName));
     }
 
-    /**
-     * Tests extracting the file extension with a null value.
-     */
     @Test
     @DisplayName("Should Return Empty String When Filename is Null")
     void testGetFileExtension_Null() {
         assertEquals("", getFileExtension(null));
     }
 
-    /**
-     * Tests removing a valid file extension.
-     */
     @Test
     @DisplayName("Should Remove Extension from Valid Filename")
     void testRemoveFileExtension_Valid() {
@@ -63,9 +55,12 @@ public class FileUtilsTest {
         assertEquals("logo", removeFileExtension(fileName));
     }
 
-    /**
-     * Tests removing the file extension from an empty string.
-     */
+    @Test
+    @DisplayName("Should Handle Dot At Start")
+    void testRemoveFileExtension_DotAtStart() {
+        assertEquals(".hidden", removeFileExtension(".hidden"));
+    }
+
     @Test
     @DisplayName("Should Handle Empty Filename Gracefully")
     void testRemoveFileExtension_Empty() {
@@ -73,18 +68,12 @@ public class FileUtilsTest {
         assertEquals("", removeFileExtension(empty));
     }
 
-    /**
-     * Tests removing the file extension from a null value.
-     */
     @Test
     @DisplayName("Should Return Null When Input is Null")
     void testRemoveExtension_Null() {
         assertNull(removeFileExtension(null));
     }
 
-    /**
-     * Tests removing the file extension when there is no extension.
-     */
     @Test
     @DisplayName("Should Return Original Filename if No Extension Present")
     void testRemoveExtension_WithoutExtension() {
@@ -92,9 +81,6 @@ public class FileUtilsTest {
         assertEquals("logo", removeFileExtension(logo));
     }
 
-    /**
-     * Tests sanitizing various file names.
-     */
     @Test
     @DisplayName("Should Sanitize File Names by Removing Unsafe Patterns")
     void testSanitizeFileName() {
@@ -111,5 +97,25 @@ public class FileUtilsTest {
         assertThrows(IllegalArgumentException.class, () -> FileUtils.sanitizeFileName(""));
         assertThrows(IllegalArgumentException.class, () -> FileUtils.sanitizeFileName("  "));
         assertThrows(IllegalArgumentException.class, () -> FileUtils.sanitizeFileName("../"));
+    }
+
+    @Test
+    @DisplayName("Should Assert File Name Successfully")
+    void testAssertFileName_Valid() {
+        assertDoesNotThrow(() -> assertFileName("test.txt"));
+        assertDoesNotThrow(() -> assertFileName(".hidden"));
+    }
+
+    @Test
+    @DisplayName("Should Throw Exception When Extension is Missing")
+    void testAssertFileName_MissingExtension() {
+        assertThrows(IllegalArgumentException.class, () -> assertFileName("test"));
+        assertThrows(IllegalArgumentException.class, () -> assertFileName("test."));
+    }
+
+    @Test
+    @DisplayName("Should Throw Exception When File Name is Missing")
+    void testAssertFileName_MissingName() {
+        assertThrows(IllegalArgumentException.class, () -> assertFileName(" .ext"));
     }
 }

@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @Slf4j
 @SpringBootTest
 @DisplayName("Integration: Cloud File Service Operations")
-public class CloudFileServiceIntegrationTest {
+class CloudFileServiceIntegrationTest {
 
     @Autowired
     private CloudFileService cloudFileService;
@@ -91,7 +91,7 @@ public class CloudFileServiceIntegrationTest {
     @DisplayName("Should Delete Public File via Service (Integration)")
     @Disabled("Due to hitting Cloudinary")
     void testDelete_Public() {
-        cloudFileService.delete("logo.png", AccessType.PUBLIC);
+        org.junit.jupiter.api.Assertions.assertDoesNotThrow(() -> cloudFileService.delete("logo.png", AccessType.PUBLIC));
     }
 
     /**
@@ -101,7 +101,7 @@ public class CloudFileServiceIntegrationTest {
     @DisplayName("Should Delete Private File via Service (Integration)")
     @Disabled("Due to hitting Cloudinary")
     void testDelete_Private() {
-        cloudFileService.delete("Yubraj-Resume.pdf", AccessType.PRIVATE);
+        org.junit.jupiter.api.Assertions.assertDoesNotThrow(() -> cloudFileService.delete("Yubraj-Resume.pdf", AccessType.PRIVATE));
     }
 
     /**

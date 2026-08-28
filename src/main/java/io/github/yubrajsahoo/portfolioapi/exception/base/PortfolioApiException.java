@@ -24,7 +24,7 @@ public class PortfolioApiException extends RuntimeException {
     /**
      * The metric identifier associated with this exception.
      */
-    private MetricsType metricsType = MetricsType.ERROR;
+    private final MetricsType metricsType;
 
     /**
      * Constructs a new {@code PortfolioApiException} with the specified detail message
@@ -34,6 +34,7 @@ public class PortfolioApiException extends RuntimeException {
      */
     public PortfolioApiException(String message) {
         super(message);
+        this.metricsType = MetricsType.ERROR;
     }
 
     /**
@@ -56,6 +57,7 @@ public class PortfolioApiException extends RuntimeException {
      */
     public PortfolioApiException(String message, Throwable cause) {
         super(message, cause);
+        this.metricsType = MetricsType.ERROR;
     }
 
     /**

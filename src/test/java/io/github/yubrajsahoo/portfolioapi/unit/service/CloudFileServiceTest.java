@@ -77,10 +77,11 @@ class CloudFileServiceTest {
     }
 
     @Test
-    @DisplayName("Should Fetch and Map All File Names from Client")
+    @DisplayName("Should Fetch and Map All File Names from Client Filters Nulls")
     void getAllFileNames_Success() {
         String mockUrl = "https://res.cloudinary.com/demo/image/upload/portfolio-api/public/image/test.jpg";
-        when(cloudClient.getAllUrls(AccessType.PUBLIC)).thenReturn(List.of(mockUrl));
+        String invalidUrl = "https://invalid.com/image.jpg";
+        when(cloudClient.getAllUrls(AccessType.PUBLIC)).thenReturn(List.of(mockUrl, invalidUrl));
 
         List<CloudFileDto> result = cloudFileService.getAllFileNames(AccessType.PUBLIC);
 

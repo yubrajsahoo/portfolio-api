@@ -33,6 +33,8 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final String TIMESTAMP = "timestamp";
+
     /**
      * Handles {@link io.github.yubrajsahoo.portfolioapi.exception.CloudinaryException}.
      *
@@ -49,7 +51,7 @@ public class GlobalExceptionHandler {
         );
 
         problemDetail.setTitle("Service Not Available");
-        problemDetail.setProperty("timestamp", Instant.now());
+        problemDetail.setProperty(TIMESTAMP, Instant.now());
         return problemDetail;
     }
 
@@ -69,7 +71,7 @@ public class GlobalExceptionHandler {
         );
 
         problemDetail.setTitle("Unable To Upload File");
-        problemDetail.setProperty("timestamp", Instant.now());
+        problemDetail.setProperty(TIMESTAMP, Instant.now());
         return problemDetail;
     }
 
@@ -99,7 +101,7 @@ public class GlobalExceptionHandler {
         });
 
         problemDetail.setProperty("errors", errors);
-        problemDetail.setProperty("timestamp", Instant.now());
+        problemDetail.setProperty(TIMESTAMP, Instant.now());
         return problemDetail;
     }
 
@@ -119,7 +121,7 @@ public class GlobalExceptionHandler {
         );
 
         problemDetail.setTitle("Bad Request");
-        problemDetail.setProperty("timestamp", Instant.now());
+        problemDetail.setProperty(TIMESTAMP, Instant.now());
         return problemDetail;
     }
 
@@ -139,7 +141,7 @@ public class GlobalExceptionHandler {
         );
 
         problemDetail.setTitle("Invalid Endpoint");
-        problemDetail.setProperty("timestamp", Instant.now());
+        problemDetail.setProperty(TIMESTAMP, Instant.now());
         return problemDetail;
     }
 
@@ -159,7 +161,7 @@ public class GlobalExceptionHandler {
         );
 
         problemDetail.setTitle("Internal Server Error");
-        problemDetail.setProperty("timestamp", Instant.now());
+        problemDetail.setProperty(TIMESTAMP, Instant.now());
         return problemDetail;
     }
 }
