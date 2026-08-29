@@ -16,8 +16,10 @@ import io.github.yubrajsahoo.portfolioapi.enums.AccessType;
 import io.github.yubrajsahoo.portfolioapi.exception.CloudinaryException;
 import io.github.yubrajsahoo.portfolioapi.exception.FileUploadException;
 import io.github.yubrajsahoo.portfolioapi.metrics.MetricsType;
+import io.github.yubrajsahoo.portfolioapi.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -44,6 +46,9 @@ import static io.github.yubrajsahoo.portfolioapi.contants.CloudinaryConstants.*;
 public class CloudinaryClient implements CloudClient {
     private final Cloudinary cloudinary;
     private final CloudinaryProperties properties;
+
+    @Value("${cloudinary.application.name}")
+    private String application;
 
 
     /**
@@ -172,7 +177,7 @@ public class CloudinaryClient implements CloudClient {
             result = cloudinary.api()
                     .resources(ObjectUtils.asMap(
                             TYPE, accessType.getCloudinary(),
-                            PREFIX, PORTFOLIO_FOLDER + "/",
+                            PREFIX, application + "/",
                             MAX_RESULT, 500
                     ));
         } catch (Exception exception) {
@@ -210,7 +215,7 @@ public class CloudinaryClient implements CloudClient {
     private String buildPublicId(FileMetaData metaData) {
         return String.format(
                 CloudinaryConstants.PUBLIC_ID_FORMAT,
-                metaData.getFolder(), metaData.getFileName()
+                FileUtils.buildUploadFolder(application, metaData), metaData.getFileName()
         );
     }
 }

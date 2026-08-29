@@ -7,13 +7,10 @@
 package io.github.yubrajsahoo.portfolioapi.utils;
 
 import io.github.yubrajsahoo.portfolioapi.contants.CloudinaryConstants;
-import io.github.yubrajsahoo.portfolioapi.enums.AccessType;
-import io.github.yubrajsahoo.portfolioapi.enums.ResourceType;
+import io.github.yubrajsahoo.portfolioapi.domain.FileMetaData;
 import lombok.experimental.UtilityClass;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-
-import static io.github.yubrajsahoo.portfolioapi.contants.CloudinaryConstants.PORTFOLIO_FOLDER;
 
 /**
  * Utility class for generic file and JSON operations.
@@ -27,15 +24,14 @@ public class FileUtils {
     /**
      * Method to build upload folder for portfolio website
      *
-     * @param accessType   The access type for the file.
-     * @param resourceType The type of the resource (e.g., image, video).
-     * @return The public ID for the file.
+     * @param metaData The metadata associated with the file.
+     * @return The upload folder path for the file.
      */
-    public static String buildUploadFolder(AccessType accessType, ResourceType resourceType) {
+    public static String buildUploadFolder(String application, FileMetaData metaData) {
         return String.format("%s/%s/%s",
-                PORTFOLIO_FOLDER,
-                accessType.getCloudinary(),
-                resourceType.getCloudinary()
+                application,
+                metaData.getAccessType().getCloudinary(),
+                metaData.getResourceType().getCloudinary()
         );
     }
 
@@ -102,12 +98,6 @@ public class FileUtils {
         }
         if (sanitized.endsWith("/")) {
             sanitized = sanitized.substring(0, sanitized.length() - 1);
-        }
-
-        // Avoid duplicate root folder prefix (e.g., "portfolio/avatar.png" -> "avatar.png")
-        String rootPrefix = CloudinaryConstants.PORTFOLIO_FOLDER + "/";
-        if (sanitized.startsWith(rootPrefix)) {
-            sanitized = sanitized.substring(rootPrefix.length());
         }
 
         Assert.hasText(

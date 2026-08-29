@@ -20,12 +20,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * Integration tests for {@link CloudFileService}.
  * <p>
- * This class tests the upload, retrieval, and deletion of files in Cloudinary
+ * This @org.springframework.test.context.ActiveProfiles("integration")
+class tests the upload, retrieval, and deletion of files in Cloudinary
  * through the service layer without mocking any dependencies.
  */
 @Slf4j
 @SpringBootTest
 @DisplayName("Integration: Cloud File Service Operations")
+@org.springframework.test.context.ActiveProfiles("integration")
 class CloudFileServiceIntegrationTest {
 
     @Autowired

@@ -89,7 +89,7 @@ class FileUtilsTest {
         assertEquals("path/to/file.txt", FileUtils.sanitizeFileName("path//to/file.txt"));
         assertEquals("./path/to/file.txt", FileUtils.sanitizeFileName("./path/to/file.txt"));
         assertEquals("path/to/file.txt", FileUtils.sanitizeFileName("/path/to/file.txt/"));
-        assertEquals("avatar.png", FileUtils.sanitizeFileName("portfolio/avatar.png"));
+        assertEquals("portfolio/avatar.png", FileUtils.sanitizeFileName("portfolio/avatar.png"));
         assertEquals("path/to/file.txt", FileUtils.sanitizeFileName("path/to/../../file.txt"));
         assertEquals("path/file.txt", FileUtils.sanitizeFileName("path/../file.txt"));
 

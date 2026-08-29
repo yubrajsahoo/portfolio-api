@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -26,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @DisplayName("Unit: Cloud File Controller Endpoints")
+@ActiveProfiles("unit")
 class CloudFileControllerTest {
 
     @Autowired
@@ -85,11 +87,15 @@ class CloudFileControllerTest {
     @DisplayName("Should Return 200 OK with All Available Cloud Files")
     void testGetAllFileNames() throws Exception {
         String mockUrl = "https://res.cloudinary.com/demo/image/upload/v1/portfolio/public/image/logo.png";
-        when(cloudinaryClient.getAllUrls(AccessType.PUBLIC)).thenReturn(List.of(mockUrl));
+        List urls = io.github.yubrajsahoo.portfolioapi.helper.DataBuilderUtils.readFromJson(
+                "src/test/resources/json/controller-get-all-urls-public.json",
+                List.class
+        );
+        when(cloudinaryClient.getAllUrls(AccessType.PUBLIC)).thenReturn(urls);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/files")
                         .param("access", "PUBLIC"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{\"fileName\":\"logo.png\",\"url\":\"" + mockUrl + "\",\"type\":\"IMAGE\",\"access\":\"PUBLIC\",\"project\":\"portfolio\"}]"));
+                .andExpect(content().json("[{\"fileName\":\"logo.png\",\"url\":\"" + mockUrl + "\",\"type\":\"IMAGE\",\"access\":\"PUBLIC\",\"application\":\"portfolio\"}]"));
     }
 }

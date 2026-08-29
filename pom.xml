@@ -40,7 +40,7 @@
         <sonar.qualitygate.wait>true</sonar.qualitygate.wait>
 
         <!-- SonarCloud Properties -->
-        <!-- SonarCloud Properties mapped from .env -->
+        <!-- SonarCloud Properties mapped from dev.env -->
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.organization>${SONAR_ORG}</sonar.organization>
         <sonar.projectKey>${SONAR_PROJECT_KEY}</sonar.projectKey>
@@ -149,7 +149,7 @@
                         </goals>
                         <configuration>
                             <files>
-                                <file>${basedir}/.env</file>
+                                <file>${basedir}/sonar.env</file>
                             </files>
                         </configuration>
                     </execution>

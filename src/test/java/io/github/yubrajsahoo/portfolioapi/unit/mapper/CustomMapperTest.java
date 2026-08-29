@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -16,7 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @DisplayName("Unit: Custom Mapper Transformations")
-class CustomMapperImplTest {
+@ActiveProfiles("unit")
+class CustomMapperTest {
 
     @Autowired
     private CustomMapperImpl customMapper;
@@ -34,7 +36,6 @@ class CustomMapperImplTest {
         assertNotNull(result);
         assertEquals(expectedMetaData.getFileName(), result.getFileName());
         assertEquals(expectedMetaData.getExtension(), result.getExtension());
-        assertEquals(expectedMetaData.getFolder(), result.getFolder());
         assertEquals(expectedMetaData.getAccessType(), result.getAccessType());
         assertEquals(expectedMetaData.getResourceType(), result.getResourceType());
     }
@@ -52,7 +53,6 @@ class CustomMapperImplTest {
         assertNotNull(result);
         assertEquals(expectedMetaData.getFileName(), result.getFileName());
         assertEquals(expectedMetaData.getExtension(), result.getExtension());
-        assertEquals(expectedMetaData.getFolder(), result.getFolder());
         assertEquals(expectedMetaData.getAccessType(), result.getAccessType());
         assertEquals(expectedMetaData.getResourceType(), result.getResourceType());
     }
@@ -72,7 +72,7 @@ class CustomMapperImplTest {
         assertNotNull(result);
         assertEquals("logo.png", result.getFileName());
         assertEquals(AccessType.PUBLIC, result.getAccess());
-        assertEquals("portfolio", result.getProject());
+        assertEquals("portfolio", result.getApplication());
     }
     
     @Test

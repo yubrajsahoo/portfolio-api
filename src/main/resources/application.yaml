@@ -1,6 +1,8 @@
 spring:
   application:
     name: portfolio-api
+  profiles:
+    active: dev
   servlet:
     multipart:
       max-file-size: 10MB
@@ -19,9 +21,6 @@ cloudinary:
   api-key: ${CLOUDINARY_API_KEY}
   api-secret: ${CLOUDINARY_API_SECRET}
   privateUrlTtl: 10m # 10min
-
-springdotenv:
-  filename: .evn
 
 springdoc:
   swagger-ui:

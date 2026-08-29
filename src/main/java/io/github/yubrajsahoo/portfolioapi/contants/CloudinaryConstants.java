@@ -17,11 +17,6 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class CloudinaryConstants {
     /**
-     * Cloudinary portfolio folder.
-     */
-    public static final String PORTFOLIO_FOLDER = "portfolio";
-
-    /**
      * Cloudinary public ID parameter.
      */
     public static final String PUBLIC_ID = "public_id";

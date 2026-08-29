@@ -11,7 +11,9 @@ import io.github.yubrajsahoo.portfolioapi.service.impl.CloudFileServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
@@ -24,7 +26,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@SpringJUnitConfig(classes = {CloudFileServiceImpl.class, CustomMapperImpl.class})
+@SpringBootTest
+@ActiveProfiles("unit")
 @DisplayName("Unit: Cloud File Service Operations")
 class CloudFileServiceTest {
 
@@ -36,8 +39,9 @@ class CloudFileServiceTest {
 
     @Test
     @DisplayName("Should Successfully Upload File and Return Cloud URL")
-    void upload_Success() {
-        MockMultipartFile file = new MockMultipartFile("file", "test.jpg", "image/jpeg", "test data".getBytes());
+    void upload_Success() throws Exception {
+        InputStream inputStream = io.github.yubrajsahoo.portfolioapi.helper.DataBuilderUtils.readFile("src/test/resources/images/logo.png");
+        MockMultipartFile file = new MockMultipartFile("file", "logo.png", "image/png", inputStream);
         when(cloudClient.upload(any(InputStream.class), any(FileMetaData.class))).thenReturn("uploaded_url");
 
         String result = cloudFileService.upload(file, AccessType.PUBLIC);
@@ -80,8 +84,11 @@ class CloudFileServiceTest {
     @DisplayName("Should Fetch and Map All File Names from Client Filters Nulls")
     void getAllFileNames_Success() {
         String mockUrl = "https://res.cloudinary.com/demo/image/upload/portfolio-api/public/image/test.jpg";
-        String invalidUrl = "https://invalid.com/image.jpg";
-        when(cloudClient.getAllUrls(AccessType.PUBLIC)).thenReturn(List.of(mockUrl, invalidUrl));
+        List urls = io.github.yubrajsahoo.portfolioapi.helper.DataBuilderUtils.readFromJson(
+                "src/test/resources/json/service-get-all-urls-public.json",
+                List.class
+        );
+        when(cloudClient.getAllUrls(AccessType.PUBLIC)).thenReturn(urls);
 
         List<CloudFileDto> result = cloudFileService.getAllFileNames(AccessType.PUBLIC);
 

@@ -46,9 +46,9 @@ public class CloudFileDto {
     private AccessType access;
 
     /**
-     * The name of the project this file is associated with.
+     * The name of the application this file is associated with.
      */
-    private String project;
+    private String application;
 
     /**
      * The URL to access the cloud file.

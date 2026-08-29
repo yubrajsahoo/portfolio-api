@@ -23,12 +23,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * End-to-end Integration tests for {@link io.github.yubrajsahoo.portfolioapi.controller.CloudFileController}.
  * <p>
- * This class runs without ANY mocks. It loads the full Spring Application Context,
+ * This @org.springframework.test.context.ActiveProfiles("integration")
+class runs without ANY mocks. It loads the full Spring Application Context,
  * hits the REST endpoints natively via MockMvc, and interacts with the real Cloudinary environment.
  */
 @Slf4j
 @SpringBootTest
 @DisplayName("Integration: Cloud File Controller Endpoints")
+@org.springframework.test.context.ActiveProfiles("integration")
 class CloudFileControllerIntegrationTest {
 
     @Autowired

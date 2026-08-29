@@ -17,6 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.io.InputStream;
 
@@ -26,11 +27,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * Integration tests for {@link CloudinaryClient}.
  * <p>
- * This class tests the upload, retrieval, and deletion of files in Cloudinary.
+ * This @org.springframework.test.context.ActiveProfiles("integration")
+class tests the upload, retrieval, and deletion of files in Cloudinary.
  */
 @Slf4j
 @SpringBootTest
 @DisplayName("Integration: Cloudinary Client Operations")
+@ActiveProfiles("integration")
 class CloudinaryClientIntegrationTest {
 
     @Autowired

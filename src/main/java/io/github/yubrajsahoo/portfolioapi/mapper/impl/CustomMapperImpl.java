@@ -13,6 +13,7 @@ import io.github.yubrajsahoo.portfolioapi.enums.AccessType;
 import io.github.yubrajsahoo.portfolioapi.enums.ResourceType;
 import io.github.yubrajsahoo.portfolioapi.mapper.CustomMapper;
 import io.github.yubrajsahoo.portfolioapi.utils.FileUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
@@ -24,7 +25,7 @@ import java.util.regex.Pattern;
  * <p>
  * Provides concrete logic for mapping between DTOs and Domain models,
  * including necessary transformations such as extracting file extensions,
- * determining resource types, and building appropriate upload folders.
+ * determining resource types, and setting application names.
  * </p>
  *
  * @author Yubraj Sahoo
@@ -37,8 +38,8 @@ public class CustomMapperImpl implements CustomMapper {
      * Converts a file name and access type to a {@link FileMetaData} domain object.
      * <p>
      * This implementation sanitizes the file name, extracts its extension,
-     * determines the appropriate {@link ResourceType}, and constructs the
-     * upload folder path based on the access and resource types.
+     * determines the appropriate {@link ResourceType}, and sets the
+     * application name based on the configuration.
      * </p>
      *
      * @param fileName   the name of the file
@@ -56,7 +57,6 @@ public class CustomMapperImpl implements CustomMapper {
         return FileMetaData.builder()
                 .fileName(FileUtils.removeFileExtension(fileName))
                 .extension(extension)
-                .folder(FileUtils.buildUploadFolder(accessType, resourceType))
                 .accessType(accessType)
                 .resourceType(resourceType)
                 .build();
@@ -78,7 +78,7 @@ public class CustomMapperImpl implements CustomMapper {
                     .fileName(matcher.group(4))
                     .type(ResourceType.fromCloudinary(matcher.group(3)))
                     .access(AccessType.fromCloudinary(matcher.group((2))))
-                    .project(matcher.group(1))
+                    .application(matcher.group(1))
                     .url(URI.create(url))
                     .build();
         }
