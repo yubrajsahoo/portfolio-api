@@ -1,5 +1,0 @@
-springdotenv:
-  filename: dev.evn
-cloudinary:
-  application:
-    name: dev-portfolio

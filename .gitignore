@@ -32,6 +32,4 @@ build/
 ### VS Code ###
 .vscode/
 /.agents/agents/
-/dev.env
-/prod.env
-/sonar.env
+/.env

@@ -1,5 +1,0 @@
-springdotenv:
-  filename: prod.evn
-cloudinary:
-  application:
-    name: portfolio

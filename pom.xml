@@ -40,10 +40,13 @@
         <sonar.qualitygate.wait>true</sonar.qualitygate.wait>
 
         <!-- SonarCloud Properties -->
-        <!-- SonarCloud Properties mapped from dev.env -->
+        <!-- SonarCloud Properties mapped from .env -->
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <!--suppress UnresolvedMavenProperty -->
         <sonar.organization>${SONAR_ORG}</sonar.organization>
+        <!--suppress UnresolvedMavenProperty -->
         <sonar.projectKey>${SONAR_PROJECT_KEY}</sonar.projectKey>
+        <!--suppress UnresolvedMavenProperty -->
         <sonar.token>${SONAR_TOKEN}</sonar.token>
 
         <!-- Disable testCompileSourceRoots warning -->
@@ -149,7 +152,7 @@
                         </goals>
                         <configuration>
                             <files>
-                                <file>${basedir}/sonar.env</file>
+                                <file>${basedir}/.env</file>
                             </files>
                         </configuration>
                     </execution>
