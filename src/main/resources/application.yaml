@@ -1,26 +1,26 @@
 spring:
   application:
     name: portfolio-api
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
   servlet:
     multipart:
       max-file-size: ${SERVLET_MAX_FILE_SIZE:10MB}
       max-request-size: ${SERVLET_MAX_REQUEST_SIZE:10MB}
+
   cache:
     type: caffeine
     cache-names:
       - cloud-file-urls
     caffeine:
-      spec: maximumSize=1000,expireAfterWrite=8m
-    max: 1000
-    ttl: 8 #8min
+      spec: maximumSize=${CACHE_MAX_SIZE:1000},expireAfterWrite=${CACHE_TTL:8m}
 
 cloudinary:
   cloud-name: ${CLOUDINARY_CLOUD_NAME}
   api-key: ${CLOUDINARY_API_KEY}
   api-secret: ${CLOUDINARY_API_SECRET}
-  privateUrlTtl: 10m # 10min
-  application:
-    name: ${CLOUDINARY_APPLICATION_NAME}
+  private-url-ttl: ${CLOUDINARY_PRIVATE_URL_TTL:10m}
 
 springdotenv:
   filename: .env
