@@ -10,7 +10,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import io.github.yubrajsahoo.portfolioapi.client.CloudClient;
 import io.github.yubrajsahoo.portfolioapi.config.CloudinaryProperties;
-import io.github.yubrajsahoo.portfolioapi.contants.CloudinaryConstants;
+import io.github.yubrajsahoo.portfolioapi.constants.CloudinaryConstants;
 import io.github.yubrajsahoo.portfolioapi.domain.FileMetaData;
 import io.github.yubrajsahoo.portfolioapi.enums.AccessType;
 import io.github.yubrajsahoo.portfolioapi.exception.CloudinaryException;
@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static io.github.yubrajsahoo.portfolioapi.contants.CloudinaryConstants.*;
+import static io.github.yubrajsahoo.portfolioapi.constants.CloudinaryConstants.*;
 
 /**
  * Production-ready Cloudinary implementation of {@link CloudClient}.

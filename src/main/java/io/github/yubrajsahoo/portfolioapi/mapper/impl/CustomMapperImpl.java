@@ -6,17 +6,20 @@
 
 package io.github.yubrajsahoo.portfolioapi.mapper.impl;
 
-import io.github.yubrajsahoo.portfolioapi.contants.CloudinaryConstants;
+import io.github.yubrajsahoo.portfolioapi.constants.CloudinaryConstants;
 import io.github.yubrajsahoo.portfolioapi.domain.FileMetaData;
 import io.github.yubrajsahoo.portfolioapi.dto.CloudFileDto;
+import io.github.yubrajsahoo.portfolioapi.dto.UserReqDto;
+import io.github.yubrajsahoo.portfolioapi.entity.Role;
+import io.github.yubrajsahoo.portfolioapi.entity.User;
 import io.github.yubrajsahoo.portfolioapi.enums.AccessType;
 import io.github.yubrajsahoo.portfolioapi.enums.ResourceType;
 import io.github.yubrajsahoo.portfolioapi.mapper.CustomMapper;
 import io.github.yubrajsahoo.portfolioapi.utils.FileUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -83,5 +86,16 @@ public class CustomMapperImpl implements CustomMapper {
                     .build();
         }
         return null;
+    }
+
+    @Override
+    public User toUserEntity(UserReqDto userDto, List<Role> roles) {
+        User user = new User();
+
+        user.setEmail(userDto.getEmail());
+        user.setPassword(userDto.getPassword());
+        user.setRoles(roles);
+
+        return user;
     }
 }

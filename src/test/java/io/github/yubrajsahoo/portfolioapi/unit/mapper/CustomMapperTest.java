@@ -82,4 +82,24 @@ class CustomMapperTest {
         CloudFileDto result = customMapper.toCloudFileDto(mockUrl);
         org.junit.jupiter.api.Assertions.assertNull(result);
     }
+
+    @Test
+    @DisplayName("Should Map UserRegistrationDto to User Entity")
+    void toUserEntity() {
+        io.github.yubrajsahoo.portfolioapi.dto.UserReqDto dto = new io.github.yubrajsahoo.portfolioapi.dto.UserReqDto();
+        dto.setEmail("test@test.com");
+        dto.setPassword("password");
+
+        io.github.yubrajsahoo.portfolioapi.entity.Role role = new io.github.yubrajsahoo.portfolioapi.entity.Role();
+        role.setName("USER");
+        java.util.List<io.github.yubrajsahoo.portfolioapi.entity.Role> roles = java.util.List.of(role);
+
+        io.github.yubrajsahoo.portfolioapi.entity.User user = customMapper.toUserEntity(dto, roles);
+
+        assertNotNull(user);
+        assertEquals("test@test.com", user.getEmail());
+        assertEquals("password", user.getPassword());
+        assertEquals(1, user.getRoles().size());
+        assertEquals("USER", user.getRoles().get(0).getName());
+    }
 }

@@ -6,7 +6,6 @@
 
 package io.github.yubrajsahoo.portfolioapi.utils;
 
-import io.github.yubrajsahoo.portfolioapi.contants.CloudinaryConstants;
 import io.github.yubrajsahoo.portfolioapi.domain.FileMetaData;
 import lombok.experimental.UtilityClass;
 import org.springframework.util.Assert;

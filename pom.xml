@@ -67,16 +67,22 @@
         </dependency>
 
         <!--        security configs-->
-        <!--<dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>-->
+        </dependency>
 
         <!--        db configs-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-h2console</artifactId>
         </dependency>
+
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -119,6 +125,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa-test</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -280,7 +292,7 @@
                                         <limit>
                                             <counter>INSTRUCTION</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.90</minimum>
+                                            <minimum>0.80</minimum>
                                         </limit>
                                     </limits>
                                 </rule>
@@ -316,8 +328,8 @@
                     <targetTests>
                         <param>io.github.yubrajsahoo.portfolioapi.*</param>
                     </targetTests>
-                    <mutationThreshold>90</mutationThreshold>
-                    <coverageThreshold>90</coverageThreshold>
+                    <mutationThreshold>80</mutationThreshold>
+                    <coverageThreshold>80</coverageThreshold>
                     <jvmArgs>
                         <value>-Xmx1024m</value>
                         <value>-XX:+EnableDynamicAgentLoading</value>

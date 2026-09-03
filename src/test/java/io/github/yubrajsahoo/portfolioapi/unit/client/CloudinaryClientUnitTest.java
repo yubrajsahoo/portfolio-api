@@ -366,6 +366,58 @@ class CloudinaryClientUnitTest {
         );
         assertEquals("Not getting files from Cloudinary", exception.getMessage());
     }
+
+    @Test
+    @DisplayName("upload - IOException - throws FileUploadException")
+    void upload_ioException_throwsFileUploadException() throws Exception {
+        // Arrange
+        InputStream mockInputStream = mock(InputStream.class);
+        when(mockInputStream.readAllBytes()).thenThrow(new java.io.IOException("Read error"));
+
+        FileMetaData metaData = io.github.yubrajsahoo.portfolioapi.helper.DataBuilderUtils.readFromJson("src/test/resources/json/file-meta-data-public-png-logo.json", FileMetaData.class);
+
+        // Act & Assert
+        io.github.yubrajsahoo.portfolioapi.exception.FileUploadException exception = assertThrows(
+                io.github.yubrajsahoo.portfolioapi.exception.FileUploadException.class, () ->
+                        cloudinaryClient.upload(mockInputStream, metaData)
+        );
+        assertEquals("Unable to Read File", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("upload - Invalid response - throws CloudinaryException")
+    void upload_invalidResponse_throwsCloudinaryException() throws Exception {
+        // Arrange
+        InputStream inputStream = new ByteArrayInputStream("test".getBytes());
+        Uploader mockUploader = mock(Uploader.class);
+        when(cloudinary.uploader()).thenReturn(mockUploader);
+        when(mockUploader.upload(any(byte[].class), any(Map.class))).thenReturn(new HashMap<>());
+
+        FileMetaData metaData = io.github.yubrajsahoo.portfolioapi.helper.DataBuilderUtils.readFromJson("src/test/resources/json/file-meta-data-public-png-logo.json", FileMetaData.class);
+
+        // Act & Assert
+        CloudinaryException exception = assertThrows(
+                CloudinaryException.class, () ->
+                        cloudinaryClient.upload(inputStream, metaData)
+        );
+        assertTrue(exception.getMessage().startsWith("Error while uploading file"));
+    }
+
+
+
+    @Test
+    @DisplayName("getUrl - generic exception - throws CloudinaryException")
+    void getUrl_genericException_throwsCloudinaryException() {
+        // Arrange
+        when(cloudinary.url()).thenThrow(new RuntimeException("Generation failed"));
+        FileMetaData metaData = io.github.yubrajsahoo.portfolioapi.helper.DataBuilderUtils.readFromJson("src/test/resources/json/file-meta-data-public-png-logo.json", FileMetaData.class);
+
+        // Act & Assert
+        CloudinaryException exception = assertThrows(
+                CloudinaryException.class, () -> cloudinaryClient.getUrl(metaData)
+        );
+        assertTrue(exception.getMessage().startsWith("Failed to generate URL for file"));
+    }
 }
 
 

@@ -5,9 +5,7 @@ import io.github.yubrajsahoo.portfolioapi.domain.FileMetaData;
 import io.github.yubrajsahoo.portfolioapi.dto.CloudFileDto;
 import io.github.yubrajsahoo.portfolioapi.enums.AccessType;
 import io.github.yubrajsahoo.portfolioapi.exception.FileUploadException;
-import io.github.yubrajsahoo.portfolioapi.mapper.impl.CustomMapperImpl;
 import io.github.yubrajsahoo.portfolioapi.service.CloudFileService;
-import io.github.yubrajsahoo.portfolioapi.service.impl.CloudFileServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.io.IOException;
 import java.io.InputStream;

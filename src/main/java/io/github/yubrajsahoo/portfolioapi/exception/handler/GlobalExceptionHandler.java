@@ -146,6 +146,46 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles {@link io.github.yubrajsahoo.portfolioapi.exception.RegistrationException}.
+     *
+     * @param ex the RegistrationException that was thrown
+     * @return a {@link ProblemDetail} with HTTP status 400 (Bad Request)
+     */
+    @ExceptionHandler(io.github.yubrajsahoo.portfolioapi.exception.RegistrationException.class)
+    public ProblemDetail handleRegistrationException(io.github.yubrajsahoo.portfolioapi.exception.RegistrationException ex) {
+        log.warn("Registration exception occurred: {}", ex.getMessage(), ex);
+
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage()
+        );
+
+        problemDetail.setTitle("Registration Failed");
+        problemDetail.setProperty(TIMESTAMP, Instant.now());
+        return problemDetail;
+    }
+
+    /**
+     * Handles generic {@link io.github.yubrajsahoo.portfolioapi.exception.base.PortfolioApiException}.
+     *
+     * @param ex the PortfolioApiException that was thrown
+     * @return a {@link ProblemDetail} with HTTP status 500 (Internal Server Error)
+     */
+    @ExceptionHandler(io.github.yubrajsahoo.portfolioapi.exception.base.PortfolioApiException.class)
+    public ProblemDetail handlePortfolioApiException(io.github.yubrajsahoo.portfolioapi.exception.base.PortfolioApiException ex) {
+        log.error("Portfolio API exception occurred: {}", ex.getMessage(), ex);
+
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                ex.getMessage()
+        );
+
+        problemDetail.setTitle("Application Error");
+        problemDetail.setProperty(TIMESTAMP, Instant.now());
+        return problemDetail;
+    }
+
+    /**
      * Handles all uncaught {@link Exception}s.
      *
      * @param ex the Exception that was thrown

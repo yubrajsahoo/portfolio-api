@@ -136,4 +136,26 @@ class GlobalExceptionHandlerTest {
         assertEquals("Internal Server Error", problemDetail.getTitle());
         assertNotNull(problemDetail.getProperties().get("timestamp"));
     }
+
+    @Test
+    void testHandleRegistrationException() {
+        io.github.yubrajsahoo.portfolioapi.exception.RegistrationException ex = new io.github.yubrajsahoo.portfolioapi.exception.RegistrationException("User already exists");
+        ProblemDetail problemDetail = exceptionHandler.handleRegistrationException(ex);
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), problemDetail.getStatus());
+        assertEquals("User already exists", problemDetail.getDetail());
+        assertEquals("Registration Failed", problemDetail.getTitle());
+        assertNotNull(problemDetail.getProperties().get("timestamp"));
+    }
+
+    @Test
+    void testHandlePortfolioApiException() {
+        io.github.yubrajsahoo.portfolioapi.exception.base.PortfolioApiException ex = new io.github.yubrajsahoo.portfolioapi.exception.base.PortfolioApiException("Something went wrong");
+        ProblemDetail problemDetail = exceptionHandler.handlePortfolioApiException(ex);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), problemDetail.getStatus());
+        assertEquals("Something went wrong", problemDetail.getDetail());
+        assertEquals("Application Error", problemDetail.getTitle());
+        assertNotNull(problemDetail.getProperties().get("timestamp"));
+    }
 }

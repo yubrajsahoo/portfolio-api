@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -59,6 +60,7 @@ public class CloudFileController {
             summary = "Upload a file",
             description = "Uploads a file to the configured cloud storage provider"
     )
+    @PreAuthorize("hasAuthority('WRITE_PRIVILEGE')")
     public ResponseEntity<String> upload(
             @NotNull(message = "File cannot be null") @RequestParam MultipartFile file,
             @RequestParam(required = false, defaultValue = "PUBLIC") AccessType access
@@ -105,6 +107,7 @@ public class CloudFileController {
     )
     @DeleteMapping("/{fileName}")
     @ResponseStatus(HttpStatus.ACCEPTED)
+    @PreAuthorize("hasAuthority('DELETE_PRIVILEGE')")
     public void delete(
             @NotBlank(message = "File name cannot be blank") @PathVariable String fileName,
             @RequestParam(required = false, defaultValue = "PUBLIC") AccessType access
@@ -122,6 +125,7 @@ public class CloudFileController {
             description = "Returns a list of all file names for files uploaded in the portfolio folder"
     )
     @GetMapping
+    @PreAuthorize("hasAuthority('READ_PRIVILEGE')")
     public ResponseEntity<List<CloudFileDto>> getAllFileNames(
             @RequestParam(required = false, defaultValue = "PUBLIC") AccessType access
     ) {

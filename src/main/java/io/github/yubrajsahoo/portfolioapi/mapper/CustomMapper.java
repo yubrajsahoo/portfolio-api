@@ -8,7 +8,12 @@ package io.github.yubrajsahoo.portfolioapi.mapper;
 
 import io.github.yubrajsahoo.portfolioapi.domain.FileMetaData;
 import io.github.yubrajsahoo.portfolioapi.dto.CloudFileDto;
+import io.github.yubrajsahoo.portfolioapi.dto.UserReqDto;
+import io.github.yubrajsahoo.portfolioapi.entity.Role;
+import io.github.yubrajsahoo.portfolioapi.entity.User;
 import io.github.yubrajsahoo.portfolioapi.enums.AccessType;
+
+import java.util.List;
 
 /**
  * Interface defining custom mapping operations between Data Transfer Objects (DTOs)
@@ -34,4 +39,6 @@ public interface CustomMapper {
      * @return the corresponding {@link CloudFileDto} object containing the file URL
      */
     CloudFileDto toCloudFileDto(String url);
+
+    User toUserEntity(UserReqDto userDto, List<Role> roles);
 }

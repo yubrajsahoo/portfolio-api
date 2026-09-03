@@ -4,7 +4,7 @@
  *
  */
 
-package io.github.yubrajsahoo.portfolioapi.contants;
+package io.github.yubrajsahoo.portfolioapi.constants;
 
 import lombok.experimental.UtilityClass;
 
