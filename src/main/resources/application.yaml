@@ -1,3 +1,5 @@
+server:
+  port: ${PORT:8080}
 spring:
   application:
     name: portfolio-api
@@ -28,3 +30,9 @@ springdoc:
     path: /api/docs
   api-docs:
     path: /api/openapi
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
