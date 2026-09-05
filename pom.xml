@@ -39,13 +39,10 @@
         <pitest.junit5.plugin.version>1.2.3</pitest.junit5.plugin.version>
         <sonar.qualitygate.wait>true</sonar.qualitygate.wait>
 
-        <!-- SonarCloud Properties -->
-        <!-- SonarCloud Properties mapped from .env -->
+        <!--    Sonar properties (resolved from .env locally, or -D flags in prod)    -->
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <!--suppress UnresolvedMavenProperty -->
-        <sonar.organization>${SONAR_ORG}</sonar.organization>
-        <!--suppress UnresolvedMavenProperty -->
-        <sonar.projectKey>${SONAR_PROJECT_KEY}</sonar.projectKey>
+        <sonar.organization>yubrajsahoo</sonar.organization>
+        <sonar.projectKey>yubrajsahoo_portfolio-api</sonar.projectKey>
         <!--suppress UnresolvedMavenProperty -->
         <sonar.token>${SONAR_TOKEN}</sonar.token>
 
@@ -123,8 +120,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security-test</artifactId>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -181,24 +178,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>properties-maven-plugin</artifactId>
-                <version>1.2.1</version>
-                <executions>
-                    <execution>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>read-project-properties</goal>
-                        </goals>
-                        <configuration>
-                            <files>
-                                <file>${basedir}/.env</file>
-                            </files>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

@@ -22,8 +22,6 @@ cloudinary:
   api-secret: ${CLOUDINARY_API_SECRET}
   private-url-ttl: ${CLOUDINARY_PRIVATE_URL_TTL:10m}
 
-springdotenv:
-  filename: .env
 
 springdoc:
   swagger-ui:

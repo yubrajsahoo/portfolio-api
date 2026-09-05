@@ -25,9 +25,12 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.springframework.security.test.context.support.WithMockUser;
+
 @SpringBootTest
 @DisplayName("Unit: Cloud File Controller Endpoints")
 @ActiveProfiles("unit")
+@WithMockUser(authorities = {"WRITE_PRIVILEGE", "READ_PRIVILEGE", "DELETE_PRIVILEGE"})
 class CloudFileControllerTest {
 
     @Autowired
