@@ -31,5 +31,6 @@ ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"
 # Render provides a dynamic PORT environment variable
 ENV PORT=8080
 EXPOSE $PORT
+EXPOSE 9092
 
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -Dserver.port=$PORT -jar app.jar"]
