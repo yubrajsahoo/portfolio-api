@@ -40,5 +40,12 @@ public interface CustomMapper {
      */
     CloudFileDto toCloudFileDto(String url);
 
+    /**
+     * Converts a user request DTO and a list of roles to a User entity.
+     *
+     * @param userDto the user request DTO
+     * @param roles   the list of roles to assign to the user
+     * @return the corresponding User entity
+     */
     User toUserEntity(UserReqDto userDto, List<Role> roles);
 }

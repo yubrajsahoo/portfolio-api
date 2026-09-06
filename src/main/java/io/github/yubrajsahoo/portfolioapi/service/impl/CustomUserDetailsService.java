@@ -20,6 +20,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Custom implementation of UserDetailsService to load user details from the database.
+ */
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {

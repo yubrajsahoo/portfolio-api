@@ -14,6 +14,9 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+/**
+ * Represents a privilege entity in the system.
+ */
 @Getter
 @Setter
 @Entity
@@ -33,12 +36,18 @@ public class Privilege {
     @Setter(AccessLevel.NONE)
     private LocalDateTime createdAt;
 
+    /**
+     * Sets the creation and update timestamps before persisting the entity.
+     */
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now(LocationConstants.SERVER_LOCATION);
         this.updatedAt = LocalDateTime.now(LocationConstants.SERVER_LOCATION);
     }
 
+    /**
+     * Updates the update timestamp before updating the entity.
+     */
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now(LocationConstants.SERVER_LOCATION);

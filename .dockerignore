@@ -1,0 +1,14 @@
+.git
+.idea
+.mvn
+target/
+*.class
+*.jar
+*.war
+*.nar
+*.ear
+*.log
+*.sh
+.agents/
+.codex/
+data/

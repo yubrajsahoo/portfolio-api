@@ -19,8 +19,11 @@ spring:
       enabled: true
       path: /h2-console
       settings:
-        web-allow-others: false
+        web-allow-others: true
 
 cloudinary:
   application:
     name: dev-portfolio
+
+cors:
+  allowed-origins: http://localhost:5173
