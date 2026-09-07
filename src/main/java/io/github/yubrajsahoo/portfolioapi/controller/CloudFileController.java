@@ -118,6 +118,7 @@ public class CloudFileController {
     /**
      * Retrieves all file names for files uploaded.
      *
+     * @param access the access type of the files
      * @return a {@link ResponseEntity} containing a list of file details
      */
     @Operation(

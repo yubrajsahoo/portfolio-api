@@ -14,15 +14,23 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:21-jdk-alpine
 WORKDIR /app
 
-# Run as non-root user for security
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+# Create non-root user, data directory, and set permissions in a single layer
+RUN addgroup -S appgroup && \
+    adduser -S appuser -G appgroup && \
+    mkdir -p /app/data && \
+    chown -R appuser:appgroup /app
+
 USER appuser:appgroup
 
 # Copy the built JAR file
-COPY --from=builder /build/target/*.jar app.jar
+COPY --chown=appuser:appgroup --from=builder /build/target/*.jar app.jar
 
 # JVM tuning for containers
 ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"
-EXPOSE 8080
 
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+# Render provides a dynamic PORT environment variable
+ENV PORT=8080
+EXPOSE $PORT
+EXPOSE 9092
+
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -Dserver.port=$PORT -jar app.jar"]

@@ -17,3 +17,6 @@ spring:
 cloudinary:
   application:
     name: portfolio
+
+cors:
+  allowed-origins: https://yubraj-portfolio.pages.dev,https://yubrajsahoo.github.io

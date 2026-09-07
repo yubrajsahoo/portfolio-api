@@ -10,6 +10,7 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -34,6 +35,27 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     private static final String TIMESTAMP = "timestamp";
+
+
+    /**
+     * Handles {@link AuthorizationDeniedException} thrown when a user tries to access a resource they are not authorized to access.
+     *
+     * @param ex the AuthorizationDeniedException that was thrown
+     * @return a {@link ProblemDetail} with HTTP status 403 (Forbidden)
+     */
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ProblemDetail handleAuthorizationDeniedException(AuthorizationDeniedException ex) {
+        log.warn("Authorization denied exception occurred: {}", ex.getMessage(), ex);
+
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.FORBIDDEN,
+                "Access Denied"
+        );
+
+        problemDetail.setTitle("Access Denied");
+        problemDetail.setProperty(TIMESTAMP, Instant.now());
+        return problemDetail;
+    }
 
     /**
      * Handles {@link io.github.yubrajsahoo.portfolioapi.exception.CloudinaryException}.

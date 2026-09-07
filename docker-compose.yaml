@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  portfolio-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: portfolio-api
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+      - "9092:9092"
+    environment:
+      # Use the dev profile which is configured for file-based H2 database
+      - SPRING_PROFILES_ACTIVE=dev
+    env_file:
+      - .env
+    volumes:
+      # Persist the H2 database data directory
+      - h2data:/app/data
+
+volumes:
+  h2data:

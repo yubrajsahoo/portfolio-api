@@ -23,6 +23,7 @@ public class FileUtils {
     /**
      * Method to build upload folder for portfolio website
      *
+     * @param application the name of the application
      * @param metaData The metadata associated with the file.
      * @return The upload folder path for the file.
      */

@@ -9,6 +9,9 @@ package io.github.yubrajsahoo.portfolioapi.exception;
 import io.github.yubrajsahoo.portfolioapi.exception.base.PortfolioApiException;
 import io.github.yubrajsahoo.portfolioapi.metrics.MetricsType;
 
+/**
+ * Exception thrown when a user registration fails.
+ */
 public class RegistrationException extends PortfolioApiException {
     /**
      * Constructs a new {@code PortfolioApiException} with the specified detail message
