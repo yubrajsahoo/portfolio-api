@@ -58,7 +58,6 @@ public class SecurityConfig {
      *
      * @param http the HttpSecurity to configure
      * @return the SecurityFilterChain
-     * @throws Exception if an error occurs during configuration
      */
     @Bean
     @SuppressWarnings("java:S4502")
@@ -72,9 +71,8 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/**").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
+                        .requestMatchers("/api/docs/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
                         .requestMatchers("/", "/actuator/health").permitAll()
-                        .requestMatchers(PathRequest.toH2Console()).permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());
