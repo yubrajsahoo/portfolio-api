@@ -17,4 +17,4 @@ cloudinary:
     name: portfolio
 
 cors:
-  allowed-origins: https://yubraj-portfolio.pages.dev,https://yubrajsahoo.github.io
+  allowed-origins: https://yubraj-portfolio.pages.dev,https://yubrajsahoo.github.io,uat.yubraj-portfolio.pages.dev
