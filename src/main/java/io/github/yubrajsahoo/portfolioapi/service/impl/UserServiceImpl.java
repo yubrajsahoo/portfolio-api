@@ -6,12 +6,7 @@
 
 package io.github.yubrajsahoo.portfolioapi.service.impl;
 
-import io.github.yubrajsahoo.portfolioapi.dto.PrivilegeReqDto;
-import io.github.yubrajsahoo.portfolioapi.dto.PrivilegeResDto;
-import io.github.yubrajsahoo.portfolioapi.dto.RoleReqDto;
-import io.github.yubrajsahoo.portfolioapi.dto.RoleResDto;
-import io.github.yubrajsahoo.portfolioapi.dto.UserReqDto;
-import io.github.yubrajsahoo.portfolioapi.dto.UserResDto;
+import io.github.yubrajsahoo.portfolioapi.dto.*;
 import io.github.yubrajsahoo.portfolioapi.entity.Privilege;
 import io.github.yubrajsahoo.portfolioapi.entity.Role;
 import io.github.yubrajsahoo.portfolioapi.entity.User;

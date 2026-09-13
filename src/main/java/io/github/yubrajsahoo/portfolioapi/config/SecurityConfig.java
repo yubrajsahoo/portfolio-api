@@ -56,7 +56,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/**").permitAll()
                         .requestMatchers("/api/docs/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
-                        .requestMatchers("/", "/actuator/health", "/error").permitAll()
+                        .requestMatchers("/", "/actuator/health", "/actuator/prometheus", "/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());
