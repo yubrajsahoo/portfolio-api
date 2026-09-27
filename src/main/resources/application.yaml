@@ -36,3 +36,9 @@ management:
     web:
       exposure:
         include: health,info,prometheus
+
+smf4j:
+  metrics:
+    log-level: WARN
+    log-message: "Metrics Logged For->"
+    disable-log-level: DISABLED
