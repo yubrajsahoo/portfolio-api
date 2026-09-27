@@ -15,8 +15,11 @@ import io.github.yubrajsahoo.portfolioapi.domain.FileMetaData;
 import io.github.yubrajsahoo.portfolioapi.enums.AccessType;
 import io.github.yubrajsahoo.portfolioapi.exception.CloudinaryException;
 import io.github.yubrajsahoo.portfolioapi.exception.FileUploadException;
-import io.github.yubrajsahoo.portfolioapi.metrics.MetricsType;
+import io.github.yubrajsahoo.portfolioapi.metrics.*;
 import io.github.yubrajsahoo.portfolioapi.utils.FileUtils;
+import io.github.yubrajsahoo.smf4j.api.annotation.Tags;
+import io.github.yubrajsahoo.smf4j.api.annotation.Timer;
+import io.github.yubrajsahoo.smf4j.api.constant.Smf4jSpelConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,6 +62,18 @@ public class CloudinaryClient implements CloudClient {
      * @return the secure URL of the uploaded file in Cloudinary
      * @throws CloudinaryException if an error occurs during the upload process
      */
+    @Timer(
+            name = MetricsNames.EXTERNAL_SERVICE,
+            description = MetricsDescriptions.CLOUDINARY,
+            tags = {
+                    @Tags(key = MetricsKeys.API, value = MetricsValues.CLOUDINARY),
+                    @Tags(key = MetricsKeys.OPERATION, value = MetricsValues.UPLOAD),
+                    @Tags(key = MetricsKeys.FILE_TYPE, value = MetricsValues.META_DATA_RESOURCE_TYPE_NAME),
+                    @Tags(key = MetricsKeys.ACCESS_TYPE, value = MetricsValues.META_DATA_ACCESS_TYPE_NAME),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME),
+                    @Tags(key = MetricsKeys.OUTCOME, value = MetricsValues.CLOUDINARY_OUTCOME)
+            }
+    )
     @Override
     public String upload(InputStream inputStream, FileMetaData metaData) {
         String publicId = buildPublicId(metaData);
@@ -103,6 +118,18 @@ public class CloudinaryClient implements CloudClient {
      * @throws FileUploadException if the access type is unsupported
      * @throws CloudinaryException if an error occurs while generating the URL
      */
+    @Timer(
+            name = MetricsNames.EXTERNAL_SERVICE,
+            description = MetricsDescriptions.CLOUDINARY,
+            tags = {
+                    @Tags(key = MetricsKeys.API, value = MetricsValues.CLOUDINARY),
+                    @Tags(key = MetricsKeys.OPERATION, value = MetricsValues.GET_URL),
+                    @Tags(key = MetricsKeys.FILE_TYPE, value = MetricsValues.META_DATA_RESOURCE_TYPE_NAME),
+                    @Tags(key = MetricsKeys.ACCESS_TYPE, value = MetricsValues.META_DATA_ACCESS_TYPE_NAME),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME),
+                    @Tags(key = MetricsKeys.OUTCOME, value = MetricsValues.CLOUDINARY_OUTCOME)
+            }
+    )
     @Override
     public String getUrl(FileMetaData metaData) {
         String publicId = buildPublicId(metaData);
@@ -143,6 +170,18 @@ public class CloudinaryClient implements CloudClient {
      * @param metaData the metadata associated with the file to be deleted
      * @throws CloudinaryException if an error occurs during the deletion process
      */
+    @Timer(
+            name = MetricsNames.EXTERNAL_SERVICE,
+            description = MetricsDescriptions.CLOUDINARY,
+            tags = {
+                    @Tags(key = MetricsKeys.API, value = MetricsValues.CLOUDINARY),
+                    @Tags(key = MetricsKeys.OPERATION, value = MetricsValues.DELETE),
+                    @Tags(key = MetricsKeys.FILE_TYPE, value = MetricsValues.META_DATA_RESOURCE_TYPE_NAME),
+                    @Tags(key = MetricsKeys.ACCESS_TYPE, value = MetricsValues.META_DATA_ACCESS_TYPE_NAME),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME),
+                    @Tags(key = MetricsKeys.OUTCOME, value = MetricsValues.CLOUDINARY_OUTCOME)
+            }
+    )
     @Override
     public void delete(FileMetaData metaData) {
         String publicId = buildPublicId(metaData);
@@ -169,6 +208,19 @@ public class CloudinaryClient implements CloudClient {
      * @return a list of file URLs
      * @throws CloudinaryException if an error occurs while fetching files from Cloudinary
      */
+    @Timer(
+            name = MetricsNames.EXTERNAL_SERVICE,
+            description = MetricsDescriptions.CLOUDINARY,
+            tags = {
+                    @Tags(key = MetricsKeys.API, value = MetricsValues.CLOUDINARY),
+                    @Tags(key = MetricsKeys.OPERATION, value = MetricsValues.GET_ALL_URL),
+                    @Tags(key = MetricsKeys.FILE_TYPE, value = MetricsValues.ALL),
+                    @Tags(key = MetricsKeys.ACCESS_TYPE, value = MetricsValues.ACCESS_TYPE),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME),
+                    @Tags(key = MetricsKeys.OUTCOME, value = MetricsValues.CLOUDINARY_OUTCOME)
+            }
+    )
+    @Override
     public List<String> getAllUrls(AccessType accessType) {
         List<String> fileUrls = new ArrayList<>();
 

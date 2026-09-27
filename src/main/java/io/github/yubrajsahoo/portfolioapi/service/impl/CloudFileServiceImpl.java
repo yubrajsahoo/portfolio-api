@@ -14,11 +14,13 @@ import io.github.yubrajsahoo.portfolioapi.dto.CloudFileDto;
 import io.github.yubrajsahoo.portfolioapi.enums.AccessType;
 import io.github.yubrajsahoo.portfolioapi.exception.FileUploadException;
 import io.github.yubrajsahoo.portfolioapi.mapper.CustomMapper;
-import io.github.yubrajsahoo.portfolioapi.metrics.MetricsType;
+import io.github.yubrajsahoo.portfolioapi.metrics.*;
 import io.github.yubrajsahoo.portfolioapi.service.CloudFileService;
+import io.github.yubrajsahoo.smf4j.api.annotation.Tags;
+import io.github.yubrajsahoo.smf4j.api.annotation.Timer;
+import io.github.yubrajsahoo.smf4j.api.constant.Smf4jSpelConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,6 +49,17 @@ public class CloudFileServiceImpl implements CloudFileService {
      * @return the URL or identifier of the uploaded file
      * @throws FileUploadException if an error occurs during file upload
      */
+    @Timer(
+            name = MetricsNames.SERVICE,
+            description = MetricsDescriptions.SERVICE_METHOD,
+            tags = {
+                    @Tags(key = MetricsKeys.API, value = MetricsValues.CLOUD_FILE_SERVICE),
+                    @Tags(key = MetricsKeys.OPERATION, value = MetricsValues.UPLOAD),
+                    @Tags(key = MetricsKeys.ACCESS_TYPE, value = MetricsValues.ACCESS_TYPE),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME),
+                    @Tags(key = MetricsKeys.OUTCOME, value = MetricsValues.GENERAL_OUTCOME)
+            }
+    )
     @Override
     public String upload(MultipartFile file, AccessType accessType) {
         FileMetaData metaData = customMapper.toFileMetaData(file.getOriginalFilename(), accessType);
@@ -66,6 +79,17 @@ public class CloudFileServiceImpl implements CloudFileService {
      * @param accessType the access type of the file
      * @return the URL to access the file
      */
+    @Timer(
+            name = MetricsNames.SERVICE,
+            description = MetricsDescriptions.SERVICE_METHOD,
+            tags = {
+                    @Tags(key = MetricsKeys.API, value = MetricsValues.CLOUD_FILE_SERVICE),
+                    @Tags(key = MetricsKeys.OPERATION, value = MetricsValues.GET_URL),
+                    @Tags(key = MetricsKeys.ACCESS_TYPE, value = MetricsValues.ACCESS_TYPE),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME),
+                    @Tags(key = MetricsKeys.OUTCOME, value = MetricsValues.GENERAL_OUTCOME)
+            }
+    )
     @Override
     @Cacheable(
             cacheNames = CacheNames.CLOUD_FILE_URL,
@@ -83,6 +107,17 @@ public class CloudFileServiceImpl implements CloudFileService {
      * @param fileName   the name of the file
      * @param accessType the access type of the file to delete
      */
+    @Timer(
+            name = MetricsNames.SERVICE,
+            description = MetricsDescriptions.SERVICE_METHOD,
+            tags = {
+                    @Tags(key = MetricsKeys.API, value = MetricsValues.CLOUD_FILE_SERVICE),
+                    @Tags(key = MetricsKeys.OPERATION, value = MetricsValues.DELETE),
+                    @Tags(key = MetricsKeys.ACCESS_TYPE, value = MetricsValues.ACCESS_TYPE),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME),
+                    @Tags(key = MetricsKeys.OUTCOME, value = MetricsValues.GENERAL_OUTCOME)
+            }
+    )
     @Override
     public void delete(String fileName, AccessType accessType) {
         FileMetaData fileMetaData = customMapper.toFileMetaData(fileName, accessType);
@@ -95,6 +130,17 @@ public class CloudFileServiceImpl implements CloudFileService {
      * @param accessType the access type of the files
      * @return a list of file data
      */
+    @Timer(
+            name = MetricsNames.SERVICE,
+            description = MetricsDescriptions.SERVICE_METHOD,
+            tags = {
+                    @Tags(key = MetricsKeys.API, value = MetricsValues.CLOUD_FILE_SERVICE),
+                    @Tags(key = MetricsKeys.OPERATION, value = MetricsValues.GET_ALL_URL),
+                    @Tags(key = MetricsKeys.ACCESS_TYPE, value = MetricsValues.ACCESS_TYPE),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME),
+                    @Tags(key = MetricsKeys.OUTCOME, value = MetricsValues.GENERAL_OUTCOME)
+            }
+    )
     @Override
     @Cacheable(
             cacheNames = CacheNames.ALL_CLOUD_FILES,

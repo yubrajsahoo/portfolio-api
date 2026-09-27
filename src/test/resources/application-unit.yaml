@@ -5,3 +5,5 @@ cloudinary:
   api-key: test-key
   api-secret: test-secret
   privateUrlTtl: 1m # 1min
+cors:
+  allowed-origins: http://localhost:5173

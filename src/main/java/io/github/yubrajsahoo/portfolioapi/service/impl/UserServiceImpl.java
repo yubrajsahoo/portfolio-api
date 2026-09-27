@@ -12,11 +12,14 @@ import io.github.yubrajsahoo.portfolioapi.entity.Role;
 import io.github.yubrajsahoo.portfolioapi.entity.User;
 import io.github.yubrajsahoo.portfolioapi.exception.RegistrationException;
 import io.github.yubrajsahoo.portfolioapi.mapper.CustomMapper;
-import io.github.yubrajsahoo.portfolioapi.metrics.MetricsType;
+import io.github.yubrajsahoo.portfolioapi.metrics.*;
 import io.github.yubrajsahoo.portfolioapi.repository.PrivilegeRepository;
 import io.github.yubrajsahoo.portfolioapi.repository.RoleRepository;
 import io.github.yubrajsahoo.portfolioapi.repository.UserRepository;
 import io.github.yubrajsahoo.portfolioapi.service.UserService;
+import io.github.yubrajsahoo.smf4j.api.annotation.Tags;
+import io.github.yubrajsahoo.smf4j.api.annotation.Timer;
+import io.github.yubrajsahoo.smf4j.api.constant.Smf4jSpelConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -45,6 +48,16 @@ public class UserServiceImpl implements UserService {
      * @return a success message
      * @throws RegistrationException if the user already exists or no valid roles found
      */
+    @Timer(
+            name = MetricsNames.SERVICE,
+            description = MetricsDescriptions.SERVICE_METHOD,
+            tags = {
+                    @Tags(key = MetricsKeys.API, value = MetricsValues.USER_SERVICE),
+                    @Tags(key = MetricsKeys.OPERATION, value = MetricsValues.REGISTER),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME),
+                    @Tags(key = MetricsKeys.OUTCOME, value = MetricsValues.GENERAL_OUTCOME)
+            }
+    )
     @Override
     @Transactional
     public String register(UserReqDto userDto) {
@@ -75,6 +88,16 @@ public class UserServiceImpl implements UserService {
      *
      * @return a list of all user DTOs
      */
+    @Timer(
+            name = MetricsNames.SERVICE,
+            description = MetricsDescriptions.SERVICE_METHOD,
+            tags = {
+                    @Tags(key = MetricsKeys.API, value = MetricsValues.USER_SERVICE),
+                    @Tags(key = MetricsKeys.OPERATION, value = MetricsValues.GET_ALL_USERS),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME),
+                    @Tags(key = MetricsKeys.OUTCOME, value = MetricsValues.GENERAL_OUTCOME)
+            }
+    )
     @Override
     public List<UserResDto> getAllUsers() {
         return userRepository.findAll().stream().map(user -> {
@@ -101,6 +124,16 @@ public class UserServiceImpl implements UserService {
      * @return a success message
      * @throws RegistrationException if the role already exists
      */
+    @Timer(
+            name = MetricsNames.SERVICE,
+            description = MetricsDescriptions.SERVICE_METHOD,
+            tags = {
+                    @Tags(key = MetricsKeys.API, value = MetricsValues.USER_SERVICE),
+                    @Tags(key = MetricsKeys.OPERATION, value = MetricsValues.INSERT_ROLE),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME),
+                    @Tags(key = MetricsKeys.OUTCOME, value = MetricsValues.GENERAL_OUTCOME)
+            }
+    )
     @Override
     @Transactional
     public String insertRole(RoleReqDto roleDto) {
@@ -126,6 +159,16 @@ public class UserServiceImpl implements UserService {
      *
      * @return a list of all role DTOs
      */
+    @Timer(
+            name = MetricsNames.SERVICE,
+            description = MetricsDescriptions.SERVICE_METHOD,
+            tags = {
+                    @Tags(key = MetricsKeys.API, value = MetricsValues.USER_SERVICE),
+                    @Tags(key = MetricsKeys.OPERATION, value = MetricsValues.GET_ALL_ROLES),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME),
+                    @Tags(key = MetricsKeys.OUTCOME, value = MetricsValues.GENERAL_OUTCOME)
+            }
+    )
     @Override
     public List<RoleResDto> getAllRoles() {
         return roleRepository.findAll().stream().map(role -> {
@@ -147,6 +190,16 @@ public class UserServiceImpl implements UserService {
      * @return a success message
      * @throws RegistrationException if the privilege already exists
      */
+    @Timer(
+            name = MetricsNames.SERVICE,
+            description = MetricsDescriptions.SERVICE_METHOD,
+            tags = {
+                    @Tags(key = MetricsKeys.API, value = MetricsValues.USER_SERVICE),
+                    @Tags(key = MetricsKeys.OPERATION, value = MetricsValues.INSERT_PRIVILEGE),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME),
+                    @Tags(key = MetricsKeys.OUTCOME, value = MetricsValues.GENERAL_OUTCOME)
+            }
+    )
     @Override
     @Transactional
     public String insertPrivilege(PrivilegeReqDto privilegeDto) {
@@ -167,6 +220,16 @@ public class UserServiceImpl implements UserService {
      *
      * @return a list of all privilege DTOs
      */
+    @Timer(
+            name = MetricsNames.SERVICE,
+            description = MetricsDescriptions.SERVICE_METHOD,
+            tags = {
+                    @Tags(key = MetricsKeys.API, value = MetricsValues.USER_SERVICE),
+                    @Tags(key = MetricsKeys.OPERATION, value = MetricsValues.GET_ALL_PRIVILEGES),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME),
+                    @Tags(key = MetricsKeys.OUTCOME, value = MetricsValues.GENERAL_OUTCOME)
+            }
+    )
     @Override
     public List<PrivilegeResDto> getAllPrivileges() {
         return privilegeRepository.findAll().stream().map(privilege -> {
@@ -183,6 +246,16 @@ public class UserServiceImpl implements UserService {
      * @param roleName the name of the role
      * @return a success message or not found message
      */
+    @Timer(
+            name = MetricsNames.SERVICE,
+            description = MetricsDescriptions.SERVICE_METHOD,
+            tags = {
+                    @Tags(key = MetricsKeys.API, value = MetricsValues.USER_SERVICE),
+                    @Tags(key = MetricsKeys.OPERATION, value = MetricsValues.ASSIGN_ROLE_TO_USER),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME),
+                    @Tags(key = MetricsKeys.OUTCOME, value = MetricsValues.GENERAL_OUTCOME)
+            }
+    )
     @Override
     @Transactional
     public String assignRoleToUser(String email, String roleName) {
@@ -210,6 +283,16 @@ public class UserServiceImpl implements UserService {
      * @param privilegeName the name of the privilege
      * @return a success message or not found message
      */
+    @Timer(
+            name = MetricsNames.SERVICE,
+            description = MetricsDescriptions.SERVICE_METHOD,
+            tags = {
+                    @Tags(key = MetricsKeys.API, value = MetricsValues.USER_SERVICE),
+                    @Tags(key = MetricsKeys.OPERATION, value = MetricsValues.ASSIGN_PRIVILEGE_TO_ROLE),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME),
+                    @Tags(key = MetricsKeys.OUTCOME, value = MetricsValues.GENERAL_OUTCOME)
+            }
+    )
     @Override
     @Transactional
     public String assignPrivilegeToRole(String roleName, String privilegeName) {

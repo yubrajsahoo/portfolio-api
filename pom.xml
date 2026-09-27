@@ -31,7 +31,7 @@
         <com.cloudinary.http5.version>2.0.0</com.cloudinary.http5.version>
         <com.fasterxml.jackson.core.version>2.17.2</com.fasterxml.jackson.core.version>
         <me.paulschwarz.dotenv.version>5.1.0</me.paulschwarz.dotenv.version>
-        <io.github.yubrajsahoo.smf4j.version>0.0.1</io.github.yubrajsahoo.smf4j.version>
+        <io.github.yubrajsahoo.smf4j.version>0.1-SNAPSHOT</io.github.yubrajsahoo.smf4j.version>
 
         <!--    Quality  check properties    -->
         <sonar.maven.plugin.version>4.0.0.4121</sonar.maven.plugin.version>
@@ -59,11 +59,12 @@
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>io.github.yubrajsahoo</groupId>
-            <artifactId>smf4j-core</artifactId>
+            <artifactId>smf4j-spring-boot-starter</artifactId>
             <version>${io.github.yubrajsahoo.smf4j.version}</version>
         </dependency>
 

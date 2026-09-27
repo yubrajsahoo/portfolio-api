@@ -6,6 +6,10 @@
 
 package io.github.yubrajsahoo.portfolioapi.exception.handler;
 
+import io.github.yubrajsahoo.portfolioapi.metrics.*;
+import io.github.yubrajsahoo.smf4j.api.annotation.Counter;
+import io.github.yubrajsahoo.smf4j.api.annotation.Tags;
+import io.github.yubrajsahoo.smf4j.api.constant.Smf4jSpelConstants;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -43,6 +47,14 @@ public class GlobalExceptionHandler {
      * @param ex the AuthorizationDeniedException that was thrown
      * @return a {@link ProblemDetail} with HTTP status 403 (Forbidden)
      */
+    @Counter(
+            name = MetricsNames.EXCEPTION,
+            description = MetricsDescriptions.EXCEPTION_HANDLER,
+            tags = {
+                    @Tags(key = MetricsKeys.EXCEPTION_TYPE, value = MetricsValues.EXCEPTION_NAME),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME)
+            }
+    )
     @ExceptionHandler(AuthorizationDeniedException.class)
     public ProblemDetail handleAuthorizationDeniedException(AuthorizationDeniedException ex) {
         log.warn("Authorization denied exception occurred: {}", ex.getMessage(), ex);
@@ -63,6 +75,14 @@ public class GlobalExceptionHandler {
      * @param ex the CloudinaryException that was thrown
      * @return a {@link ProblemDetail} with HTTP status 503 (Service Unavailable)
      */
+    @Counter(
+            name = MetricsNames.EXCEPTION,
+            description = MetricsDescriptions.EXCEPTION_HANDLER,
+            tags = {
+                    @Tags(key = MetricsKeys.EXCEPTION_TYPE, value = MetricsValues.EXCEPTION_NAME),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME)
+            }
+    )
     @ExceptionHandler(io.github.yubrajsahoo.portfolioapi.exception.CloudinaryException.class)
     public ProblemDetail handleCloudinaryException(io.github.yubrajsahoo.portfolioapi.exception.CloudinaryException ex) {
         log.warn("Cloudinary exception occurred: {}", ex.getMessage(), ex);
@@ -83,6 +103,14 @@ public class GlobalExceptionHandler {
      * @param ex the FileUploadException that was thrown
      * @return a {@link ProblemDetail} with HTTP status 422 (Unprocessable Content)
      */
+    @Counter(
+            name = MetricsNames.EXCEPTION,
+            description = MetricsDescriptions.EXCEPTION_HANDLER,
+            tags = {
+                    @Tags(key = MetricsKeys.EXCEPTION_TYPE, value = MetricsValues.EXCEPTION_NAME),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME)
+            }
+    )
     @ExceptionHandler(io.github.yubrajsahoo.portfolioapi.exception.FileUploadException.class)
     public ProblemDetail handleFileUploadException(io.github.yubrajsahoo.portfolioapi.exception.FileUploadException ex) {
         log.warn("File upload exception occurred: {}", ex.getMessage(), ex);
@@ -103,6 +131,14 @@ public class GlobalExceptionHandler {
      * @param ex the ConstraintViolationException that was thrown
      * @return a {@link ProblemDetail} with HTTP status 400 (Bad Request) and a list of field errors
      */
+    @Counter(
+            name = MetricsNames.EXCEPTION,
+            description = MetricsDescriptions.EXCEPTION_HANDLER,
+            tags = {
+                    @Tags(key = MetricsKeys.EXCEPTION_TYPE, value = MetricsValues.EXCEPTION_NAME),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME)
+            }
+    )
     @ExceptionHandler(ConstraintViolationException.class)
     public ProblemDetail handleConstraintViolationException(ConstraintViolationException ex) {
         log.info("Constraint violation exception occurred: {}", ex.getMessage(), ex);
@@ -133,6 +169,14 @@ public class GlobalExceptionHandler {
      * @param ex the IllegalArgumentException that was thrown
      * @return a {@link ProblemDetail} with HTTP status 400 (Bad Request)
      */
+    @Counter(
+            name = MetricsNames.EXCEPTION,
+            description = MetricsDescriptions.EXCEPTION_HANDLER,
+            tags = {
+                    @Tags(key = MetricsKeys.EXCEPTION_TYPE, value = MetricsValues.EXCEPTION_NAME),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME)
+            }
+    )
     @ExceptionHandler(IllegalArgumentException.class)
     public ProblemDetail handleIllegalArgumentException(IllegalArgumentException ex) {
         log.info("Illegal argument exception occurred: {}", ex.getMessage(), ex);
@@ -150,16 +194,24 @@ public class GlobalExceptionHandler {
     /**
      * Handles {@link HttpRequestMethodNotSupportedException}.
      *
-     * @param e the HttpRequestMethodNotSupportedException that was thrown
+     * @param ex the HttpRequestMethodNotSupportedException that was thrown
      * @return a {@link ProblemDetail} with HTTP status 400 (Bad Request)
      */
+    @Counter(
+            name = MetricsNames.EXCEPTION,
+            description = MetricsDescriptions.EXCEPTION_HANDLER,
+            tags = {
+                    @Tags(key = MetricsKeys.EXCEPTION_TYPE, value = MetricsValues.EXCEPTION_NAME),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME)
+            }
+    )
     @ExceptionHandler({HttpRequestMethodNotSupportedException.class, NoResourceFoundException.class})
-    public ProblemDetail handleHttpRequestMethodNotSupportedException(Exception e) {
-        log.debug("HttpRequestMethodNotSupportedException occurred: {}", e.getMessage(), e);
+    public ProblemDetail handleHttpRequestMethodNotSupportedException(Exception ex) {
+        log.debug("HttpRequestMethodNotSupportedException occurred: {}", ex.getMessage(), ex);
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.BAD_REQUEST,
-                e.getMessage()
+                ex.getMessage()
         );
 
         problemDetail.setTitle("Invalid Endpoint");
@@ -173,6 +225,14 @@ public class GlobalExceptionHandler {
      * @param ex the RegistrationException that was thrown
      * @return a {@link ProblemDetail} with HTTP status 400 (Bad Request)
      */
+    @Counter(
+            name = MetricsNames.EXCEPTION,
+            description = MetricsDescriptions.EXCEPTION_HANDLER,
+            tags = {
+                    @Tags(key = MetricsKeys.EXCEPTION_TYPE, value = MetricsValues.EXCEPTION_NAME),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME)
+            }
+    )
     @ExceptionHandler(io.github.yubrajsahoo.portfolioapi.exception.RegistrationException.class)
     public ProblemDetail handleRegistrationException(io.github.yubrajsahoo.portfolioapi.exception.RegistrationException ex) {
         log.warn("Registration exception occurred: {}", ex.getMessage(), ex);
@@ -193,6 +253,14 @@ public class GlobalExceptionHandler {
      * @param ex the PortfolioApiException that was thrown
      * @return a {@link ProblemDetail} with HTTP status 500 (Internal Server Error)
      */
+    @Counter(
+            name = MetricsNames.EXCEPTION,
+            description = MetricsDescriptions.EXCEPTION_HANDLER,
+            tags = {
+                    @Tags(key = MetricsKeys.EXCEPTION_TYPE, value = MetricsValues.EXCEPTION_NAME),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME)
+            }
+    )
     @ExceptionHandler(io.github.yubrajsahoo.portfolioapi.exception.base.PortfolioApiException.class)
     public ProblemDetail handlePortfolioApiException(io.github.yubrajsahoo.portfolioapi.exception.base.PortfolioApiException ex) {
         log.error("Portfolio API exception occurred: {}", ex.getMessage(), ex);
@@ -213,6 +281,14 @@ public class GlobalExceptionHandler {
      * @param ex the Exception that was thrown
      * @return a {@link ProblemDetail} with HTTP status 500 (Internal Server Error)
      */
+    @Counter(
+            name = MetricsNames.EXCEPTION,
+            description = MetricsDescriptions.EXCEPTION_HANDLER,
+            tags = {
+                    @Tags(key = MetricsKeys.EXCEPTION_TYPE, value = MetricsValues.EXCEPTION_NAME),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME)
+            }
+    )
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleAllUncaughtException(Exception ex) {
         log.error("Unknown internal server error occurred: {}", ex.getMessage(), ex);
