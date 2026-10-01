@@ -12,6 +12,7 @@ import io.github.yubrajsahoo.smf4j.api.annotation.Tags;
 import io.github.yubrajsahoo.smf4j.api.constant.Smf4jSpelConstants;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import io.github.yubrajsahoo.smf4j.engine.utils.LogMetrics;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.authorization.AuthorizationDeniedException;
@@ -57,6 +58,12 @@ public class GlobalExceptionHandler {
     )
     @ExceptionHandler(AuthorizationDeniedException.class)
     public ProblemDetail handleAuthorizationDeniedException(AuthorizationDeniedException ex) {
+        LogMetrics.warn(
+                MetricsKeys.CLASS_NAME, MetricsValues.GLOBAL_EXCEPTION_HANDLER,
+                MetricsKeys.METHOD, "handleAuthorizationDeniedException",
+                MetricsKeys.EXCEPTION, ex.getClass().getSimpleName(),
+                MetricsKeys.REASON, MetricsValues.NONE
+        );
         log.warn("Authorization denied exception occurred: {}", ex.getMessage(), ex);
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
@@ -85,6 +92,12 @@ public class GlobalExceptionHandler {
     )
     @ExceptionHandler(io.github.yubrajsahoo.portfolioapi.exception.CloudinaryException.class)
     public ProblemDetail handleCloudinaryException(io.github.yubrajsahoo.portfolioapi.exception.CloudinaryException ex) {
+        LogMetrics.warn(
+                MetricsKeys.CLASS_NAME, MetricsValues.GLOBAL_EXCEPTION_HANDLER,
+                MetricsKeys.METHOD, "handleCloudinaryException",
+                MetricsKeys.EXCEPTION, ex.getClass().getSimpleName(),
+                MetricsKeys.REASON, MetricsValues.NONE
+        );
         log.warn("Cloudinary exception occurred: {}", ex.getMessage(), ex);
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
@@ -113,6 +126,12 @@ public class GlobalExceptionHandler {
     )
     @ExceptionHandler(io.github.yubrajsahoo.portfolioapi.exception.FileUploadException.class)
     public ProblemDetail handleFileUploadException(io.github.yubrajsahoo.portfolioapi.exception.FileUploadException ex) {
+        LogMetrics.warn(
+                MetricsKeys.CLASS_NAME, MetricsValues.GLOBAL_EXCEPTION_HANDLER,
+                MetricsKeys.METHOD, "handleFileUploadException",
+                MetricsKeys.EXCEPTION, ex.getClass().getSimpleName(),
+                MetricsKeys.REASON, MetricsValues.NONE
+        );
         log.warn("File upload exception occurred: {}", ex.getMessage(), ex);
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
@@ -141,6 +160,12 @@ public class GlobalExceptionHandler {
     )
     @ExceptionHandler(ConstraintViolationException.class)
     public ProblemDetail handleConstraintViolationException(ConstraintViolationException ex) {
+        LogMetrics.info(
+                MetricsKeys.CLASS_NAME, MetricsValues.GLOBAL_EXCEPTION_HANDLER,
+                MetricsKeys.METHOD, "handleConstraintViolationException",
+                MetricsKeys.EXCEPTION, ex.getClass().getSimpleName(),
+                MetricsKeys.REASON, MetricsValues.NONE
+        );
         log.info("Constraint violation exception occurred: {}", ex.getMessage(), ex);
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
@@ -179,6 +204,12 @@ public class GlobalExceptionHandler {
     )
     @ExceptionHandler(IllegalArgumentException.class)
     public ProblemDetail handleIllegalArgumentException(IllegalArgumentException ex) {
+        LogMetrics.info(
+                MetricsKeys.CLASS_NAME, MetricsValues.GLOBAL_EXCEPTION_HANDLER,
+                MetricsKeys.METHOD, "handleIllegalArgumentException",
+                MetricsKeys.EXCEPTION, ex.getClass().getSimpleName(),
+                MetricsKeys.REASON, MetricsValues.NONE
+        );
         log.info("Illegal argument exception occurred: {}", ex.getMessage(), ex);
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
@@ -207,6 +238,12 @@ public class GlobalExceptionHandler {
     )
     @ExceptionHandler({HttpRequestMethodNotSupportedException.class, NoResourceFoundException.class})
     public ProblemDetail handleHttpRequestMethodNotSupportedException(Exception ex) {
+        LogMetrics.debug(
+                MetricsKeys.CLASS_NAME, MetricsValues.GLOBAL_EXCEPTION_HANDLER,
+                MetricsKeys.METHOD, "handleHttpRequestMethodNotSupportedException",
+                MetricsKeys.EXCEPTION, ex.getClass().getSimpleName(),
+                MetricsKeys.REASON, MetricsValues.NONE
+        );
         log.debug("HttpRequestMethodNotSupportedException occurred: {}", ex.getMessage(), ex);
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
@@ -235,6 +272,12 @@ public class GlobalExceptionHandler {
     )
     @ExceptionHandler(io.github.yubrajsahoo.portfolioapi.exception.RegistrationException.class)
     public ProblemDetail handleRegistrationException(io.github.yubrajsahoo.portfolioapi.exception.RegistrationException ex) {
+        LogMetrics.warn(
+                MetricsKeys.CLASS_NAME, MetricsValues.GLOBAL_EXCEPTION_HANDLER,
+                MetricsKeys.METHOD, "handleRegistrationException",
+                MetricsKeys.EXCEPTION, ex.getClass().getSimpleName(),
+                MetricsKeys.REASON, MetricsValues.NONE
+        );
         log.warn("Registration exception occurred: {}", ex.getMessage(), ex);
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
@@ -263,6 +306,12 @@ public class GlobalExceptionHandler {
     )
     @ExceptionHandler(io.github.yubrajsahoo.portfolioapi.exception.base.PortfolioApiException.class)
     public ProblemDetail handlePortfolioApiException(io.github.yubrajsahoo.portfolioapi.exception.base.PortfolioApiException ex) {
+        LogMetrics.error(
+                MetricsKeys.CLASS_NAME, MetricsValues.GLOBAL_EXCEPTION_HANDLER,
+                MetricsKeys.METHOD, "handlePortfolioApiException",
+                MetricsKeys.EXCEPTION, ex.getClass().getSimpleName(),
+                MetricsKeys.REASON, MetricsValues.NONE
+        );
         log.error("Portfolio API exception occurred: {}", ex.getMessage(), ex);
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
@@ -291,6 +340,12 @@ public class GlobalExceptionHandler {
     )
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleAllUncaughtException(Exception ex) {
+        LogMetrics.error(
+                MetricsKeys.CLASS_NAME, MetricsValues.GLOBAL_EXCEPTION_HANDLER,
+                MetricsKeys.METHOD, "handleAllUncaughtException",
+                MetricsKeys.EXCEPTION, ex.getClass().getSimpleName(),
+                MetricsKeys.REASON, MetricsValues.NONE
+        );
         log.error("Unknown internal server error occurred: {}", ex.getMessage(), ex);
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(

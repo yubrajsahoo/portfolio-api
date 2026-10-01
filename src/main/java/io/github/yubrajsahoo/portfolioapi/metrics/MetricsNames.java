@@ -18,4 +18,6 @@ public class MetricsNames {
     public static final String EXCEPTION = "api.portfolio.exception";
 
     public static final String GAUGE_LOGINS = "api.portfolio.logins.total";
+
+    public static final String LOG_METRICS = "api.portfolio.metrics.log";
 }

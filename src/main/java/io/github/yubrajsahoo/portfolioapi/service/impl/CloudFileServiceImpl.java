@@ -21,6 +21,7 @@ import io.github.yubrajsahoo.smf4j.api.annotation.Timer;
 import io.github.yubrajsahoo.smf4j.api.constant.Smf4jSpelConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import io.github.yubrajsahoo.smf4j.engine.utils.LogMetrics;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -66,6 +67,7 @@ public class CloudFileServiceImpl implements CloudFileService {
         try {
             return cloudClient.upload(file.getInputStream(), metaData);
         } catch (IOException e) {
+            LogMetrics.warn(MetricsKeys.CLASS_NAME, MetricsValues.CLOUD_FILE_SERVICE_IMPL, MetricsKeys.METHOD, MetricsValues.METHOD_UPLOAD, MetricsKeys.EXCEPTION, e.getClass().getSimpleName(), MetricsKeys.REASON, MetricsValues.NONE);
             log.info("Unable to read file: {}", e.getMessage(), e);
             throw new FileUploadException("Unable To Read File", MetricsType.BAD_REQUEST, e);
         }
@@ -96,6 +98,7 @@ public class CloudFileServiceImpl implements CloudFileService {
             key = CacheExpressions.CLOUD_GET_URL
     )
     public String getUrl(String fileName, AccessType accessType) {
+        LogMetrics.info(MetricsKeys.CLASS_NAME, MetricsValues.CLOUD_FILE_SERVICE_IMPL, MetricsKeys.METHOD, MetricsValues.METHOD_GET_URL, MetricsKeys.EXCEPTION, MetricsValues.NONE, MetricsKeys.REASON, MetricsValues.NONE);
         log.info("Fetching file url from service: {}", fileName);
         FileMetaData fileMetaData = customMapper.toFileMetaData(fileName, accessType);
         return cloudClient.getUrl(fileMetaData);
@@ -147,6 +150,7 @@ public class CloudFileServiceImpl implements CloudFileService {
             key = CacheExpressions.ALL_CLOUD_FILES
     )
     public java.util.List<CloudFileDto> getAllFileNames(AccessType accessType) {
+        LogMetrics.info(MetricsKeys.CLASS_NAME, MetricsValues.CLOUD_FILE_SERVICE_IMPL, MetricsKeys.METHOD, "getAllFileNames", MetricsKeys.EXCEPTION, MetricsValues.NONE, MetricsKeys.REASON, MetricsValues.NONE);
         log.info("Fetching all file names from service: {}", accessType);
         return cloudClient.getAllUrls(accessType).stream()
                 .map(customMapper::toCloudFileDto)

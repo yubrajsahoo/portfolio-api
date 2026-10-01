@@ -20,4 +20,6 @@ public class MetricsDescriptions {
     public static final String EXCEPTION_HANDLER = "Exception Handler Processed Error";
 
     public static final String TOTAL_LOGINS = "Total number of successful logins";
+
+    public static final String LOG_METRICS = "Metrics For Logs";
 }

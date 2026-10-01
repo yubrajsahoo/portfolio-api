@@ -63,4 +63,10 @@ public class MetricsValues {
     public static final String LOAD_USER_BY_USERNAME = "LOAD_USER_BY_USERNAME";
 
     public static final String NO_OF_USER_LOGIN = "NO_OF_USER_LOGIN";
+    public static final String NONE = "NONE";
+    public static final String GLOBAL_EXCEPTION_HANDLER = "GlobalExceptionHandler";
+    public static final String CLOUDINARY_CLIENT = "CloudinaryClient";
+    public static final String CLOUD_FILE_SERVICE_IMPL = "CloudFileServiceImpl";
+    public static final String METHOD_UPLOAD = "upload";
+    public static final String METHOD_GET_URL = "getUrl";
 }

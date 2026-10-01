@@ -23,4 +23,9 @@ public class MetricsKeys {
     public static final String OUTCOME = "outcome";
 
     public static final String EXCEPTION_TYPE = "exception_type";
+
+    public static final String CLASS_NAME = "classname";
+
+    public static final String EXCEPTION = "exception";
+    public static final String REASON = "reason";
 }

@@ -38,7 +38,14 @@ management:
         include: health,info,prometheus
 
 smf4j:
-  metrics:
-    log-level: WARN
-    log-message: "Metrics Logged For->"
-    disable-log-level: DISABLED
+  # Configuration for log metrics
+  log-metrics:
+    name: "api.portfolio.log.metrics"
+    description: "Log Metrics For Portfolio API"
+
+  # Configuration for metrics logging behavior
+  logger-config:
+    log-level: "INFO"
+    log-message: "Metrics Logs For Portfolio API With->"
+    disable-log-level: "DEBUG"
+    disable-log-message: "Metrics Disabled For Portfolio API->"
