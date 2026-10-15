@@ -3,7 +3,7 @@ springdotenv:
 
 spring:
   datasource:
-    url: jdbc:h2:file:./data/portfoliodb
+    url: jdbc:h2:file:./data/portfoliodb;AUTO_SERVER=TRUE
     username: yubraj
     password: cde34rfv
     driver-class-name: org.h2.Driver

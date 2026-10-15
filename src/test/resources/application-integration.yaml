@@ -8,3 +8,5 @@ cloudinary:
 
 springdotenv:
   filename: .env
+cors:
+  allowed-origins: http://localhost:5173

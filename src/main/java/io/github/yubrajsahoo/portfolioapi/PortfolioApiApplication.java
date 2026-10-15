@@ -3,6 +3,8 @@ package io.github.yubrajsahoo.portfolioapi;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import org.springframework.scheduling.annotation.EnableScheduling;
+
 /**
  * Application for portfolio api
  *
@@ -10,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since 0.0.1-SNAPSHOT
  */
 @SpringBootApplication
+@EnableScheduling
 public class PortfolioApiApplication {
 
     /**

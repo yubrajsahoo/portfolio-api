@@ -18,6 +18,23 @@ spring:
     caffeine:
       spec: maximumSize=${CACHE_MAX_SIZE:1000},expireAfterWrite=${CACHE_TTL:8m}
 
+  mail:
+    host: ${SPRING_MAIL_HOST:smtp.gmail.com}
+    port: ${SPRING_MAIL_PORT:587}
+    username: ${SPRING_MAIL_USERNAME:}
+    password: ${SPRING_MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: ${SPRING_MAIL_SMTP_AUTH:true}
+          starttls:
+            enable: ${SPRING_MAIL_SMTP_STARTTLS_ENABLE:true}
+
+contact:
+  notification:
+    recipient-email: ${CONTACT_NOTIFICATION_EMAIL:yubraj2000yubraj@gmail.com}
+
+
 cloudinary:
   cloud-name: ${CLOUDINARY_CLOUD_NAME}
   api-key: ${CLOUDINARY_API_KEY}
@@ -32,7 +49,23 @@ springdoc:
     path: /api/openapi
 
 management:
+  health:
+    mail:
+      enabled: false
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,prometheus
+
+smf4j:
+  # Configuration for log metrics
+  log-metrics:
+    name: "api.portfolio.log.metrics"
+    description: "Log Metrics For Portfolio API"
+
+  # Configuration for metrics logging behavior
+  logger-config:
+    log-level: "INFO"
+    log-message: "Metrics Logs For Portfolio API With->"
+    disable-log-level: "DEBUG"
+    disable-log-message: "Metrics Disabled For Portfolio API->"

@@ -15,8 +15,12 @@ import io.github.yubrajsahoo.portfolioapi.domain.FileMetaData;
 import io.github.yubrajsahoo.portfolioapi.enums.AccessType;
 import io.github.yubrajsahoo.portfolioapi.exception.CloudinaryException;
 import io.github.yubrajsahoo.portfolioapi.exception.FileUploadException;
-import io.github.yubrajsahoo.portfolioapi.metrics.MetricsType;
+import io.github.yubrajsahoo.portfolioapi.metrics.*;
 import io.github.yubrajsahoo.portfolioapi.utils.FileUtils;
+import io.github.yubrajsahoo.smf4j.api.annotation.Tags;
+import io.github.yubrajsahoo.smf4j.api.annotation.Timer;
+import io.github.yubrajsahoo.smf4j.api.constant.Smf4jSpelConstants;
+import io.github.yubrajsahoo.smf4j.engine.utils.LogMetrics;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,6 +63,18 @@ public class CloudinaryClient implements CloudClient {
      * @return the secure URL of the uploaded file in Cloudinary
      * @throws CloudinaryException if an error occurs during the upload process
      */
+    @Timer(
+            name = MetricsNames.EXTERNAL_SERVICE,
+            description = MetricsDescriptions.CLOUDINARY,
+            tags = {
+                    @Tags(key = MetricsKeys.API, value = MetricsValues.CLOUDINARY),
+                    @Tags(key = MetricsKeys.OPERATION, value = MetricsValues.UPLOAD),
+                    @Tags(key = MetricsKeys.FILE_TYPE, value = MetricsValues.META_DATA_RESOURCE_TYPE_NAME),
+                    @Tags(key = MetricsKeys.ACCESS_TYPE, value = MetricsValues.META_DATA_ACCESS_TYPE_NAME),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME),
+                    @Tags(key = MetricsKeys.OUTCOME, value = MetricsValues.CLOUDINARY_OUTCOME)
+            }
+    )
     @Override
     public String upload(InputStream inputStream, FileMetaData metaData) {
         String publicId = buildPublicId(metaData);
@@ -76,16 +92,34 @@ public class CloudinaryClient implements CloudClient {
                     .upload(inputStream.readAllBytes(), option);
 
         } catch (IOException ioException) {
+            LogMetrics.info(
+                    MetricsKeys.CLASS_NAME, MetricsValues.CLOUDINARY_CLIENT,
+                    MetricsKeys.METHOD, MetricsValues.METHOD_UPLOAD,
+                    MetricsKeys.EXCEPTION, ioException.getClass().getSimpleName(),
+                    MetricsKeys.REASON, MetricsValues.NONE
+            );
             log.info("Unable to Read file: {}", ioException.getMessage(), ioException);
             throw new FileUploadException("Unable to Read File",
                     MetricsType.BAD_REQUEST, ioException);
         } catch (Exception exception) {
+            LogMetrics.warn(
+                    MetricsKeys.CLASS_NAME, MetricsValues.CLOUDINARY_CLIENT,
+                    MetricsKeys.METHOD, MetricsValues.METHOD_UPLOAD,
+                    MetricsKeys.EXCEPTION, exception.getClass().getSimpleName(),
+                    MetricsKeys.REASON, MetricsValues.NONE
+            );
             log.warn("Unable to upload file in Cloudinary: {}", exception.getMessage(), exception);
             throw new CloudinaryException("Exception occurred while uploading file to Cloudinary",
                     MetricsType.EXTERNAL_ERROR, exception);
         }
 
         if (uploadResult == null || uploadResult.get(SECURE_URL) == null) {
+            LogMetrics.warn(
+                    MetricsKeys.CLASS_NAME, MetricsValues.CLOUDINARY_CLIENT,
+                    MetricsKeys.METHOD, MetricsValues.METHOD_UPLOAD,
+                    MetricsKeys.EXCEPTION, MetricsValues.NONE,
+                    MetricsKeys.REASON, "Invalid Response"
+            );
             log.warn("Getting Invalid Response from Cloudinary: {}", uploadResult);
             throw new CloudinaryException("Error while uploading file with name : " + publicId,
                     MetricsType.EXTERNAL_ERROR);
@@ -103,6 +137,18 @@ public class CloudinaryClient implements CloudClient {
      * @throws FileUploadException if the access type is unsupported
      * @throws CloudinaryException if an error occurs while generating the URL
      */
+    @Timer(
+            name = MetricsNames.EXTERNAL_SERVICE,
+            description = MetricsDescriptions.CLOUDINARY,
+            tags = {
+                    @Tags(key = MetricsKeys.API, value = MetricsValues.CLOUDINARY),
+                    @Tags(key = MetricsKeys.OPERATION, value = MetricsValues.GET_URL),
+                    @Tags(key = MetricsKeys.FILE_TYPE, value = MetricsValues.META_DATA_RESOURCE_TYPE_NAME),
+                    @Tags(key = MetricsKeys.ACCESS_TYPE, value = MetricsValues.META_DATA_ACCESS_TYPE_NAME),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME),
+                    @Tags(key = MetricsKeys.OUTCOME, value = MetricsValues.CLOUDINARY_OUTCOME)
+            }
+    )
     @Override
     public String getUrl(FileMetaData metaData) {
         String publicId = buildPublicId(metaData);
@@ -128,9 +174,21 @@ public class CloudinaryClient implements CloudClient {
                 default -> throw new FileUploadException("Unsupported access type", MetricsType.ERROR);
             }
         } catch (FileUploadException exception) {
+            LogMetrics.error(
+                    MetricsKeys.CLASS_NAME, MetricsValues.CLOUDINARY_CLIENT,
+                    MetricsKeys.METHOD, MetricsValues.METHOD_GET_URL,
+                    MetricsKeys.EXCEPTION, exception.getClass().getSimpleName(),
+                    MetricsKeys.REASON, MetricsValues.NONE
+            );
             log.error("Getting Invalid AccessType : {}", exception.getMessage(), exception);
             throw exception;
         } catch (Exception exception) {
+            LogMetrics.warn(
+                    MetricsKeys.CLASS_NAME, MetricsValues.CLOUDINARY_CLIENT,
+                    MetricsKeys.METHOD, MetricsValues.METHOD_GET_URL,
+                    MetricsKeys.EXCEPTION, exception.getClass().getSimpleName(),
+                    MetricsKeys.REASON, MetricsValues.NONE
+            );
             log.warn("Getting Error while getting url: {}", exception.getMessage(), exception);
             throw new CloudinaryException("Failed to generate URL for file: " + metaData.getFileName(),
                     MetricsType.EXTERNAL_ERROR, exception);
@@ -143,6 +201,18 @@ public class CloudinaryClient implements CloudClient {
      * @param metaData the metadata associated with the file to be deleted
      * @throws CloudinaryException if an error occurs during the deletion process
      */
+    @Timer(
+            name = MetricsNames.EXTERNAL_SERVICE,
+            description = MetricsDescriptions.CLOUDINARY,
+            tags = {
+                    @Tags(key = MetricsKeys.API, value = MetricsValues.CLOUDINARY),
+                    @Tags(key = MetricsKeys.OPERATION, value = MetricsValues.DELETE),
+                    @Tags(key = MetricsKeys.FILE_TYPE, value = MetricsValues.META_DATA_RESOURCE_TYPE_NAME),
+                    @Tags(key = MetricsKeys.ACCESS_TYPE, value = MetricsValues.META_DATA_ACCESS_TYPE_NAME),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME),
+                    @Tags(key = MetricsKeys.OUTCOME, value = MetricsValues.CLOUDINARY_OUTCOME)
+            }
+    )
     @Override
     public void delete(FileMetaData metaData) {
         String publicId = buildPublicId(metaData);
@@ -155,6 +225,12 @@ public class CloudinaryClient implements CloudClient {
             cloudinary.uploader()
                     .destroy(publicId, option);
         } catch (Exception exception) {
+            LogMetrics.warn(
+                    MetricsKeys.CLASS_NAME, MetricsValues.CLOUDINARY_CLIENT,
+                    MetricsKeys.METHOD, "delete",
+                    MetricsKeys.EXCEPTION, exception.getClass().getSimpleName(),
+                    MetricsKeys.REASON, MetricsValues.NONE
+            );
             log.warn("Unable to delete file: {}", exception.getMessage(), exception);
             throw new CloudinaryException("Exception occurred while deleting file from Cloudinary: " + metaData.getFileName(),
                     MetricsType.EXTERNAL_ERROR, exception);
@@ -169,6 +245,19 @@ public class CloudinaryClient implements CloudClient {
      * @return a list of file URLs
      * @throws CloudinaryException if an error occurs while fetching files from Cloudinary
      */
+    @Timer(
+            name = MetricsNames.EXTERNAL_SERVICE,
+            description = MetricsDescriptions.CLOUDINARY,
+            tags = {
+                    @Tags(key = MetricsKeys.API, value = MetricsValues.CLOUDINARY),
+                    @Tags(key = MetricsKeys.OPERATION, value = MetricsValues.GET_ALL_URL),
+                    @Tags(key = MetricsKeys.FILE_TYPE, value = MetricsValues.ALL),
+                    @Tags(key = MetricsKeys.ACCESS_TYPE, value = MetricsValues.ACCESS_TYPE),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME),
+                    @Tags(key = MetricsKeys.OUTCOME, value = MetricsValues.CLOUDINARY_OUTCOME)
+            }
+    )
+    @Override
     public List<String> getAllUrls(AccessType accessType) {
         List<String> fileUrls = new ArrayList<>();
 

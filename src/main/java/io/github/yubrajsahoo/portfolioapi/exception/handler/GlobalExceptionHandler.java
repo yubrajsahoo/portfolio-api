@@ -6,8 +6,13 @@
 
 package io.github.yubrajsahoo.portfolioapi.exception.handler;
 
+import io.github.yubrajsahoo.portfolioapi.metrics.*;
+import io.github.yubrajsahoo.smf4j.api.annotation.Counter;
+import io.github.yubrajsahoo.smf4j.api.annotation.Tags;
+import io.github.yubrajsahoo.smf4j.api.constant.Smf4jSpelConstants;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import io.github.yubrajsahoo.smf4j.engine.utils.LogMetrics;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.authorization.AuthorizationDeniedException;
@@ -43,8 +48,22 @@ public class GlobalExceptionHandler {
      * @param ex the AuthorizationDeniedException that was thrown
      * @return a {@link ProblemDetail} with HTTP status 403 (Forbidden)
      */
+    @Counter(
+            name = MetricsNames.EXCEPTION,
+            description = MetricsDescriptions.EXCEPTION_HANDLER,
+            tags = {
+                    @Tags(key = MetricsKeys.EXCEPTION_TYPE, value = MetricsValues.EXCEPTION_NAME),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME)
+            }
+    )
     @ExceptionHandler(AuthorizationDeniedException.class)
     public ProblemDetail handleAuthorizationDeniedException(AuthorizationDeniedException ex) {
+        LogMetrics.warn(
+                MetricsKeys.CLASS_NAME, MetricsValues.GLOBAL_EXCEPTION_HANDLER,
+                MetricsKeys.METHOD, "handleAuthorizationDeniedException",
+                MetricsKeys.EXCEPTION, ex.getClass().getSimpleName(),
+                MetricsKeys.REASON, MetricsValues.NONE
+        );
         log.warn("Authorization denied exception occurred: {}", ex.getMessage(), ex);
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
@@ -63,8 +82,22 @@ public class GlobalExceptionHandler {
      * @param ex the CloudinaryException that was thrown
      * @return a {@link ProblemDetail} with HTTP status 503 (Service Unavailable)
      */
+    @Counter(
+            name = MetricsNames.EXCEPTION,
+            description = MetricsDescriptions.EXCEPTION_HANDLER,
+            tags = {
+                    @Tags(key = MetricsKeys.EXCEPTION_TYPE, value = MetricsValues.EXCEPTION_NAME),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME)
+            }
+    )
     @ExceptionHandler(io.github.yubrajsahoo.portfolioapi.exception.CloudinaryException.class)
     public ProblemDetail handleCloudinaryException(io.github.yubrajsahoo.portfolioapi.exception.CloudinaryException ex) {
+        LogMetrics.warn(
+                MetricsKeys.CLASS_NAME, MetricsValues.GLOBAL_EXCEPTION_HANDLER,
+                MetricsKeys.METHOD, "handleCloudinaryException",
+                MetricsKeys.EXCEPTION, ex.getClass().getSimpleName(),
+                MetricsKeys.REASON, MetricsValues.NONE
+        );
         log.warn("Cloudinary exception occurred: {}", ex.getMessage(), ex);
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
@@ -83,8 +116,22 @@ public class GlobalExceptionHandler {
      * @param ex the FileUploadException that was thrown
      * @return a {@link ProblemDetail} with HTTP status 422 (Unprocessable Content)
      */
+    @Counter(
+            name = MetricsNames.EXCEPTION,
+            description = MetricsDescriptions.EXCEPTION_HANDLER,
+            tags = {
+                    @Tags(key = MetricsKeys.EXCEPTION_TYPE, value = MetricsValues.EXCEPTION_NAME),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME)
+            }
+    )
     @ExceptionHandler(io.github.yubrajsahoo.portfolioapi.exception.FileUploadException.class)
     public ProblemDetail handleFileUploadException(io.github.yubrajsahoo.portfolioapi.exception.FileUploadException ex) {
+        LogMetrics.warn(
+                MetricsKeys.CLASS_NAME, MetricsValues.GLOBAL_EXCEPTION_HANDLER,
+                MetricsKeys.METHOD, "handleFileUploadException",
+                MetricsKeys.EXCEPTION, ex.getClass().getSimpleName(),
+                MetricsKeys.REASON, MetricsValues.NONE
+        );
         log.warn("File upload exception occurred: {}", ex.getMessage(), ex);
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
@@ -103,8 +150,22 @@ public class GlobalExceptionHandler {
      * @param ex the ConstraintViolationException that was thrown
      * @return a {@link ProblemDetail} with HTTP status 400 (Bad Request) and a list of field errors
      */
+    @Counter(
+            name = MetricsNames.EXCEPTION,
+            description = MetricsDescriptions.EXCEPTION_HANDLER,
+            tags = {
+                    @Tags(key = MetricsKeys.EXCEPTION_TYPE, value = MetricsValues.EXCEPTION_NAME),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME)
+            }
+    )
     @ExceptionHandler(ConstraintViolationException.class)
     public ProblemDetail handleConstraintViolationException(ConstraintViolationException ex) {
+        LogMetrics.info(
+                MetricsKeys.CLASS_NAME, MetricsValues.GLOBAL_EXCEPTION_HANDLER,
+                MetricsKeys.METHOD, "handleConstraintViolationException",
+                MetricsKeys.EXCEPTION, ex.getClass().getSimpleName(),
+                MetricsKeys.REASON, MetricsValues.NONE
+        );
         log.info("Constraint violation exception occurred: {}", ex.getMessage(), ex);
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
@@ -128,13 +189,68 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles {@link org.springframework.web.bind.MethodArgumentNotValidException}.
+     *
+     * @param ex the MethodArgumentNotValidException that was thrown
+     * @return a {@link ProblemDetail} with HTTP status 400 (Bad Request) and a map of field errors
+     */
+    @Counter(
+            name = MetricsNames.EXCEPTION,
+            description = MetricsDescriptions.EXCEPTION_HANDLER,
+            tags = {
+                    @Tags(key = MetricsKeys.EXCEPTION_TYPE, value = MetricsValues.EXCEPTION_NAME),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME)
+            }
+    )
+    @ExceptionHandler(org.springframework.web.bind.MethodArgumentNotValidException.class)
+    public ProblemDetail handleMethodArgumentNotValidException(org.springframework.web.bind.MethodArgumentNotValidException ex) {
+        LogMetrics.info(
+                MetricsKeys.CLASS_NAME, MetricsValues.GLOBAL_EXCEPTION_HANDLER,
+                MetricsKeys.METHOD, "handleMethodArgumentNotValidException",
+                MetricsKeys.EXCEPTION, ex.getClass().getSimpleName(),
+                MetricsKeys.REASON, MetricsValues.NONE
+        );
+        log.info("Method argument not valid exception occurred: {}", ex.getMessage(), ex);
+
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST,
+                "Validation failed"
+        );
+
+        problemDetail.setTitle("Bad Request");
+
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(fieldError ->
+                errors.put(fieldError.getField(), fieldError.getDefaultMessage())
+        );
+
+        problemDetail.setProperty("errors", errors);
+        problemDetail.setProperty(TIMESTAMP, Instant.now());
+        return problemDetail;
+    }
+
+    /**
      * Handles {@link IllegalArgumentException}.
      *
      * @param ex the IllegalArgumentException that was thrown
      * @return a {@link ProblemDetail} with HTTP status 400 (Bad Request)
      */
+    @Counter(
+            name = MetricsNames.EXCEPTION,
+            description = MetricsDescriptions.EXCEPTION_HANDLER,
+            tags = {
+                    @Tags(key = MetricsKeys.EXCEPTION_TYPE, value = MetricsValues.EXCEPTION_NAME),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME)
+            }
+    )
     @ExceptionHandler(IllegalArgumentException.class)
     public ProblemDetail handleIllegalArgumentException(IllegalArgumentException ex) {
+        LogMetrics.info(
+                MetricsKeys.CLASS_NAME, MetricsValues.GLOBAL_EXCEPTION_HANDLER,
+                MetricsKeys.METHOD, "handleIllegalArgumentException",
+                MetricsKeys.EXCEPTION, ex.getClass().getSimpleName(),
+                MetricsKeys.REASON, MetricsValues.NONE
+        );
         log.info("Illegal argument exception occurred: {}", ex.getMessage(), ex);
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
@@ -150,16 +266,30 @@ public class GlobalExceptionHandler {
     /**
      * Handles {@link HttpRequestMethodNotSupportedException}.
      *
-     * @param e the HttpRequestMethodNotSupportedException that was thrown
+     * @param ex the HttpRequestMethodNotSupportedException that was thrown
      * @return a {@link ProblemDetail} with HTTP status 400 (Bad Request)
      */
+    @Counter(
+            name = MetricsNames.EXCEPTION,
+            description = MetricsDescriptions.EXCEPTION_HANDLER,
+            tags = {
+                    @Tags(key = MetricsKeys.EXCEPTION_TYPE, value = MetricsValues.EXCEPTION_NAME),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME)
+            }
+    )
     @ExceptionHandler({HttpRequestMethodNotSupportedException.class, NoResourceFoundException.class})
-    public ProblemDetail handleHttpRequestMethodNotSupportedException(Exception e) {
-        log.debug("HttpRequestMethodNotSupportedException occurred: {}", e.getMessage(), e);
+    public ProblemDetail handleHttpRequestMethodNotSupportedException(Exception ex) {
+        LogMetrics.debug(
+                MetricsKeys.CLASS_NAME, MetricsValues.GLOBAL_EXCEPTION_HANDLER,
+                MetricsKeys.METHOD, "handleHttpRequestMethodNotSupportedException",
+                MetricsKeys.EXCEPTION, ex.getClass().getSimpleName(),
+                MetricsKeys.REASON, MetricsValues.NONE
+        );
+        log.debug("HttpRequestMethodNotSupportedException occurred: {}", ex.getMessage(), ex);
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.BAD_REQUEST,
-                e.getMessage()
+                ex.getMessage()
         );
 
         problemDetail.setTitle("Invalid Endpoint");
@@ -167,14 +297,29 @@ public class GlobalExceptionHandler {
         return problemDetail;
     }
 
+
     /**
      * Handles {@link io.github.yubrajsahoo.portfolioapi.exception.RegistrationException}.
      *
      * @param ex the RegistrationException that was thrown
      * @return a {@link ProblemDetail} with HTTP status 400 (Bad Request)
      */
+    @Counter(
+            name = MetricsNames.EXCEPTION,
+            description = MetricsDescriptions.EXCEPTION_HANDLER,
+            tags = {
+                    @Tags(key = MetricsKeys.EXCEPTION_TYPE, value = MetricsValues.EXCEPTION_NAME),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME)
+            }
+    )
     @ExceptionHandler(io.github.yubrajsahoo.portfolioapi.exception.RegistrationException.class)
     public ProblemDetail handleRegistrationException(io.github.yubrajsahoo.portfolioapi.exception.RegistrationException ex) {
+        LogMetrics.warn(
+                MetricsKeys.CLASS_NAME, MetricsValues.GLOBAL_EXCEPTION_HANDLER,
+                MetricsKeys.METHOD, "handleRegistrationException",
+                MetricsKeys.EXCEPTION, ex.getClass().getSimpleName(),
+                MetricsKeys.REASON, MetricsValues.NONE
+        );
         log.warn("Registration exception occurred: {}", ex.getMessage(), ex);
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
@@ -193,8 +338,22 @@ public class GlobalExceptionHandler {
      * @param ex the PortfolioApiException that was thrown
      * @return a {@link ProblemDetail} with HTTP status 500 (Internal Server Error)
      */
+    @Counter(
+            name = MetricsNames.EXCEPTION,
+            description = MetricsDescriptions.EXCEPTION_HANDLER,
+            tags = {
+                    @Tags(key = MetricsKeys.EXCEPTION_TYPE, value = MetricsValues.EXCEPTION_NAME),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME)
+            }
+    )
     @ExceptionHandler(io.github.yubrajsahoo.portfolioapi.exception.base.PortfolioApiException.class)
     public ProblemDetail handlePortfolioApiException(io.github.yubrajsahoo.portfolioapi.exception.base.PortfolioApiException ex) {
+        LogMetrics.error(
+                MetricsKeys.CLASS_NAME, MetricsValues.GLOBAL_EXCEPTION_HANDLER,
+                MetricsKeys.METHOD, "handlePortfolioApiException",
+                MetricsKeys.EXCEPTION, ex.getClass().getSimpleName(),
+                MetricsKeys.REASON, MetricsValues.NONE
+        );
         log.error("Portfolio API exception occurred: {}", ex.getMessage(), ex);
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
@@ -213,8 +372,22 @@ public class GlobalExceptionHandler {
      * @param ex the Exception that was thrown
      * @return a {@link ProblemDetail} with HTTP status 500 (Internal Server Error)
      */
+    @Counter(
+            name = MetricsNames.EXCEPTION,
+            description = MetricsDescriptions.EXCEPTION_HANDLER,
+            tags = {
+                    @Tags(key = MetricsKeys.EXCEPTION_TYPE, value = MetricsValues.EXCEPTION_NAME),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME)
+            }
+    )
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleAllUncaughtException(Exception ex) {
+        LogMetrics.error(
+                MetricsKeys.CLASS_NAME, MetricsValues.GLOBAL_EXCEPTION_HANDLER,
+                MetricsKeys.METHOD, "handleAllUncaughtException",
+                MetricsKeys.EXCEPTION, ex.getClass().getSimpleName(),
+                MetricsKeys.REASON, MetricsValues.NONE
+        );
         log.error("Unknown internal server error occurred: {}", ex.getMessage(), ex);
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(

@@ -84,6 +84,7 @@ public class CloudFileController {
             description = "Returns the URL of a stored file"
     )
     @GetMapping("/{fileName}")
+    @org.amyth.core.annotation.RateLimit(permits = 5, window = 60, key = "'resume:' + (#request.getHeader('X-Forwarded-For') ?: #request.remoteAddr)")
     public ResponseEntity<URI> get(
             @NotBlank(message = "File name cannot be blank") @PathVariable("fileName") String fileName,
             @RequestParam(required = false, defaultValue = "PUBLIC") AccessType access
