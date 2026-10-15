@@ -13,8 +13,12 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -22,6 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@SpringBootTest
+@ActiveProfiles("unit")
 class GlobalExceptionHandlerTest {
 
     private GlobalExceptionHandler exceptionHandler;
@@ -90,6 +96,33 @@ class GlobalExceptionHandlerTest {
         Map<String, String> errors = (Map<String, String>) problemDetail.getProperties().get("errors");
         assertNotNull(errors);
         assertEquals("must not be null", errors.get("parameterName"));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void testHandleMethodArgumentNotValidException() throws Exception {
+        org.springframework.validation.BindingResult bindingResult = mock(org.springframework.validation.BindingResult.class);
+        org.springframework.validation.FieldError fieldError = new org.springframework.validation.FieldError("contactReqDto", "email", "Invalid Email Id");
+        when(bindingResult.getFieldErrors()).thenReturn(List.of(fieldError));
+
+        java.lang.reflect.Method method = GlobalExceptionHandlerTest.class.getDeclaredMethod("setUp");
+        org.springframework.core.MethodParameter methodParameter = new org.springframework.core.MethodParameter(method, -1);
+
+        org.springframework.web.bind.MethodArgumentNotValidException ex = new org.springframework.web.bind.MethodArgumentNotValidException(
+                methodParameter,
+                bindingResult
+        );
+
+        ProblemDetail problemDetail = exceptionHandler.handleMethodArgumentNotValidException(ex);
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), problemDetail.getStatus());
+        assertEquals("Validation failed", problemDetail.getDetail());
+        assertEquals("Bad Request", problemDetail.getTitle());
+        assertNotNull(problemDetail.getProperties().get("timestamp"));
+
+        Map<String, String> errors = (Map<String, String>) problemDetail.getProperties().get("errors");
+        assertNotNull(errors);
+        assertEquals("Invalid Email Id", errors.get("email"));
     }
 
     @Test

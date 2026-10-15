@@ -5,15 +5,13 @@ import io.github.yubrajsahoo.portfolioapi.dto.CloudFileDto;
 import io.github.yubrajsahoo.portfolioapi.enums.AccessType;
 import io.github.yubrajsahoo.portfolioapi.helper.DataBuilderUtils;
 import io.github.yubrajsahoo.portfolioapi.mapper.impl.CustomMapperImpl;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @DisplayName("Unit: Custom Mapper Transformations")
@@ -101,5 +99,47 @@ class CustomMapperTest {
         assertEquals("password", user.getPassword());
         assertEquals(1, user.getRoles().size());
         assertEquals("USER", user.getRoles().get(0).getName());
+    }
+
+    @Test
+    @DisplayName("Should Map ContactReqDto to ContactMessage Entity")
+    void toContactMessageEntity() {
+        io.github.yubrajsahoo.portfolioapi.dto.ContactReqDto dto = io.github.yubrajsahoo.portfolioapi.dto.ContactReqDto.builder()
+                .name("Alice")
+                .email("alice@example.com")
+                .message("Hello there")
+                .build();
+
+        io.github.yubrajsahoo.portfolioapi.entity.ContactMessage message = customMapper.toContactMessageEntity(dto);
+
+        assertNotNull(message);
+        assertEquals("Alice", message.getName());
+        assertEquals("alice@example.com", message.getEmail());
+        assertEquals("Hello there", message.getMessage());
+
+        org.junit.jupiter.api.Assertions.assertNull(customMapper.toContactMessageEntity(null));
+    }
+
+    @Test
+    @DisplayName("Should Map ContactMessage Entity to ContactMessageDto")
+    void toContactMessageDto() {
+        io.github.yubrajsahoo.portfolioapi.entity.ContactMessage entity = io.github.yubrajsahoo.portfolioapi.entity.ContactMessage.builder()
+                .id(5L)
+                .name("Bob")
+                .email("bob@example.com")
+                .message("Test inquiry")
+                .isRead(true)
+                .build();
+
+        io.github.yubrajsahoo.portfolioapi.dto.ContactMessageDto dto = customMapper.toContactMessageDto(entity);
+
+        assertNotNull(dto);
+        assertEquals(5L, dto.getId());
+        assertEquals("Bob", dto.getName());
+        assertEquals("bob@example.com", dto.getEmail());
+        assertEquals("Test inquiry", dto.getMessage());
+        org.junit.jupiter.api.Assertions.assertTrue(dto.isRead());
+
+        org.junit.jupiter.api.Assertions.assertNull(customMapper.toContactMessageDto(null));
     }
 }

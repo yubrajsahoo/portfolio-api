@@ -189,6 +189,47 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles {@link org.springframework.web.bind.MethodArgumentNotValidException}.
+     *
+     * @param ex the MethodArgumentNotValidException that was thrown
+     * @return a {@link ProblemDetail} with HTTP status 400 (Bad Request) and a map of field errors
+     */
+    @Counter(
+            name = MetricsNames.EXCEPTION,
+            description = MetricsDescriptions.EXCEPTION_HANDLER,
+            tags = {
+                    @Tags(key = MetricsKeys.EXCEPTION_TYPE, value = MetricsValues.EXCEPTION_NAME),
+                    @Tags(key = MetricsKeys.METHOD, value = Smf4jSpelConstants.METHOD_NAME)
+            }
+    )
+    @ExceptionHandler(org.springframework.web.bind.MethodArgumentNotValidException.class)
+    public ProblemDetail handleMethodArgumentNotValidException(org.springframework.web.bind.MethodArgumentNotValidException ex) {
+        LogMetrics.info(
+                MetricsKeys.CLASS_NAME, MetricsValues.GLOBAL_EXCEPTION_HANDLER,
+                MetricsKeys.METHOD, "handleMethodArgumentNotValidException",
+                MetricsKeys.EXCEPTION, ex.getClass().getSimpleName(),
+                MetricsKeys.REASON, MetricsValues.NONE
+        );
+        log.info("Method argument not valid exception occurred: {}", ex.getMessage(), ex);
+
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST,
+                "Validation failed"
+        );
+
+        problemDetail.setTitle("Bad Request");
+
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(fieldError ->
+                errors.put(fieldError.getField(), fieldError.getDefaultMessage())
+        );
+
+        problemDetail.setProperty("errors", errors);
+        problemDetail.setProperty(TIMESTAMP, Instant.now());
+        return problemDetail;
+    }
+
+    /**
      * Handles {@link IllegalArgumentException}.
      *
      * @param ex the IllegalArgumentException that was thrown
@@ -255,6 +296,7 @@ public class GlobalExceptionHandler {
         problemDetail.setProperty(TIMESTAMP, Instant.now());
         return problemDetail;
     }
+
 
     /**
      * Handles {@link io.github.yubrajsahoo.portfolioapi.exception.RegistrationException}.

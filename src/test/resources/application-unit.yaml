@@ -7,3 +7,10 @@ cloudinary:
   privateUrlTtl: 1m # 1min
 cors:
   allowed-origins: http://localhost:5173
+contact:
+  notification:
+    recipient-email: test@example.com
+management:
+  health:
+    mail:
+      enabled: false

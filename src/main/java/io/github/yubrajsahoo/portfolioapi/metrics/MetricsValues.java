@@ -69,4 +69,8 @@ public class MetricsValues {
     public static final String CLOUD_FILE_SERVICE_IMPL = "CloudFileServiceImpl";
     public static final String METHOD_UPLOAD = "upload";
     public static final String METHOD_GET_URL = "getUrl";
+
+    public static final String CONTACT_SERVICE = "CONTACT_SERVICE";
+    public static final String SEND_CONTACT_MESSAGE = "SEND_CONTACT_MESSAGE";
+    public static final String GET_ALL_CONTACT_MESSAGES = "GET_ALL_CONTACT_MESSAGES";
 }

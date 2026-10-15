@@ -65,4 +65,42 @@ class EntityTest {
         assertEquals("pass", user.getPassword());
         assertEquals(1, user.getRoles().size());
     }
+
+    @Test
+    void testContactMessage() {
+        io.github.yubrajsahoo.portfolioapi.entity.ContactMessage message = new io.github.yubrajsahoo.portfolioapi.entity.ContactMessage();
+        assertNull(message.getId());
+        assertNull(message.getName());
+        assertNull(message.getEmail());
+        assertNull(message.getMessage());
+        org.junit.jupiter.api.Assertions.assertFalse(message.isRead());
+        assertNull(message.getCreatedAt());
+
+        message.setId(10L);
+        message.setName("John");
+        message.setEmail("john@example.com");
+        message.setMessage("Hello");
+        message.setRead(true);
+        message.prePersist();
+
+        assertEquals(10L, message.getId());
+        assertEquals("John", message.getName());
+        assertEquals("john@example.com", message.getEmail());
+        assertEquals("Hello", message.getMessage());
+        org.junit.jupiter.api.Assertions.assertTrue(message.isRead());
+        org.junit.jupiter.api.Assertions.assertNotNull(message.getCreatedAt());
+
+        io.github.yubrajsahoo.portfolioapi.entity.ContactMessage built = io.github.yubrajsahoo.portfolioapi.entity.ContactMessage.builder()
+                .id(20L)
+                .name("Alice")
+                .email("alice@example.com")
+                .message("Inquiry")
+                .isRead(false)
+                .build();
+        assertEquals(20L, built.getId());
+        assertEquals("Alice", built.getName());
+        assertEquals("alice@example.com", built.getEmail());
+        assertEquals("Inquiry", built.getMessage());
+        org.junit.jupiter.api.Assertions.assertFalse(built.isRead());
+    }
 }

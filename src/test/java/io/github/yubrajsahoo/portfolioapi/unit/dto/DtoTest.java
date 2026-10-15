@@ -62,4 +62,76 @@ class DtoTest {
         assertEquals(1, dto.getRoles().size());
         assertEquals("USER", dto.getRoles().get(0));
     }
+
+    @Test
+    void testContactReqDto() {
+        io.github.yubrajsahoo.portfolioapi.dto.ContactReqDto dto = io.github.yubrajsahoo.portfolioapi.dto.ContactReqDto.builder()
+                .name("John")
+                .email("john@example.com")
+                .message("Hello")
+                .build();
+
+        assertEquals("John", dto.getName());
+        assertEquals("john@example.com", dto.getEmail());
+        assertEquals("Hello", dto.getMessage());
+
+        io.github.yubrajsahoo.portfolioapi.dto.ContactReqDto emptyDto = new io.github.yubrajsahoo.portfolioapi.dto.ContactReqDto();
+        emptyDto.setName("Jane");
+        emptyDto.setEmail("jane@example.com");
+        emptyDto.setMessage("Hi");
+        assertEquals("Jane", emptyDto.getName());
+        assertEquals("jane@example.com", emptyDto.getEmail());
+        assertEquals("Hi", emptyDto.getMessage());
+    }
+
+    @Test
+    void testContactResDto() {
+        io.github.yubrajsahoo.portfolioapi.dto.ContactResDto dto = io.github.yubrajsahoo.portfolioapi.dto.ContactResDto.builder()
+                .success(true)
+                .message("Success")
+                .build();
+
+        org.junit.jupiter.api.Assertions.assertTrue(dto.isSuccess());
+        assertEquals("Success", dto.getMessage());
+
+        io.github.yubrajsahoo.portfolioapi.dto.ContactResDto emptyDto = new io.github.yubrajsahoo.portfolioapi.dto.ContactResDto();
+        emptyDto.setSuccess(false);
+        emptyDto.setMessage("Failed");
+        org.junit.jupiter.api.Assertions.assertFalse(emptyDto.isSuccess());
+        assertEquals("Failed", emptyDto.getMessage());
+    }
+
+    @Test
+    void testContactMessageDto() {
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+        io.github.yubrajsahoo.portfolioapi.dto.ContactMessageDto dto = io.github.yubrajsahoo.portfolioapi.dto.ContactMessageDto.builder()
+                .id(1L)
+                .name("John")
+                .email("john@example.com")
+                .message("Test message")
+                .isRead(true)
+                .createdAt(now)
+                .build();
+
+        assertEquals(1L, dto.getId());
+        assertEquals("John", dto.getName());
+        assertEquals("john@example.com", dto.getEmail());
+        assertEquals("Test message", dto.getMessage());
+        org.junit.jupiter.api.Assertions.assertTrue(dto.isRead());
+        assertEquals(now, dto.getCreatedAt());
+
+        io.github.yubrajsahoo.portfolioapi.dto.ContactMessageDto emptyDto = new io.github.yubrajsahoo.portfolioapi.dto.ContactMessageDto();
+        emptyDto.setId(2L);
+        emptyDto.setName("Jane");
+        emptyDto.setEmail("jane@example.com");
+        emptyDto.setMessage("Msg");
+        emptyDto.setRead(false);
+        emptyDto.setCreatedAt(now);
+        assertEquals(2L, emptyDto.getId());
+        assertEquals("Jane", emptyDto.getName());
+        assertEquals("jane@example.com", emptyDto.getEmail());
+        assertEquals("Msg", emptyDto.getMessage());
+        org.junit.jupiter.api.Assertions.assertFalse(emptyDto.isRead());
+        assertEquals(now, emptyDto.getCreatedAt());
+    }
 }

@@ -98,4 +98,31 @@ public class CustomMapperImpl implements CustomMapper {
 
         return user;
     }
+
+    @Override
+    public io.github.yubrajsahoo.portfolioapi.entity.ContactMessage toContactMessageEntity(io.github.yubrajsahoo.portfolioapi.dto.ContactReqDto contactReqDto) {
+        if (contactReqDto == null) {
+            return null;
+        }
+        return io.github.yubrajsahoo.portfolioapi.entity.ContactMessage.builder()
+                .name(contactReqDto.getName())
+                .email(contactReqDto.getEmail())
+                .message(contactReqDto.getMessage())
+                .build();
+    }
+
+    @Override
+    public io.github.yubrajsahoo.portfolioapi.dto.ContactMessageDto toContactMessageDto(io.github.yubrajsahoo.portfolioapi.entity.ContactMessage contactMessage) {
+        if (contactMessage == null) {
+            return null;
+        }
+        return io.github.yubrajsahoo.portfolioapi.dto.ContactMessageDto.builder()
+                .id(contactMessage.getId())
+                .name(contactMessage.getName())
+                .email(contactMessage.getEmail())
+                .message(contactMessage.getMessage())
+                .isRead(contactMessage.isRead())
+                .createdAt(contactMessage.getCreatedAt())
+                .build();
+    }
 }

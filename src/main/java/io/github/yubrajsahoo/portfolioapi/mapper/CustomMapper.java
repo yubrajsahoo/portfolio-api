@@ -48,4 +48,20 @@ public interface CustomMapper {
      * @return the corresponding User entity
      */
     User toUserEntity(UserReqDto userDto, List<Role> roles);
+
+    /**
+     * Converts a contact request DTO to a ContactMessage entity.
+     *
+     * @param contactReqDto the contact request DTO
+     * @return the corresponding ContactMessage entity
+     */
+    io.github.yubrajsahoo.portfolioapi.entity.ContactMessage toContactMessageEntity(io.github.yubrajsahoo.portfolioapi.dto.ContactReqDto contactReqDto);
+
+    /**
+     * Converts a ContactMessage entity to a ContactMessageDto response.
+     *
+     * @param contactMessage the contact message entity
+     * @return the corresponding ContactMessageDto
+     */
+    io.github.yubrajsahoo.portfolioapi.dto.ContactMessageDto toContactMessageDto(io.github.yubrajsahoo.portfolioapi.entity.ContactMessage contactMessage);
 }
