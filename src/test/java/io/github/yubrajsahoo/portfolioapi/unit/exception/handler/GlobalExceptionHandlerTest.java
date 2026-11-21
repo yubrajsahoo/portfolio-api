@@ -191,4 +191,17 @@ class GlobalExceptionHandlerTest {
         assertEquals("Application Error", problemDetail.getTitle());
         assertNotNull(problemDetail.getProperties().get("timestamp"));
     }
+
+    @Test
+    void testHandleAuthorizationDeniedException() {
+        org.springframework.security.authorization.AuthorizationDeniedException ex =
+                new org.springframework.security.authorization.AuthorizationDeniedException("Access Denied", () -> false);
+        ProblemDetail problemDetail = exceptionHandler.handleAuthorizationDeniedException(ex);
+
+        assertNotNull(problemDetail);
+        assertEquals(HttpStatus.FORBIDDEN.value(), problemDetail.getStatus());
+        assertEquals("Access Denied", problemDetail.getDetail());
+        assertEquals("Access Denied", problemDetail.getTitle());
+        assertNotNull(problemDetail.getProperties().get("timestamp"));
+    }
 }

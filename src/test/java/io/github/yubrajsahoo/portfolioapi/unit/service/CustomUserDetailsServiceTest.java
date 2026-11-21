@@ -65,4 +65,15 @@ class CustomUserDetailsServiceTest {
 
         assertThrows(UsernameNotFoundException.class, () -> customUserDetailsService.loadUserByUsername("test@test.com"));
     }
+
+    @Test
+    @DisplayName("Should Reset Total Logins")
+    void resetTotalLogins_Success() {
+        java.util.concurrent.atomic.AtomicLong totalLogins = (java.util.concurrent.atomic.AtomicLong)
+                org.springframework.test.util.ReflectionTestUtils.getField(customUserDetailsService, "totalLogins");
+        assertNotNull(totalLogins);
+        totalLogins.set(5);
+        customUserDetailsService.resetTotalLogins();
+        assertEquals(0, totalLogins.get());
+    }
 }

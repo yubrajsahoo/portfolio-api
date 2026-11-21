@@ -22,6 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.mockito.ArgumentCaptor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +77,9 @@ class UserServiceTest {
 
         String result = userService.register(dto);
         assertTrue(result.contains("User registered successfully"));
-        verify(userRepository, times(1)).save(any(User.class));
+        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
+        verify(userRepository, times(1)).save(userCaptor.capture());
+        assertEquals("encoded_pass", userCaptor.getValue().getPassword());
     }
 
     @Test
@@ -105,20 +108,33 @@ class UserServiceTest {
 
         String result = userService.insertRole(roleDto);
         assertTrue(result.contains("Role created successfully: USER"));
-        verify(roleRepository, times(1)).save(any(Role.class));
+        ArgumentCaptor<Role> roleCaptor = ArgumentCaptor.forClass(Role.class);
+        verify(roleRepository, times(1)).save(roleCaptor.capture());
+        assertEquals(List.of(priv), roleCaptor.getValue().getPrivileges());
     }
 
     @Test
     @DisplayName("Should Fetch All Users")
     void getAllUsers_Success() {
+        Privilege priv = new Privilege();
+        priv.setName("WRITE_PRIVILEGE");
+
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        role.setPrivileges(List.of(priv));
+
         User user = new User();
         user.setEmail("test@test.com");
-        user.setRoles(new ArrayList<>());
+        user.setRoles(List.of(role));
         when(userRepository.findAll()).thenReturn(List.of(user));
 
         List<UserResDto> users = userService.getAllUsers();
         assertEquals(1, users.size());
         assertEquals("test@test.com", users.getFirst().getEmail());
+        assertEquals(1, users.getFirst().getRoles().size());
+        assertEquals("ROLE_ADMIN", users.getFirst().getRoles().getFirst().getName());
+        assertEquals(1, users.getFirst().getRoles().getFirst().getPrivileges().size());
+        assertEquals("WRITE_PRIVILEGE", users.getFirst().getRoles().getFirst().getPrivileges().getFirst().getName());
     }
 
     @Test
@@ -162,6 +178,44 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Should Assign Role when User Roles is Null")
+    void assignRoleToUser_UserRolesNull() {
+        User user = new User();
+        user.setEmail("test@test.com");
+        user.setRoles(null);
+
+        Role role = new Role();
+        role.setName("ADMIN");
+
+        when(userRepository.findByEmail("test@test.com")).thenReturn(Optional.of(user));
+        when(roleRepository.findByNameIn(List.of("ADMIN"))).thenReturn(List.of(role));
+
+        String result = userService.assignRoleToUser("test@test.com", "ADMIN");
+        assertEquals("Role assigned successfully", result);
+        assertNotNull(user.getRoles());
+        assertTrue(user.getRoles().contains(role));
+        verify(userRepository, times(1)).save(user);
+    }
+
+    @Test
+    @DisplayName("Should Not Save when Role is Already Assigned to User")
+    void assignRoleToUser_RoleAlreadyAssigned() {
+        Role role = new Role();
+        role.setName("ADMIN");
+
+        User user = new User();
+        user.setEmail("test@test.com");
+        user.setRoles(new ArrayList<>(List.of(role)));
+
+        when(userRepository.findByEmail("test@test.com")).thenReturn(Optional.of(user));
+        when(roleRepository.findByNameIn(List.of("ADMIN"))).thenReturn(List.of(role));
+
+        String result = userService.assignRoleToUser("test@test.com", "ADMIN");
+        assertEquals("Role assigned successfully", result);
+        verify(userRepository, never()).save(user);
+    }
+
+    @Test
     @DisplayName("Should Throw Exception when Registering with Invalid Roles")
     void registerUser_ThrowsExceptionWhenRolesInvalid() {
         UserReqDto dto = new UserReqDto();
@@ -190,25 +244,50 @@ class UserServiceTest {
     void insertRole_WithoutPrivileges() {
         RoleReqDto roleDto = new RoleReqDto();
         roleDto.setName("USER");
-        
+
         when(roleRepository.existsByName("USER")).thenReturn(false);
-        
+
         String result = userService.insertRole(roleDto);
         assertTrue(result.contains("Role created successfully: USER"));
-        verify(roleRepository, times(1)).save(any(Role.class));
+        ArgumentCaptor<Role> roleCaptor = ArgumentCaptor.forClass(Role.class);
+        verify(roleRepository, times(1)).save(roleCaptor.capture());
+        assertNotNull(roleCaptor.getValue().getPrivileges());
+        assertTrue(roleCaptor.getValue().getPrivileges().isEmpty());
+    }
+
+    @Test
+    @DisplayName("Should Insert Role With Empty Privileges List")
+    void insertRole_EmptyPrivilegesList() {
+        RoleReqDto roleDto = new RoleReqDto();
+        roleDto.setName("USER");
+        roleDto.setPrivileges(new ArrayList<>());
+
+        when(roleRepository.existsByName("USER")).thenReturn(false);
+
+        String result = userService.insertRole(roleDto);
+        assertTrue(result.contains("Role created successfully: USER"));
+        ArgumentCaptor<Role> roleCaptor = ArgumentCaptor.forClass(Role.class);
+        verify(roleRepository, times(1)).save(roleCaptor.capture());
+        assertNotNull(roleCaptor.getValue().getPrivileges());
+        assertTrue(roleCaptor.getValue().getPrivileges().isEmpty());
     }
 
     @Test
     @DisplayName("Should Fetch All Roles")
     void getAllRoles_Success() {
+        Privilege priv = new Privilege();
+        priv.setName("READ_PRIVILEGE");
+
         Role role = new Role();
         role.setName("ADMIN");
-        role.setPrivileges(new ArrayList<>());
+        role.setPrivileges(List.of(priv));
         when(roleRepository.findAll()).thenReturn(List.of(role));
 
         List<RoleResDto> roles = userService.getAllRoles();
         assertEquals(1, roles.size());
         assertEquals("ADMIN", roles.getFirst().getName());
+        assertEquals(1, roles.getFirst().getPrivileges().size());
+        assertEquals("READ_PRIVILEGE", roles.getFirst().getPrivileges().getFirst().getName());
     }
 
     @Test
@@ -285,5 +364,43 @@ class UserServiceTest {
 
         String result = userService.assignPrivilegeToRole("ADMIN", "READ");
         assertEquals("Privilege not found", result);
+    }
+
+    @Test
+    @DisplayName("Should Assign Privilege when Role Privileges is Null")
+    void assignPrivilegeToRole_RolePrivilegesNull() {
+        Role role = new Role();
+        role.setName("ADMIN");
+        role.setPrivileges(null);
+
+        Privilege priv = new Privilege();
+        priv.setName("READ");
+
+        when(roleRepository.findByNameIn(List.of("ADMIN"))).thenReturn(List.of(role));
+        when(privilegeRepository.findByNameIn(List.of("READ"))).thenReturn(List.of(priv));
+
+        String result = userService.assignPrivilegeToRole("ADMIN", "READ");
+        assertEquals("Privilege assigned successfully", result);
+        assertNotNull(role.getPrivileges());
+        assertTrue(role.getPrivileges().contains(priv));
+        verify(roleRepository, times(1)).save(role);
+    }
+
+    @Test
+    @DisplayName("Should Not Save when Privilege is Already Assigned to Role")
+    void assignPrivilegeToRole_PrivilegeAlreadyAssigned() {
+        Privilege priv = new Privilege();
+        priv.setName("READ");
+
+        Role role = new Role();
+        role.setName("ADMIN");
+        role.setPrivileges(new ArrayList<>(List.of(priv)));
+
+        when(roleRepository.findByNameIn(List.of("ADMIN"))).thenReturn(List.of(role));
+        when(privilegeRepository.findByNameIn(List.of("READ"))).thenReturn(List.of(priv));
+
+        String result = userService.assignPrivilegeToRole("ADMIN", "READ");
+        assertEquals("Privilege assigned successfully", result);
+        verify(roleRepository, never()).save(role);
     }
 }

@@ -54,6 +54,7 @@ class EmailServiceTest {
 
         SimpleMailMessage sentMessage = captor.getValue();
         assertNotNull(sentMessage);
+        assertEquals("noreply@portfolio.com", sentMessage.getFrom());
         assertTrue(Objects.requireNonNull(sentMessage.getTo())[0].contains("example.com") || Objects.requireNonNull(sentMessage.getTo())[0].contains("gmail.com"));
         assertEquals("New Contact Message from Alex Smith", sentMessage.getSubject());
         assertTrue(Objects.requireNonNull(sentMessage.getText()).contains("Alex Smith"));
@@ -74,5 +75,51 @@ class EmailServiceTest {
 
         assertDoesNotThrow(() -> emailService.sendContactNotificationEmail(reqDto));
         verify(mailSender, times(1)).send(any(SimpleMailMessage.class));
+    }
+
+    @Test
+    @DisplayName("Should not set from field when fromEmail is null")
+    void sendContactNotificationEmail_NullFromEmail() {
+        ContactReqDto reqDto = ContactReqDto.builder()
+                .name("Alex Smith")
+                .email("alex@example.com")
+                .message("Message")
+                .build();
+
+        org.springframework.test.util.ReflectionTestUtils.setField(emailService, "fromEmail", null);
+        try {
+            doNothing().when(mailSender).send(any(SimpleMailMessage.class));
+            emailService.sendContactNotificationEmail(reqDto);
+
+            ArgumentCaptor<SimpleMailMessage> captor = ArgumentCaptor.forClass(SimpleMailMessage.class);
+            verify(mailSender, atLeastOnce()).send(captor.capture());
+            SimpleMailMessage sentMessage = captor.getValue();
+            assertNull(sentMessage.getFrom());
+        } finally {
+            org.springframework.test.util.ReflectionTestUtils.setField(emailService, "fromEmail", "noreply@portfolio.com");
+        }
+    }
+
+    @Test
+    @DisplayName("Should not set from field when fromEmail is blank")
+    void sendContactNotificationEmail_BlankFromEmail() {
+        ContactReqDto reqDto = ContactReqDto.builder()
+                .name("Alex Smith")
+                .email("alex@example.com")
+                .message("Message")
+                .build();
+
+        org.springframework.test.util.ReflectionTestUtils.setField(emailService, "fromEmail", "   ");
+        try {
+            doNothing().when(mailSender).send(any(SimpleMailMessage.class));
+            emailService.sendContactNotificationEmail(reqDto);
+
+            ArgumentCaptor<SimpleMailMessage> captor = ArgumentCaptor.forClass(SimpleMailMessage.class);
+            verify(mailSender, atLeastOnce()).send(captor.capture());
+            SimpleMailMessage sentMessage = captor.getValue();
+            assertNull(sentMessage.getFrom());
+        } finally {
+            org.springframework.test.util.ReflectionTestUtils.setField(emailService, "fromEmail", "noreply@portfolio.com");
+        }
     }
 }

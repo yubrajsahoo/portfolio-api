@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.mockito.ArgumentCaptor;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -185,7 +186,16 @@ class CloudinaryClientUnitTest {
         // Assert
         assertNotNull(resultUrl);
         assertEquals(expectedUrl, resultUrl);
-        verify(cloudinary, times(1)).privateDownload(eq("test-portfolio/authenticated/image/Yubraj-Resume"), eq("pdf"), any(Map.class));
+
+        ArgumentCaptor<Map<String, Object>> mapCaptor = ArgumentCaptor.forClass(Map.class);
+        verify(cloudinary, times(1)).privateDownload(eq("test-portfolio/authenticated/image/Yubraj-Resume"), eq("pdf"), mapCaptor.capture());
+        Map<String, Object> capturedOptions = mapCaptor.getValue();
+        assertNotNull(capturedOptions);
+        Long expiresAt = (Long) capturedOptions.get("expires_at");
+        assertNotNull(expiresAt);
+        long nowSec = System.currentTimeMillis() / 1000L;
+        assertTrue(expiresAt >= nowSec - 10 && expiresAt <= nowSec + 1000, 
+                "expiresAt (" + expiresAt + ") should be around nowSec (" + nowSec + "), diff=" + (expiresAt - nowSec));
     }
 
     @Test

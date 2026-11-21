@@ -34,6 +34,16 @@ class CloudFileServiceTest {
     @Autowired
     private CloudFileService cloudFileService;
 
+    @Autowired
+    private org.springframework.cache.CacheManager cacheManager;
+
+    @org.junit.jupiter.api.BeforeEach
+    void setUp() {
+        if (cacheManager.getCache(io.github.yubrajsahoo.portfolioapi.cache.constants.CacheNames.ALL_CLOUD_FILES) != null) {
+            cacheManager.getCache(io.github.yubrajsahoo.portfolioapi.cache.constants.CacheNames.ALL_CLOUD_FILES).clear();
+        }
+    }
+
     @Test
     @DisplayName("Should Successfully Upload File and Return Cloud URL")
     void upload_Success() throws Exception {
@@ -81,10 +91,11 @@ class CloudFileServiceTest {
     @DisplayName("Should Fetch and Map All File Names from Client Filters Nulls")
     void getAllFileNames_Success() {
         String mockUrl = "https://res.cloudinary.com/demo/image/upload/portfolio-api/public/image/test.jpg";
-        List urls = io.github.yubrajsahoo.portfolioapi.helper.DataBuilderUtils.readFromJson(
+        List urls = new java.util.ArrayList<>(io.github.yubrajsahoo.portfolioapi.helper.DataBuilderUtils.readFromJson(
                 "src/test/resources/json/service-get-all-urls-public.json",
                 List.class
-        );
+        ));
+        urls.add("https://invalid-url-that-does-not-match-pattern.com");
         when(cloudClient.getAllUrls(AccessType.PUBLIC)).thenReturn(urls);
 
         List<CloudFileDto> result = cloudFileService.getAllFileNames(AccessType.PUBLIC);
