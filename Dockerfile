@@ -1,5 +1,6 @@
-# Stage 1: Build GraalVM Native Image
-FROM ghcr.io/graalvm/native-image-community:21 AS builder
+# Stage 1: Build GraalVM Native Image. GraalVM 25 supports the current
+# reachability-metadata schema; the application itself still targets Java 21.
+FROM ghcr.io/graalvm/native-image-community:25 AS builder
 WORKDIR /build
 
 # Install Maven and dependencies
