@@ -9,10 +9,9 @@ RUN microdnf install -y maven findutils && microdnf clean all
 COPY pom.xml .
 COPY src ./src
 
-# This Spring Data JPA/OpenAPI application exceeds a 5 GB native-image heap.
-# GitHub's Docker builder has 16 GB available; leave headroom for native-image
-# overhead while supplying enough heap for its whole-program analysis.
-ENV NATIVE_IMAGE_OPTIONS="-J-Xmx10g --parallelism=4"
+# Native Image also needs memory beyond its Java heap. Keep both heap and
+# compiler parallelism within the memory available to the deployment builder.
+ENV NATIVE_IMAGE_OPTIONS="-J-Xmx7g --parallelism=2"
 RUN mvn --batch-mode --no-transfer-progress -Pnative -DskipTests native:compile
 
 # The GraalVM builder produces a glibc-linked executable. Use the matching
