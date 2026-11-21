@@ -9,10 +9,10 @@ RUN microdnf install -y maven findutils && microdnf clean all
 COPY pom.xml .
 COPY src ./src
 
-# Render's starter build environment provides 8 GB RAM, but Native Image
-# otherwise detects host resources and attempts a 28+ GB / 32-thread build.
-# Keep the builder below that limit while retaining a production native binary.
-ENV NATIVE_IMAGE_OPTIONS="-J-Xmx5g --parallelism=4"
+# This Spring Data JPA/OpenAPI application exceeds a 5 GB native-image heap.
+# GitHub's Docker builder has 16 GB available; leave headroom for native-image
+# overhead while supplying enough heap for its whole-program analysis.
+ENV NATIVE_IMAGE_OPTIONS="-J-Xmx10g --parallelism=4"
 RUN mvn --batch-mode --no-transfer-progress -Pnative -DskipTests native:compile
 
 # The GraalVM builder produces a glibc-linked executable. Use the matching
