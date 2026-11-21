@@ -37,6 +37,7 @@ public class FileMetaData {
     /**
      * The access type of the file (e.g., PUBLIC, PRIVATE), indicating its visibility.
      */
+    @Builder.Default
     private AccessType accessType = AccessType.PUBLIC;
 
     /**

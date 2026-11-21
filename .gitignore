@@ -33,3 +33,5 @@ build/
 .vscode/
 /.agents/agents/
 /.env
+/.codex/
+/data/
