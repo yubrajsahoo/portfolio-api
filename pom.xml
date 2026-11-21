@@ -332,8 +332,9 @@
                         <param>io.github.yubrajsahoo.portfolioapi.*</param>
                     </targetClasses>
                     <targetTests>
-                        <param>io.github.yubrajsahoo.portfolioapi.*</param>
+                        <param>io.github.yubrajsahoo.portfolioapi.unit.*</param>
                     </targetTests>
+                    <threads>4</threads>
                     <mutationThreshold>80</mutationThreshold>
                     <coverageThreshold>80</coverageThreshold>
                     <jvmArgs>
